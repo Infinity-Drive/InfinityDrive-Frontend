@@ -1,0 +1,26 @@
+<div class="bodyCard">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col" class="d-none d-lg-block">Account</th>
+      <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let a of accounts; let i = index">
+      <th scope="row">{{i}}</th>
+      <td><a routerLink="Storage">{{a.name}}</a></td>
+      <td class="d-none d-lg-block">{{a.account}}</td>
+      <td>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Edit</a>
+          <a class="dropdown-item" href="#">Unlink</a>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

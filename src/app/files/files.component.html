@@ -1,0 +1,43 @@
+<div class="bodyCard">
+
+  <div class="name"><h3 >Name</h3></div>
+  <div class="actions">
+    <span class="oi" data-glyph="data-transfer-upload"></span>
+    <span class="oi d-none d-lg-inline" data-glyph="list"></span>
+    <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <!--<th scope="col">#</th>-->
+      <th scope="col">Name</th>
+      <th scope="col" class="d-none d-lg-block">Account</th>
+      <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let f of files; let i = index">
+
+      <div *ngIf="f.type=='folder'; then folder ; else file">
+      </div>
+
+      <ng-template #folder>
+          <td><span class="oi" data-glyph="folder"></span>    {{f.name}}</td>
+        </ng-template >
+        <ng-template #file>
+          <td><span class="oi" data-glyph="file"></span>    {{f.name}}</td>
+        </ng-template>
+
+      <td class="d-none d-lg-block">{{f.type}}</td>
+      <td>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Delete</a>
+          <a class="dropdown-item" href="#">Share</a>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

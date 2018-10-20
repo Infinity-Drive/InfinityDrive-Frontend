@@ -8,6 +8,8 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
+import { AccountsComponent } from './accounts/accounts.component';
+import { FilesComponent } from './files/files.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { UserDashboardComponent } from './user-dashboard/user-dashboard.componen
     LoginComponent,
     SignupComponent,
     ForgotPasswordComponent,
-    UserDashboardComponent
+    UserDashboardComponent,
+    AccountsComponent,
+    FilesComponent
   ],
   imports: [
     BrowserModule,
