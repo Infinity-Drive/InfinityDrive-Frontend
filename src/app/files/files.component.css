@@ -21,3 +21,6 @@
 {
   float: left;
 }
+.border-fix{
+  border-bottom: none;
+}
