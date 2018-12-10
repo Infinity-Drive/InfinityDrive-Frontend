@@ -8,14 +8,16 @@ import { SignupComponent } from './signup/signup.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { FilesComponent } from './files/files.component';
 
+import { AuthGuardService } from './services/auth-guard.service';
+
 const routes: Routes = [
   {path : '', component : LoginComponent, pathMatch : 'full'},
   {path : 'Signup', component : SignupComponent},
   {path : 'PasswordReset', component : ForgotPasswordComponent},
-  {path : 'Dashboard', component : UserDashboardComponent
+  {path : 'Dashboard', component : UserDashboardComponent , canActivate : [AuthGuardService]
     , children :  [
       {path : '' , component : AccountsComponent , pathMatch : 'full'},
-      { path : 'Storage' , component : FilesComponent }
+      { path : 'Storage/:id' , component : FilesComponent }
                   ]
   },
 ];

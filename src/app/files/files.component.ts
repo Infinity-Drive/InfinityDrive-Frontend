@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-files',
@@ -17,9 +19,18 @@ export class FilesComponent implements OnInit {
     {name : 'file7' , type : 'rar'},
     {name : 'file8' , type : 'rar'},
     {name : 'file9' , type : 'rar'}]
-  constructor() { }
+  constructor(private account: AccountService, private activeRoute: ActivatedRoute) { }
 
   ngOnInit() {
+    this.activeRoute.params.subscribe( (params) => {
+      //this.getfiles(params.id);
+    } );
+  }
+
+  getfiles(token) {
+          this.account.getFiles(token).subscribe((data) => {
+            console.log(data);
+          });
   }
 
 }

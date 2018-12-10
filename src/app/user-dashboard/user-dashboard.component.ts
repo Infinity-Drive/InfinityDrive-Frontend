@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserDashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private route: Router) { }
 
   ngOnInit() {
+  }
+
+  logout() {
+    this.route.navigate(['']);
+    localStorage.removeItem('infinityGuard');
+    localStorage.removeItem('infinityToken');
+    localStorage.removeItem('infinityEmail');
+    localStorage.removeItem('infinityId');
+    localStorage.removeItem('infinityName');
   }
 
 }

@@ -4,23 +4,23 @@
       <div class="card card-signin my-5">
         <div class="card-body">
           <h5 class="card-title text-center">Sign In</h5>
-          <form class="form-signin">
+          <form class="form-signin" #loginForm="ngForm" (submit)="login($event,email.value,pass.value)">
             <div class="form-label-group">
-              <input type="email" id="inputEmail" class="form-control" placeholder="Email address"  autofocus>
+              <input type="email" id="inputEmail" [(ngModel)]="uemail" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" name="email" required #email="ngModel" class="form-control" placeholder="Email address"  autofocus>
               <label for="inputEmail">Email address</label>
             </div>
 
             <div class="form-label-group">
-              <input type="password" id="inputPassword" class="form-control" placeholder="Password" >
+              <input type="password" id="inputPassword" [(ngModel)]="upass" name="pass" #pass="ngModel" class="form-control" required placeholder="Password" >
               <label for="inputPassword">Password</label>
             </div>
 
-            <div class="custom-control custom-checkbox mb-3">
-              <input type="checkbox" class="custom-control-input" id="customCheck1">
-              <label class="custom-control-label" for="customCheck1">Remember password</label>
-            </div>
+            <!--<div class="custom-control custom-checkbox mb-3">-->
+              <!--<input type="checkbox" class="custom-control-input" id="customCheck1">-->
+              <!--<label class="custom-control-label" for="customCheck1">Remember password</label>-->
+            <!--</div>-->
 
-            <button class="btn btn-lg btn-primary btn-block text-uppercase" (click)="login()">Sign in</button>
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" [disabled]="!loginForm.form.valid"  type="submit">Sign in</button>
 
             <a routerLink="Signup">Sign Up</a>
             <a style="float: right" routerLink="PasswordReset">Forgot Password?</a>

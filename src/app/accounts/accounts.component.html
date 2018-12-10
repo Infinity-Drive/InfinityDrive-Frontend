@@ -1,6 +1,6 @@
 <div class="bodyCard">
 
-  <div class="name"><h3 >Name</h3></div>
+  <div class="name"><h3 >{{name}}</h3></div>
   <div class="actions">
     <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#accountsModal"></span>
   </div>
@@ -17,8 +17,8 @@
     <tbody>
     <tr *ngFor="let a of accounts; let i = index">
       <th scope="row">{{i}}</th>
-      <td><a routerLink="Storage">{{a.name}}</a></td>
-      <td class="d-none d-lg-block ">{{a.account}}</td>
+      <td><a [routerLink]="'Storage/'+a.token">{{a['accountType']}}</a></td>
+      <td class="d-none d-lg-block ">abbas@gmail.com</td>
       <td>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -39,13 +39,7 @@
             </button>
           </div>
           <div class="modal-body accounts">
-            <div class="account">
-              <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">Google Drive</h6>
-            </div>
-            <div class="account">
-              <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">Google Drive</h6>
-            </div>
-            <div class="account">
+            <div class="account" (click)="adddGoogleDrive()">
               <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">Google Drive</h6>
             </div>
           </div>

@@ -4,29 +4,29 @@
       <div class="card card-signin my-5">
         <div class="card-body">
           <h5 class="card-title text-center">Sign Up</h5>
-          <form class="form-signin">
+          <form class="form-signin" #registerForm="ngForm" (submit)="signUp($event,name.value,email.value,pass.value)">
 
             <div class="form-label-group">
-              <input type="email" id="name" class="form-control" placeholder="Full Name" required autofocus>
+              <input type="email" id="name" [(ngModel)]="uname" #name="ngModel" name="name" class="form-control" placeholder="Full Name" required autofocus>
               <label for="name">Full Name</label>
             </div>
 
             <div class="form-label-group">
-              <input type="text" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+              <input type="text" id="inputEmail" [(ngModel)]="uemail" name="email" #email="ngModel" class="form-control" placeholder="Email address" required autofocus>
               <label for="inputEmail">Email address</label>
             </div>
 
             <div class="form-label-group">
-              <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+              <input type="password" id="inputPassword" [(ngModel)]="upass" name="pass" #pass="ngModel" class="form-control" placeholder="Password" required>
               <label for="inputPassword">Password</label>
             </div>
 
             <div class="form-label-group">
-              <input type="password" id="confirmInputPassword" class="form-control" placeholder="Confirn Password" required>
+              <input type="password" id="confirmInputPassword" [(ngModel)]="ucpass" name="cpass" #cpass class="form-control" placeholder="Confirn Password" required>
               <label for="confirmInputPassword">Confirm Password</label>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" [disabled]="!registerForm.form.valid"  type="submit">Sign up</button>
             <a routerLink="">Sign In</a>
           </form>
         </div>
