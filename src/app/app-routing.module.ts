@@ -10,6 +10,8 @@ import { FilesComponent } from './files/files.component';
 
 import { AuthGuardService } from './services/auth-guard.service';
 
+// routes array for components
+
 const routes: Routes = [
   {path : '', component : LoginComponent, pathMatch : 'full'},
   {path : 'Signup', component : SignupComponent},

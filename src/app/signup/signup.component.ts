@@ -20,17 +20,19 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
   }
 
+  // user signUp function
   signUp = function(event, name, email, pass) {
     // overriding html form behaviour
     event.preventDefault();
-    // calling add method in  contact service
+    // calling add method in  user service
        this.user.registerUser(email, pass, name).subscribe((data) => {
+         // saving user data to local storage for later usage
          localStorage.setItem('infinityGuard', 'yes');
          localStorage.setItem('infinityToken', data.headers.get('x-auth'));
          localStorage.setItem('infinityEmail', data.body['email']);
          localStorage.setItem('infinityId', data.body['_id']);
          localStorage.setItem('infinityName', data.body['name']);
-      // navigate user to contact list
+      // navigate user to dashboard after signup
       this.route.navigate(['Dashboard']);
     });
   };
