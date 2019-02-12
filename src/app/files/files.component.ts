@@ -9,28 +9,27 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class FilesComponent implements OnInit {
 
-  files = [{name : 'file0' , type : 'rar'},
-    {name : 'file1' , type : 'zip'},
-    {name : 'file2' , type : 'png'},
-    {name : 'file3' , type : 'exe'},
-    {name : 'file4' , type : 'folder'},
-    {name : 'file5' , type : 'rar'},
-    {name : 'file6' , type : 'rar'},
-    {name : 'file7' , type : 'rar'},
-    {name : 'file8' , type : 'rar'},
-    {name : 'file9' , type : 'rar'}]
+  files;
+  accountId;
   constructor(private account: AccountService, private activeRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.activeRoute.params.subscribe( (params) => {
-      //this.getfiles(params.id);
+      this.accountId = params.id;
+      this.getfiles(params.id);
     } );
   }
 
-  getfiles(token) {
-          this.account.getFiles(token).subscribe((data) => {
-            console.log(data);
+  getfiles(id) {
+          this.account.getFiles(id).subscribe((data) => {
+            console.log(data)
+            this.files = data ;
           });
   }
 
+  getDownloadLink(Fileid) {
+    this.account.getDownloadUrl(this.accountId, Fileid).subscribe((url: string) => {
+      window.open(url['downloadUrl'], '_blank');
+    });
+  }
 }

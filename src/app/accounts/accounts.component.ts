@@ -16,7 +16,7 @@ export class AccountsComponent implements OnInit {
 
   // variable for user name
   name = '';
-  constructor(private account: AccountService, private activateRoute: ActivatedRoute) { }
+  constructor(private router: Router, private account: AccountService, private activateRoute: ActivatedRoute) { }
 
   ngOnInit() {
     // when this page is redirected from google authentication page fetching token code
@@ -26,6 +26,7 @@ export class AccountsComponent implements OnInit {
           // calling account service method to send this code to server
           this.account.saveGdriveToken(params['code']).subscribe((data) => {
           // updating account list
+            this.router.navigateByUrl('Dashboard');
           this.getAccountList();
           });
       }

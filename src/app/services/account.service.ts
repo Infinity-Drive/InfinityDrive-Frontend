@@ -33,17 +33,27 @@ export class AccountService {
       })
     };
     // returning promise with user account array
-    return this.http.get('http://localhost:3000/user/accounts', httpOptions);
+    return this.http.get('http://localhost:3000/users/getAccounts', httpOptions);
   }
   // getting files for a user account
-  getFiles(token) {
+  getFiles(id) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.post('http://localhost:3000/gdrive/listFiles', {'token': token}, httpOptions);
+    return this.http.get(`http://localhost:3000/gdrive/listFiles/${id}`, httpOptions);
+  }
+
+  getDownloadUrl(accountId, fileId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    return this.http.get(`http://localhost:3000/gdrive/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
   }
 

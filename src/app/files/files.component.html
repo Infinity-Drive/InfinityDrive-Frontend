@@ -13,24 +13,24 @@
     <tr>
       <!--<th scope="col">#</th>-->
       <th scope="col" class="border-fix">Name</th>
-      <th scope="col" class="d-none d-lg-block border-fix">Account</th>
+      <th scope="col" class="d-none d-lg-block border-fix">Type</th>
       <th scope="col" class="border-fix">Action</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let f of files; let i = index">
 
-      <div *ngIf="f.type=='folder'; then folder ; else file">
+      <div *ngIf="f.mimeType=='application/vnd.google-apps.folder'; then folder ; else file">
       </div>
 
       <ng-template #folder>
           <td><span class="oi" data-glyph="folder"></span>    {{f.name}}</td>
         </ng-template >
         <ng-template #file>
-          <td><span class="oi" data-glyph="file"></span>    {{f.name}}</td>
+          <td (click)="getDownloadLink(f.id)"><span class="oi" data-glyph="file"></span>    {{f.name}}</td>
         </ng-template>
 
-      <td class="d-none d-lg-block">{{f.type}}</td>
+      <td class="d-none d-lg-block">{{f.mimeType}}</td>
       <td>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
