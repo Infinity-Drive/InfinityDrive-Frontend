@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class AccountService {
 
   constructor(private http: HttpClient) { }
 
-  accounts: any;
+  private accounts = new BehaviorSubject<any>([]);
+  accountsObservable = this.accounts.asObservable();
 
   // method for getting drive link for google authentication
   getAuthLink(type) {
@@ -37,7 +39,9 @@ export class AccountService {
       })
     };
     // returning promise with user account array
-     return this.http.get('http://localhost:3000/users/getAccounts', httpOptions);
+     this.http.get('http://localhost:3000/users/getAccounts', httpOptions).subscribe((data: any) => {
+       this.accounts.next(data);
+     });
 
   }
   // getting files for a user account
@@ -60,5 +64,17 @@ export class AccountService {
     };
     return this.http.get(`http://localhost:3000/gdrive/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
+
+  deleteAccount(id) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    return this.http.delete(`http://localhost:3000/users/remove/${id}`, httpOptions);
+  }
+
+
   }
 

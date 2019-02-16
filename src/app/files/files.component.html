@@ -22,8 +22,8 @@
     <tbody>
       <tr *ngFor="let f of files; let i = index">
 
-        <div *ngIf="f.mimeType=='folder'; then folder ; else file">
-        </div>
+      <div *ngIf="f.mimeType=='folder'; then folder ; else file">
+      </div>
 
         <ng-template #folder>
           <td><a href="#"><span class="oi" data-glyph="folder"></span> {{f.name}}</a></td>
