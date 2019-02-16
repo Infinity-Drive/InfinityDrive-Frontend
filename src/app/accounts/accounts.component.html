@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let a of accounts; let i = index">
-      <th scope="row">{{i}}</th>
+      <th scope="row">{{i+1}}</th>
       <td><a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a></td>
       <td class="d-none d-lg-block ">{{a['email']}}</td>
       <td>

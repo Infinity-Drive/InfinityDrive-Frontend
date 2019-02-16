@@ -36,10 +36,10 @@ export class AccountsComponent implements OnInit {
     this.name = localStorage.getItem('infinityName');
     // setting user account array
 
-      this.account.getAccounts().subscribe((data: any) => {
-        this.account.accounts = data;
-        this.accounts = data;
-      });
+    this.account.getAccounts().subscribe((data: any) => {
+      this.account.accounts = data;
+      this.accounts = data;
+    });
   }
 
   // method for adding client drive
