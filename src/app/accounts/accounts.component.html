@@ -16,14 +16,14 @@
     </thead>
     <tbody>
     <tr *ngFor="let a of accounts; let i = index">
-      <th scope="row">{{i}}</th>
+      <th scope="row">{{i+1}}</th>
       <td><a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a></td>
       <td class="d-none d-lg-block ">{{a['email']}}</td>
       <td>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Edit</a>
-          <a class="dropdown-item" href="#">Unlink</a>
+          <a class="dropdown-item" >Edit</a>
+          <a class="dropdown-item" (click)="removeAccount(a['_id'])">Unlink</a>
         </div>
       </td>
     </tr>
@@ -44,6 +44,9 @@
             </div>
             <div class="account" (click)="addDrive('dropbox')">
               <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">Drop Box</h6>
+            </div>
+            <div class="account" (click)="addDrive('odrive')">
+              <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">One Drive</h6>
             </div>
           </div>
           <!--<div class="modal-footer">-->

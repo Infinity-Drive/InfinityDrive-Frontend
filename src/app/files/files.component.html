@@ -20,7 +20,7 @@
     <tbody>
     <tr *ngFor="let f of files; let i = index">
 
-      <div *ngIf="f.mimeType=='application/vnd.google-apps.folder'; then folder ; else file">
+      <div *ngIf="f.mimeType=='folder'; then folder ; else file">
       </div>
 
       <ng-template #folder>

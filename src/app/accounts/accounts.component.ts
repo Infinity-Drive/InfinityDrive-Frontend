@@ -28,18 +28,21 @@ export class AccountsComponent implements OnInit {
         // calling account service method to send this code to server
         this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
           // updating account list
+          this.account.getAccounts();
           this.router.navigateByUrl('Dashboard');
         });
+      } else {
+        this.account.getAccounts();
+        this.router.navigateByUrl('Dashboard');
       }
     });
     // setting user name from local storage
     this.name = localStorage.getItem('infinityName');
     // setting user account array
 
-      this.account.getAccounts().subscribe((data: any) => {
-        this.account.accounts = data;
-        this.accounts = data;
-      });
+
+      this.account.accountsObservable.subscribe(data => this.accounts = data);
+
   }
 
   // method for adding client drive
@@ -49,6 +52,13 @@ export class AccountsComponent implements OnInit {
     this.account.getAuthLink(type).subscribe((data) => {
       // opening a window for drive link for authentication
       window.open(data['url'], '_self');
+    });
+  }
+
+  // method for removing an account
+  removeAccount(id) {
+    this.account.deleteAccount(id).subscribe((data) => {
+      this.account.getAccounts();
     });
   }
 
