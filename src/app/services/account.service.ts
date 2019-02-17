@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class AccountService {
 
-  constructor(private http: HttpClient) { }
-
   private accounts = new BehaviorSubject<any>([]);
   accountsObservable = this.accounts.asObservable();
+
+  constructor(private http: HttpClient) {
+  }
 
   // method for getting drive link for google authentication
   getAuthLink(type) {
@@ -21,7 +22,7 @@ export class AccountService {
     // setting header for the request
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
+        'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
@@ -34,47 +35,62 @@ export class AccountService {
     // setting header for the request
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
+        'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
     // returning promise with user account array
-     this.http.get('http://localhost:3000/users/getAccounts', httpOptions).subscribe((data: any) => {
-       this.accounts.next(data);
-     });
+    this.http.get('http://localhost:3000/users/getAccounts', httpOptions).subscribe((data: any) => {
+      this.accounts.next(data);
+    }, (err: any) => {
+      this.accounts.next([]);
+    });
 
   }
+
   // getting files for a user account
   getFiles(id, type) {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
+        'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
     return this.http.get(`http://localhost:3000/${type}/listFiles/${id}`, httpOptions);
   }
 
-  getDownloadUrl(accountId, fileId) {
+  getDownloadUrl(accountId, fileId, type) {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
+        'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.get(`http://localhost:3000/gdrive/downloadUrl/${accountId}/${fileId}`, httpOptions);
+    return this.http.get(`http://localhost:3000/${type}/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
 
   deleteAccount(id) {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
+        'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
     return this.http.delete(`http://localhost:3000/users/remove/${id}`, httpOptions);
   }
 
-
+  deleteFile(accountId, fileId, type) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'text' as 'text'
+    }
+    return this.http.delete(`http://localhost:3000/${type}/delete/${accountId}/${fileId}`, httpOptions);
   }
+}
+
+
+
 
