@@ -56,7 +56,7 @@ export class FilesComponent implements OnInit {
   uploadFile() {
     const currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
     this.account.uploadFile(this.accountId, currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
-      console.log('file Uploaded');
+      this.getfiles(this.accountId);
     });
   }
 }
