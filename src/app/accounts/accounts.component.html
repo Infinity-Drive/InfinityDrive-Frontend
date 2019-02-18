@@ -32,19 +32,21 @@
           <th>{{i+1}}</th>
 
           <td>
-            <a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a>
+            <a routerLink="Storage/{{a['_id']}}">{{a['account']}}</a>
           </td>
 
           <td>{{a['email']}}</td>
 
           <td class="d-none d-md-block">
             <div class="progress" style="height: 20px;">
-              <div class="progress-bar" role="progressbar" style="width: 55%;">8.25/15 GB</div>
+              <div class="progress-bar" role="progressbar" [ngStyle]="{'width': getStoragePercent(a.storage.total, a.storage.used), 'color': 'black'}">
+                {{ getStorageInGb(a.storage.total, a.storage.used) }}
+              </div>
             </div>
           </td>
 
           <td class="d-md-none">
-            8.25/15 GB
+            {{ getStorageInGb(a.storage.total, a.storage.used) }}
           </td>
 
           <td>
@@ -79,7 +81,7 @@
           <td>
             <ul>
               <li *ngFor="let a of getMergedAccounts();">
-                <a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a>
+                <a routerLink="Storage/{{a['_id']}}">{{a['account']}}</a>
               </li>
             </ul>
           </td>
@@ -179,9 +181,9 @@
                 </td>
 
                 <td>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 55%;">8.25/15 GB</div>
-                  </div>
+                    <div class="progress-bar" role="progressbar" [ngStyle]="{'width': getStoragePercent(a.storage.total, a.storage.used), 'color': 'black'}">
+                        {{ getStorageInGb(a.storage.total, a.storage.used) }}
+                    </div>
                 </td>
 
               </tr>

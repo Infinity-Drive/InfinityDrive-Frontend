@@ -95,5 +95,13 @@ export class AccountsComponent implements OnInit {
     });
   }
 
+  getStorageInGb(total, used){
+    return (Number(used)/1e+9).toFixed(2) + 'GB / ' + (Number(total)/1e+9).toFixed(2) + 'GB';
+  }
+
+  getStoragePercent(total, used){
+    return ((Number(used)/1e+9)/(Number(total)/1e+9) * 100).toFixed(2) + '%';
+  }
+
 }
 
