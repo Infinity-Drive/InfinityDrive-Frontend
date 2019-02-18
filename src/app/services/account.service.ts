@@ -99,7 +99,20 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     }
-    return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, { accountIds, status }, httpOptions);
+    return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, {accountIds, status}, httpOptions);
+  }
+
+
+  uploadFile(accountid, type, file) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'text' as 'text'
+    };
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post(`http://localhost:3000/${type}/upload/${accountid}`, formData , httpOptions);
   }
 }
 

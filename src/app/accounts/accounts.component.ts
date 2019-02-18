@@ -51,8 +51,8 @@ export class AccountsComponent implements OnInit {
     return this.accounts.filter(account => account.merged);
   }
 
-  updateMergedAccounts(accountId, values){
-    if(values.currentTarget.checked)
+  updateMergedAccounts(accountId, values) {
+    if (values.currentTarget.checked)
       this.accountsToMerge.push(accountId);
     else
       this.accountsToMerge = this.accountsToMerge.filter(id => id !== accountId)
@@ -75,15 +75,13 @@ export class AccountsComponent implements OnInit {
     });
   }
 
-  mergeAccounts(){
+  mergeAccounts() {
     if (this.accountsToMerge.length >= 2){
       this.account.changeMergeStatus(this.accountsToMerge, true).subscribe((data) => {
         this.account.getAccounts();
         this.accountsToMerge = [];
       });
-    }
-
-    else
+    } else
       return alert('Select two or more account to merge!');
     
   }

@@ -4,48 +4,68 @@
     <h3>Name</h3>
   </div>
   <div class="actions">
-    <span class="oi" data-glyph="data-transfer-upload"></span>
+    <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
     <span class="oi d-none d-lg-inline" data-glyph="list"></span>
     <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span>
   </div>
 
-  
 
   <table class="table table-hover">
     <thead>
-      <tr>
-        <th scope="col" class="border-fix">Name</th>
-        <th scope="col" class="d-none d-lg-block border-fix">Type</th>
-        <th scope="col" class="border-fix">Size</th>
-        <th scope="col" class="border-fix d-none d-md-block">Modified</th>
-        <th scope="col" class="border-fix">Action</th>
-      </tr>
+    <tr>
+      <th scope="col" class="border-fix">Name</th>
+      <th scope="col" class="d-none d-lg-block border-fix">Type</th>
+      <th scope="col" class="border-fix">Size</th>
+      <th scope="col" class="border-fix d-none d-md-block">Modified</th>
+      <th scope="col" class="border-fix">Action</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let f of files; let i = index">
+    <tr *ngFor="let f of files; let i = index">
 
-        <div *ngIf="f.mimeType=='folder'; then folder ; else file">
-        </div>
+      <div *ngIf="f.mimeType=='folder'; then folder ; else file">
+      </div>
 
-        <ng-template #folder>
-          <td class="td-word-wrap"><a href="#"><span class="oi" data-glyph="folder"></span> {{f.name}}</a></td>
-        </ng-template>
-        <ng-template #file>
-          <td (click)="getDownloadLink(f.id)" class="td-word-wrap"><span class="oi" data-glyph="file"></span>{{f.name}}</td>
-        </ng-template>
-
-        <td class="d-none d-lg-block">{{f.mimeType}}</td>
-        <td scope="col" class="border-fix">{{(f.size/1e+6).toFixed(2)}} MB</td>
-        <td scope="col" class="border-fix d-none d-md-block">22<sup>nd</sup> December, 18</td>
-        <td>
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false"></a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" (click)="deleteFile(f.id)">Delete</a>
-            <a class="dropdown-item">Share</a>
-          </div>
+      <ng-template #folder>
+        <td class="td-word-wrap"><a href="#"><span class="oi" data-glyph="folder"></span> {{f.name}}</a></td>
+      </ng-template>
+      <ng-template #file>
+        <td (click)="getDownloadLink(f.id)" class="td-word-wrap"><span class="oi" data-glyph="file"></span>{{f.name}}
         </td>
-      </tr>
+      </ng-template>
+
+      <td class="d-none d-lg-block">{{f.mimeType}}</td>
+      <td scope="col" class="border-fix">{{(f.size/1e+6).toFixed(2)}} MB</td>
+      <td scope="col" class="border-fix d-none d-md-block">22<sup>nd</sup> December, 18</td>
+      <td>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false"></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" (click)="deleteFile(f.id)">Delete</a>
+          <a class="dropdown-item">Share</a>
+        </div>
+      </td>
+    </tr>
     </tbody>
   </table>
+
+
+  <div class="modal fade" id="uploadmodal" tabindex="-1" role="dialog" aria-labelledby="uploadmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="form-group" onsubmit="upl">
+            <label for="file">Choose File</label>
+            <input type="file"
+                   id="file"
+                   name="myfile"
+                   (change)="handleFileInput($event.target.files)">
+            <input type="button" value="Upload" (click)="uploadFile()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </div>

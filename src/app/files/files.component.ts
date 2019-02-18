@@ -13,6 +13,7 @@ export class FilesComponent implements OnInit {
   accountId;
   // user accounts array
   accounts = [];
+  fileToUpload: File = null;
 
   constructor(private account: AccountService, private activeRoute: ActivatedRoute) {
   }
@@ -45,6 +46,17 @@ export class FilesComponent implements OnInit {
     const currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
     this.account.deleteFile(this.accountId, Fileid, currentAccount['accountType']).subscribe((data) => {
           this.getfiles(this.accountId);
+    });
+  }
+
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
+
+  uploadFile() {
+    const currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
+    this.account.uploadFile(this.accountId, currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
+      console.log('file Uploaded');
     });
   }
 }
