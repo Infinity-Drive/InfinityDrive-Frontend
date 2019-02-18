@@ -1,61 +1,199 @@
-<div class="bodyCard">
+<div class="bodyCard p-3">
 
-  <div class="name"><h3 >{{name}}</h3></div>
-  <div class="actions">
-    <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#accountsModal"></span>
+  <div class="name">
+    <h3>Individual Accounts</h3>
   </div>
 
-  <table class="table table-hover">
-    <thead>
-    <tr>
-      <th scope="col" class="border-fix">#</th>
-      <th scope="col" class="border-fix">Name</th>
-      <th scope="col" class="d-none d-lg-block border-fix">Account</th>
-      <th scope="col" class="border-fix">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let a of accounts; let i = index">
-      <th scope="row">{{i+1}}</th>
-      <td><a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a></td>
-      <td class="d-none d-lg-block ">{{a['email']}}</td>
-      <td>
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" >Edit</a>
-          <a class="dropdown-item" (click)="removeAccount(a['_id'])">Unlink</a>
-        </div>
-      </td>
-    </tr>
-    </tbody>
+  <div class="actions">
+    <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal"></span>
+    <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal"></span>
+  </div>
 
-    <div class="modal fade" id="accountsModal" tabindex="-1" role="dialog" aria-labelledby="accountsModalTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
+  <div style="clear:both"></div>
+
+  <div style="height: auto; overflow: auto">
+
+    <table class="table table-hover">
+
+      <thead>
+        <tr>
+          <th class="border-fix">#</th>
+          <th class="border-fix">Account</th>
+          <th class="border-fix">Email</th>
+          <th class="border-fix">Used</th>
+          <th class="border-fix">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let a of getIndividualAccounts(); let i = index">
+
+          <th>{{i+1}}</th>
+
+          <td>
+            <a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a>
+          </td>
+
+          <td>{{a['email']}}</td>
+
+          <td class="d-none d-md-block">
+            <div class="progress" style="height: 20px;">
+              <div class="progress-bar" role="progressbar" style="width: 55%;">8.25/15 GB</div>
+            </div>
+          </td>
+
+          <td class="d-md-none">
+            8.25/15 GB
+          </td>
+
+          <td>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"></a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item">Edit</a>
+              <a class="dropdown-item" (click)="removeAccount(a['_id'])">Unlink</a>
+            </div>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+      <div class="name" *ngIf="getMergedAccounts().length != 0">
+        <h3>Merged Accounts</h3>
+      </div>
+
+      <thead *ngIf="getMergedAccounts().length != 0">
+        <tr>
+          <th scope="col" class="border-fix">#</th>
+          <th scope="col" class=" border-fix">Accounts</th>
+          <th scope="col" class="border-fix">Emails</th>
+          <th scope="col" class="border-fix">Used</th>
+          <th scope="col" class="border-fix">Action</th>
+        </tr>
+      </thead>
+
+      <tbody *ngIf="getMergedAccounts().length != 0">
+        <tr>
+          <th scope="row">1</th>
+          <td>
+            <ul>
+              <li *ngFor="let a of getMergedAccounts();">
+                <a routerLink="Storage/{{a['_id']}}">{{a['accountType']}}</a>
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li *ngFor="let a of getMergedAccounts();">
+                {{a.email}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <div class="progress" style="height: 20px;" data-tooltip="tooltip" data-html="true"
+              title="<b>Dropbox</b><br/>(mahad@gmail.com)<br/>Used: 15/15 GB <hr/> <b>OneDrive</b><br/>(mahad1@gmail.com)<br/>Used: 15/15 GB">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;">30/30 GB</div>
+            </div>
+          </td>
+
+          <td>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false"></a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Edit</a>
+              <a (click)="demergeAccounts()" class="dropdown-item" data-toggle="modal" href="#" data-target="#demerge-modal">Demerge</a>
+            </div>
+          </td>
+        </tr>
+
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div class="modal fade" id="accountsModal" tabindex="-1" role="dialog" aria-labelledby="accountsModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="accountsModalTitle">Select a service</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body accounts">
+          <div class="account" (click)="addDrive('gdrive')">
+            <img src="../../assets/images/gdrive.png" style="width:30px;height:auto;" class="mr-2">
+            <h6 style="display: inline">Google Drive</h6>
+          </div>
+          <div class="account" (click)="addDrive('odrive')">
+            <img src="../../assets/images/odrive.png" style=" width:40px;height:auto;" class="mr-3">
+            <h6 style="display: inline">OneDrive</h6>
+          </div>
+          <div class="account" (click)="addDrive('dropbox')">
+            <img src="../../assets/images/dropbox.png" style="width:40px;height:auto;" class="mr-3">
+            <h6 style="display: inline">Dropbox</h6>
+          </div>
+        </div>
+        <!--<div class="modal-footer">-->
+        <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+        <!--</div>-->
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="modal fade" id="mergeModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="accountsModalTitle">Select a service</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h5 class="modal-title">Accounts available to merge</h5>
+            <button type="button" class="close" data-dismiss="modal"></button>
           </div>
-          <div class="modal-body accounts">
-            <div class="account" (click)="addDrive('gdrive')">
-              <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">Google Drive</h6>
-            </div>
-            <div class="account" (click)="addDrive('dropbox')">
-              <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">Drop Box</h6>
-            </div>
-            <div class="account" (click)="addDrive('odrive')">
-              <img src="../../assets/images/google-drive-logo.png"><h6 style="display: inline">One Drive</h6>
-            </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+
+              <thead>
+                <th scope="col" class="border-fix">Select</th>
+                <th scope="col" class="d-none d-lg-block border-fix">Account</th>
+                <th scope="col" class="border-fix">Email</th>
+                <th scope="col" class="border-fix">Used</th>
+              </thead>
+
+              <tr *ngFor="let a of getIndividualAccounts()">
+
+                <td scope="row">
+                  <input type="checkbox" (change)="updateMergedAccounts(a['_id'], $event)">
+                </td>
+
+                <td class="d-none d-lg-block">
+                  {{a.accountType}}
+                </td>
+
+                <td>
+                  {{a.email}}
+                </td>
+
+                <td>
+                  <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: 55%;">8.25/15 GB</div>
+                  </div>
+                </td>
+
+              </tr>
+            </table>
           </div>
-          <!--<div class="modal-footer">-->
-            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-            <!--<button type="button" class="btn btn-primary">Save changes</button>-->
-          <!--</div>-->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)=mergeAccounts()>Merge</button>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-  </table>
 </div>

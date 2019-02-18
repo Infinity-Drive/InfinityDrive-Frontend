@@ -89,6 +89,17 @@ export class AccountService {
     }
     return this.http.delete(`http://localhost:3000/${type}/delete/${accountId}/${fileId}`, httpOptions);
   }
+
+  changeMergeStatus(accountIds, status) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'text' as 'text'
+    }
+    return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, { accountIds, status }, httpOptions);
+  }
 }
 
 

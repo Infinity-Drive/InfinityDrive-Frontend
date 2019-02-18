@@ -10,11 +10,9 @@ export class AccountsComponent implements OnInit {
 
   // user accounts array
   accounts = [];
-  // accounts = [{name : 'One Drive' , account : 'abbasnazar.970@gmail.com'},
-  //   {name : 'Out Look' , account : 'abbasnazar.970@outlook.com'},
-  //   {name : 'Drop Box' , account : 'abbasnazar.970@gmail.com'}];
 
-  // variable for user name
+  accountsToMerge = [];
+
   name = '';
 
   constructor(private router: Router, private account: AccountService, private activateRoute: ActivatedRoute) {
@@ -45,6 +43,21 @@ export class AccountsComponent implements OnInit {
 
   }
 
+  getIndividualAccounts() {
+    return this.accounts.filter(account => !account.merged);
+  }
+
+  getMergedAccounts() {
+    return this.accounts.filter(account => account.merged);
+  }
+
+  updateMergedAccounts(accountId, values){
+    if(values.currentTarget.checked)
+      this.accountsToMerge.push(accountId);
+    else
+      this.accountsToMerge = this.accountsToMerge.filter(id => id !== accountId)
+  }
+
   // method for adding client drive
   addDrive(type) {
     localStorage.setItem('AddingAccountType', type);
@@ -62,7 +75,25 @@ export class AccountsComponent implements OnInit {
     });
   }
 
+  mergeAccounts(){
+    if (this.accountsToMerge.length >= 2){
+      this.account.changeMergeStatus(this.accountsToMerge, true).subscribe((data) => {
+        this.account.getAccounts();
+        this.accountsToMerge = [];
+      });
+    }
 
+    else
+      return alert('Select two or more account to merge!');
+    
+  }
+
+  demergeAccounts(){
+    this.account.changeMergeStatus(this.getMergedAccounts(), false).subscribe((data) => {
+      this.account.getAccounts();
+      this.accountsToMerge = [];
+    });
+  }
 
 }
 

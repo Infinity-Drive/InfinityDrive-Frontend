@@ -107,3 +107,10 @@ body {
   color: #777;
 }
 
+/* .table{
+  table-layout:fixed;
+} */
+
+.td-word-wrap{
+  word-wrap:break-word
+}
