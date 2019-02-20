@@ -11,6 +11,7 @@ export class FilesComponent implements OnInit {
 
   files;
   accountId;
+  currentAccount;
   // user accounts array
   accounts = [];
   fileToUpload: File = null;
@@ -22,30 +23,28 @@ export class FilesComponent implements OnInit {
     this.activeRoute.params.subscribe((params) => {
       this.accountId = params.id;
       this.account.accountsObservable.subscribe(data => this.accounts = data);
+      this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
       this.getfiles(params.id);
     });
   }
 
   getfiles(id) {
-    const currentAccount = this.accounts.find(account => account['_id'] === id);
-    this.account.getFiles(id, currentAccount['accountType']).subscribe((data) => {
-      
-      this.files = this.standarizeFileData(data, currentAccount['accountType']);
+    this.account.getFiles(id, this.currentAccount['accountType']).subscribe((data) => {
+      console.log(data);
+      this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
       // console.log(this.files);
     });
   }
 
 
   getDownloadLink(Fileid) {
-    const currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-    this.account.getDownloadUrl(this.accountId, Fileid, currentAccount['accountType']).subscribe((url: string) => {
+    this.account.getDownloadUrl(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
     });
   }
 
   deleteFile(Fileid) {
-    const currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-    this.account.deleteFile(this.accountId, Fileid, currentAccount['accountType']).subscribe((data) => {
+    this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
       this.getfiles(this.accountId);
     });
   }
@@ -55,10 +54,16 @@ export class FilesComponent implements OnInit {
   }
 
   uploadFile() {
-    const currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-    this.account.uploadFile(this.accountId, currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
+    this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
       this.getfiles(this.accountId);
     });
+  }
+
+  getSizeInMb(size){
+    if (isNaN(size))
+      return '-';
+    else
+      return (Number(size)/Math.pow(1024,2)).toFixed(2) + ' MB';
   }
 
   standarizeFileData = (items, accountType) => {
@@ -100,11 +105,10 @@ export class FilesComponent implements OnInit {
           item['mimeType'] = item.name.split('.')[1];
         //dont need to send back file object since we're sending the mime type
 
-        standarizedItems.push({ id: item.id, name: item.name, mimeType: item['mimeType'] });
+        standarizedItems.push({ id: item.id, name: item.name, mimeType: item['mimeType'], size: item.size });
       });
 
     }
-
     return standarizedItems;
   }
 

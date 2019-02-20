@@ -91,7 +91,7 @@ export class AccountsComponent implements OnInit {
   }
 
   getSizeInGb(size){
-    return (Number(size)/1e+9).toFixed(2);
+    return (size/Math.pow(1024,3)).toFixed(2);
   }
 
   getMergedAccountsStorage(){
@@ -103,12 +103,7 @@ export class AccountsComponent implements OnInit {
       used += Number(account.storage.used);
     });
 
-    return {used: (used/1e+9).toFixed(2), total: (total/1e+9).toFixed(2)};
+    return {used: (used/Math.pow(1024,3)).toFixed(2), total: (total/Math.pow(1024,3)).toFixed(2)};
   }
-
-  getStoragePercent(total, used){
-    return ((Number(used)/1e+9)/(Number(total)/1e+9) * 100).toFixed(2) + '%';
-  }
-
 }
 

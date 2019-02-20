@@ -1,7 +1,7 @@
-<div class="bodyCard">
+<div class="bodyCard p-5">
 
   <div class="name">
-    <h3>Name</h3>
+    <h3>{{currentAccount.account}} - {{currentAccount.email}}</h3>
   </div>
   <div class="actions">
     <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
@@ -35,7 +35,7 @@
       </ng-template>
 
       <td class="d-none d-lg-block">{{f.mimeType}}</td>
-      <td scope="col" class="border-fix">{{(f.size/1e+6).toFixed(2)}} MB</td>
+      <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
       <td scope="col" class="border-fix d-none d-md-block">22<sup>nd</sup> December, 18</td>
       <td>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
