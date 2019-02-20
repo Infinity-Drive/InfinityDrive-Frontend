@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('infinityId', data.body['_id']);
         // saving user name to localstorage for later usage
         localStorage.setItem('infinityName', data.body['name']);
+        // localStorage.setItem('infinityUsername', data.body['name']);
         // navgating user to dashboard after successful login
         this.router.navigateByUrl('Dashboard');
       } else {

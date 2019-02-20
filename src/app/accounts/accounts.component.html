@@ -1,12 +1,14 @@
-<div class="bodyCard p-3">
+<div class="bodyCard p-5">
 
   <div class="name">
     <h3>Individual Accounts</h3>
   </div>
 
   <div class="actions">
-    <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal"></span>
-    <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal"></span>
+      <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal" data-tooltip="tooltip"
+      title="Merge Accounts"></span>
+      <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
+      title="Link Account"></span>
   </div>
 
   <div style="clear:both"></div>
@@ -39,19 +41,19 @@
 
           <td class="d-none d-md-block">
             <div class="progress" style="height: 20px;">
-              <div class="progress-bar" role="progressbar" [ngStyle]="{'width': getStoragePercent(a.storage.total, a.storage.used), 'color': 'black'}">
-                {{ getStorageInGb(a.storage.total, a.storage.used) }}
+              <div class="progress-bar" role="progressbar" [ngStyle]="{'width': getSizeInGb(a.storage.used)/getSizeInGb(a.storage.total)*100+'%', 'color': 'black'}">
+                {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
               </div>
             </div>
           </td>
 
           <td class="d-md-none">
-            {{ getStorageInGb(a.storage.total, a.storage.used) }}
+            {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
           </td>
 
-          <td>
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"></a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <td ngbDropdown placement="bottom-left">
+            <a class="nav-link dropdown-toggle" role="button" ngbDropdownToggle></a>
+            <div class="dropdown-menu" ngbDropdownMenu>
               <a class="dropdown-item">Edit</a>
               <a class="dropdown-item" (click)="removeAccount(a['_id'])">Unlink</a>
             </div>
@@ -95,7 +97,11 @@
           <td>
             <div class="progress" style="height: 20px;" data-tooltip="tooltip" data-html="true"
               title="<b>Dropbox</b><br/>(mahad@gmail.com)<br/>Used: 15/15 GB <hr/> <b>OneDrive</b><br/>(mahad1@gmail.com)<br/>Used: 15/15 GB">
-              <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;">30/30 GB</div>
+              
+              <div class="progress-bar" role="progressbar" 
+              [ngStyle]="{'width': getMergedAccountsStorage().used/getMergedAccountsStorage().total*100+'%', 'color': 'black'}">
+                {{ getMergedAccountsStorage().used + 'GB / ' + getMergedAccountsStorage().total + 'GB' }}
+              </div>
             </div>
           </td>
 
@@ -173,7 +179,7 @@
                 </td>
 
                 <td class="d-none d-lg-block">
-                  {{a.accountType}}
+                  {{a.account}}
                 </td>
 
                 <td>
@@ -181,8 +187,11 @@
                 </td>
 
                 <td>
-                    <div class="progress-bar" role="progressbar" [ngStyle]="{'width': getStoragePercent(a.storage.total, a.storage.used), 'color': 'black'}">
-                        {{ getStorageInGb(a.storage.total, a.storage.used) }}
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar" role="progressbar" 
+                      [ngStyle]="{'width': getSizeInGb(a.storage.used)/getSizeInGb(a.storage.total)*100+'%', 'color': 'black'}">
+                        {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
+                      </div>
                     </div>
                 </td>
 

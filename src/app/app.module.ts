@@ -32,7 +32,7 @@ import { AuthGuardService } from './services/auth-guard.service';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

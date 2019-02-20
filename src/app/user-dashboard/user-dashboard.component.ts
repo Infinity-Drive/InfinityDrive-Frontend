@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-dashboard.component.css']
 })
 export class UserDashboardComponent implements OnInit {
-
+  userName: string;
   constructor(private route: Router) { }
 
   ngOnInit() {
+    this.userName = localStorage.getItem('infinityName');
   }
 
   logout() {

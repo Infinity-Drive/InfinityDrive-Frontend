@@ -34,12 +34,9 @@ export class AccountsComponent implements OnInit {
         this.router.navigateByUrl('Dashboard');
       }
     });
-    // setting user name from local storage
-    this.name = localStorage.getItem('infinityName');
     // setting user account array
 
-
-      this.account.accountsObservable.subscribe(data => this.accounts = data);
+    this.account.accountsObservable.subscribe(data => this.accounts = data);
 
   }
 
@@ -93,8 +90,20 @@ export class AccountsComponent implements OnInit {
     });
   }
 
-  getStorageInGb(total, used){
-    return (Number(used)/1e+9).toFixed(2) + 'GB / ' + (Number(total)/1e+9).toFixed(2) + 'GB';
+  getSizeInGb(size){
+    return (Number(size)/1e+9).toFixed(2);
+  }
+
+  getMergedAccountsStorage(){
+    
+    var total = 0;
+    var used = 0;
+    this.getMergedAccounts().forEach(account => {
+      total += Number(account.storage.total);
+      used += Number(account.storage.used);
+    });
+
+    return {used: (used/1e+9).toFixed(2), total: (total/1e+9).toFixed(2)};
   }
 
   getStoragePercent(total, used){
