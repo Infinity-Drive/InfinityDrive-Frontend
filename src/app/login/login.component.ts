@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router} from '@angular/router';
 import { UserService } from '../services/user.service';
+import {HttpErrorResponse} from '@angular/common/http';
+
 
 
 @Component({
@@ -46,8 +48,15 @@ export class LoginComponent implements OnInit {
         alert('Wrong Credentials');
       }
 
-    }, (err) => {
-      alert('Wrong Credentials');
+    }, (err: HttpErrorResponse) => {
+      if (err.status === 401) {
+        alert('Invalid Email or Password');
+      } else {
+        console.log(err);
+        console.log(err.name);
+        console.log(err.message);
+        console.log(err.status);
+      }
     });
   }
 

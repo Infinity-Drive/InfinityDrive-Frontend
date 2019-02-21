@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
 @Component({
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
@@ -33,9 +34,15 @@ export class AccountsComponent implements OnInit {
         this.account.getAccounts();
         this.router.navigateByUrl('Dashboard');
       }
+    }, (err: HttpErrorResponse) => {
+        alert('Unable to add account');
+        console.log(err);
+        console.log(err.name);
+        console.log(err.message);
+        console.log(err.status);
     });
-    // setting user account array
 
+    // setting user account array
     this.account.accountsObservable.subscribe(data => this.accounts = data);
 
   }
@@ -62,6 +69,12 @@ export class AccountsComponent implements OnInit {
     this.account.getAuthLink(type).subscribe((data) => {
       // opening a window for drive link for authentication
       window.open(data['url'], '_self');
+    }, (err: HttpErrorResponse) => {
+      alert('Shame on us : Server Not responding');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
@@ -69,6 +82,12 @@ export class AccountsComponent implements OnInit {
   removeAccount(id) {
     this.account.deleteAccount(id).subscribe((data) => {
       this.account.getAccounts();
+    }, (err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to unlink account');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
@@ -77,16 +96,28 @@ export class AccountsComponent implements OnInit {
       this.account.changeMergeStatus(this.accountsToMerge, true).subscribe((data) => {
         this.account.getAccounts();
         this.accountsToMerge = [];
+      } ,(err: HttpErrorResponse) => {
+        alert('Shame on us : Unable to merge accounts');
+        console.log(err);
+        console.log(err.name);
+        console.log(err.message);
+        console.log(err.status);
       });
     } else
       return alert('Select two or more account to merge!');
     
   }
 
-  demergeAccounts(){
+  demergeAccounts() {
     this.account.changeMergeStatus(this.getMergedAccounts(), false).subscribe((data) => {
       this.account.getAccounts();
       this.accountsToMerge = [];
+    }, (err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to demerge accounts');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 

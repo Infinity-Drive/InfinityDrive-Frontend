@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { ActivatedRoute } from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-files',
@@ -33,6 +34,12 @@ export class FilesComponent implements OnInit {
       console.log(data);
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
       // console.log(this.files);
+    } , (err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to getfiles');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
@@ -40,6 +47,12 @@ export class FilesComponent implements OnInit {
   getDownloadLink(Fileid) {
     this.account.getDownloadUrl(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
+    }, (err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to download file');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
@@ -48,12 +61,24 @@ export class FilesComponent implements OnInit {
       console.log(data);
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
       // console.log(this.files);
+    }, (err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to get folder items');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
   deleteFile(Fileid) {
     this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
       this.getfiles(this.accountId);
+    }, (err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to delete file');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
@@ -64,6 +89,12 @@ export class FilesComponent implements OnInit {
   uploadFile() {
     this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
       this.getfiles(this.accountId);
+    },(err: HttpErrorResponse) => {
+      alert('Shame on us : Unable to upload file');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 
