@@ -3,7 +3,6 @@ import {AccountService} from '../services/account.service';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import Swal from 'sweetalert2';
-import {__await} from 'tslib';
 
 @Component({
   selector: 'app-accounts',

@@ -9,8 +9,8 @@
     <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span>
   </div>
 
-
-  <table class="table table-hover">
+  <app-spinner *ngIf="loading"></app-spinner>
+  <table class="table table-hover" *ngIf="!loading">
     <thead>
     <tr>
       <th scope="col" class="border-fix">Name</th>

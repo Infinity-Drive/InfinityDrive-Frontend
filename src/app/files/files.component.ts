@@ -16,6 +16,7 @@ export class FilesComponent implements OnInit {
   // user accounts array
   accounts = [];
   fileToUpload: File = null;
+  loading = false;
 
   standarizeFileData = (items, accountType) => {
 
@@ -39,7 +40,7 @@ export class FilesComponent implements OnInit {
     if (accountType === 'odrive') {
 
       items.forEach(item => {
-        //item has a file property if its a file and a folder property if its a folder
+        // item has a file property if its a file and a folder property if its a folder
         item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
         item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
         standarizedItems.push(item);
@@ -83,14 +84,16 @@ export class FilesComponent implements OnInit {
       this.accounts = this.account.accounts;
 
       if (this.accounts.length === 0) {
+        this.loading = true;
         this.account.getAccounts().subscribe((data: any) => {
           this.accounts = data;
           this.account.accounts = data;
-
+          this.loading = false;
           this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
           this.getfiles(params.id);
 
         }, (err: any) => {
+          this.loading = false;
           this.accounts = [];
           this.account.accounts = [];
         });
@@ -103,12 +106,15 @@ export class FilesComponent implements OnInit {
   }
 
   getfiles(id) {
+    this.loading = true;
     this.account.getFiles(id, this.currentAccount['accountType']).subscribe((data) => {
       console.log(data);
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      this.loading = false;
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
       alert('Shame on us : Unable to getfiles');
+      this.loading = false;
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -129,12 +135,15 @@ export class FilesComponent implements OnInit {
   }
 
   getFolderItems(folderId) {
+      this.loading = true;
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
       console.log(data);
+      this.loading = false;
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
       alert('Shame on us : Unable to get folder items');
+      this.loading = false;
       console.log(err);
       console.log(err.name);
       console.log(err.message);
