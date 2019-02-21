@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
@@ -35,7 +36,7 @@ export class AccountsComponent implements OnInit {
         this.router.navigateByUrl('Dashboard');
       }
     }, (err: HttpErrorResponse) => {
-        alert('Unable to add account');
+      Swal.fire('Shame on us', 'Unable to add account', 'error');
         console.log(err);
         console.log(err.name);
         console.log(err.message);
@@ -70,7 +71,7 @@ export class AccountsComponent implements OnInit {
       // opening a window for drive link for authentication
       window.open(data['url'], '_self');
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Server Not responding');
+      Swal.fire('Shame on us', 'Server Not responding', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -83,7 +84,7 @@ export class AccountsComponent implements OnInit {
     this.account.deleteAccount(id).subscribe((data) => {
       this.account.getAccounts();
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to unlink account');
+      Swal.fire('Shame on us', 'Unable to unlink account', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -97,15 +98,15 @@ export class AccountsComponent implements OnInit {
         this.account.getAccounts();
         this.accountsToMerge = [];
       } ,(err: HttpErrorResponse) => {
-        alert('Shame on us : Unable to merge accounts');
+        Swal.fire('Shame on us', 'Unable to merge accounts', 'error');
         console.log(err);
         console.log(err.name);
         console.log(err.message);
         console.log(err.status);
       });
     } else
-      return alert('Select two or more account to merge!');
-    
+      return Swal.fire('Select two or more account to merge!');
+
   }
 
   demergeAccounts() {
@@ -113,7 +114,7 @@ export class AccountsComponent implements OnInit {
       this.account.getAccounts();
       this.accountsToMerge = [];
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to demerge accounts');
+      Swal.fire('Shame on us', 'Unable to demerge accounts', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -126,7 +127,7 @@ export class AccountsComponent implements OnInit {
   }
 
   getMergedAccountsStorage(){
-    
+
     var total = 0;
     var used = 0;
     this.getMergedAccounts().forEach(account => {

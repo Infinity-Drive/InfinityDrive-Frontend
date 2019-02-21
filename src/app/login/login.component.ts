@@ -3,6 +3,8 @@ import { Router} from '@angular/router';
 import { UserService } from '../services/user.service';
 import {HttpErrorResponse} from '@angular/common/http';
 
+import Swal from 'sweetalert2';
+
 
 
 @Component({
@@ -20,6 +22,9 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, private user: UserService) { }
 
   ngOnInit() {
+    if (localStorage.getItem('infinityGuard') === 'yes'){
+      this.router.navigateByUrl('Dashboard');
+    }
   }
 
   // login method
@@ -50,7 +55,7 @@ export class LoginComponent implements OnInit {
 
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
-        alert('Invalid Email or Password');
+        Swal.fire('User does not exist!', 'Invalid email or password', 'error');
       } else {
         console.log(err);
         console.log(err.name);

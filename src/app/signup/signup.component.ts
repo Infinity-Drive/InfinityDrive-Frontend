@@ -3,6 +3,8 @@ import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -19,6 +21,9 @@ export class SignupComponent implements OnInit {
   constructor(private user: UserService, private  route: Router) { }
 
   ngOnInit() {
+    if (localStorage.getItem('infinityGuard') === 'yes') {
+      this.route.navigateByUrl('Dashboard');
+    }
   }
 
   // user signUp function
@@ -34,12 +39,12 @@ export class SignupComponent implements OnInit {
          // localStorage.setItem('infinityId', data.body['_id']);
          // localStorage.setItem('infinityName', data.body['name']);
 
-         alert('Account created successfully');
+         Swal.fire('Congratulation!', 'Account created successfully', 'success');
          this.route.navigateByUrl('');
 
     }, (err: HttpErrorResponse) => {
          if (err.status === 400) {
-           alert('Account creation failed');
+           Swal.fire('Shame on us', 'Account creation failed', 'error');
          } else {
            console.log(err);
            console.log(err.name);
