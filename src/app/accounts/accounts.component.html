@@ -51,11 +51,12 @@
             {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
           </td>
 
-          <td ngbDropdown placement="bottom-left">
-            <a class="nav-link dropdown-toggle" role="button" ngbDropdownToggle></a>
-            <div class="dropdown-menu" ngbDropdownMenu>
-              <a class="dropdown-item">Edit</a>
-              <a class="dropdown-item" (click)="removeAccount(a['_id'])">Unlink</a>
+          <td>
+            <a class="nav-link dropdown-toggle" href="#" id="individualnavbarDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false"></a>
+            <div class="dropdown-menu" aria-labelledby="individualnavbarDropdown">
+              <a class="dropdown-item" href="#">Edit</a>
+              <a (click)="removeAccount(a['_id'])" class="dropdown-item">Unlink</a>
             </div>
           </td>
 
