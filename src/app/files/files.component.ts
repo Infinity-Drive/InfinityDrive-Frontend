@@ -3,6 +3,8 @@ import {AccountService} from '../services/account.service';
 import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-files',
   templateUrl: './files.component.html',
@@ -113,7 +115,7 @@ export class FilesComponent implements OnInit {
       this.loading = false;
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to getfiles');
+      Swal.fire('Shame on us', 'Unable to getfiles', 'error');
       this.loading = false;
       console.log(err);
       console.log(err.name);
@@ -126,7 +128,7 @@ export class FilesComponent implements OnInit {
     this.account.getDownloadUrl(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to download file');
+      Swal.fire('Shame on us', 'Unable to download file', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -142,7 +144,7 @@ export class FilesComponent implements OnInit {
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to get folder items');
+      Swal.fire('Shame on us', 'Unable to get files', 'error');
       this.loading = false;
       console.log(err);
       console.log(err.name);
@@ -155,7 +157,7 @@ export class FilesComponent implements OnInit {
     this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
       this.getfiles(this.accountId);
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to delete file');
+      Swal.fire('Shame on us', 'Unable to delete file', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -171,7 +173,7 @@ export class FilesComponent implements OnInit {
     this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
       this.getfiles(this.accountId);
     }, (err: HttpErrorResponse) => {
-      alert('Shame on us : Unable to upload file');
+      Swal.fire('Shame on us', 'Unable to upload file', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
