@@ -27,16 +27,24 @@
       </div>
 
       <ng-template #folder>
-        <td class="td-word-wrap"><a href="#"><span class="oi" data-glyph="folder"></span> {{f.name}}</a></td>
+        <td class="td-word-wrap" (click)="getFolderItems(f.id)">
+          <a href="javascript:;">
+            <span class="oi" data-glyph="folder"></span> 
+            {{f.name}}
+          </a>
+        </td>
       </ng-template>
+
       <ng-template #file>
-        <td (click)="getDownloadLink(f.id)" class="td-word-wrap"><span class="oi" data-glyph="file"></span>{{f.name}}
+        <td (click)="getDownloadLink(f.id)" class="td-word-wrap">
+          <span class="oi" data-glyph="file"></span>
+          {{f.name}}
         </td>
       </ng-template>
 
       <td class="d-none d-lg-block">{{f.mimeType}}</td>
       <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-      <td scope="col" class="border-fix d-none d-md-block">22<sup>nd</sup> December, 18</td>
+      <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime }}</td>
       <td>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false"></a>

@@ -43,6 +43,14 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  getFolderItems(folderId){
+    this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
+      console.log(data);
+      this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      // console.log(this.files);
+    });
+  }
+
   deleteFile(Fileid) {
     this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
       this.getfiles(this.accountId);
@@ -68,6 +76,8 @@ export class FilesComponent implements OnInit {
 
   standarizeFileData = (items, accountType) => {
 
+    console.log(items);
+
     var standarizedItems = [];
 
     if (accountType === 'gdrive') {
@@ -87,9 +97,8 @@ export class FilesComponent implements OnInit {
 
       items.forEach(item => {
         //item has a file property if its a file and a folder property if its a folder
-        item.file != undefined ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        //dont need to send back file object since we're sending the mime type
-        delete item.file;
+        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
         standarizedItems.push(item);
       });
 
@@ -98,17 +107,25 @@ export class FilesComponent implements OnInit {
     if (accountType === 'dropbox') {
 
       items.entries.forEach(item => {
-        //item has a file property if its a file and a folder property if its a folder
         if (item['.tag'] === 'folder')
           item['mimeType'] = 'folder'
         else
           item['mimeType'] = item.name.split('.')[1];
-        //dont need to send back file object since we're sending the mime type
 
-        standarizedItems.push({ id: item.id, name: item.name, mimeType: item['mimeType'], size: item.size });
+        if(!item['client_modified'])
+          item['client_modified'] = '-';
+          
+        standarizedItems.push({ 
+          id: item.id, 
+          name: item.name, 
+          mimeType: item['mimeType'], 
+          size: item.size,
+          modifiedTime: item['client_modified']
+        });
       });
 
     }
+    console.log(standarizedItems);
     return standarizedItems;
   }
 

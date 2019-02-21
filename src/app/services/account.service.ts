@@ -50,14 +50,21 @@ export class AccountService {
   }
 
   // getting files for a user account
-  getFiles(id, type) {
+  getFiles(id, type, folderId = undefined) {
+    
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.get(`http://localhost:3000/${type}/listFiles/${id}`, httpOptions);
+
+    var url = `http://localhost:3000/${type}/listFiles/${id}`
+    
+    if(folderId)
+      url += `/${folderId}`;
+
+    return this.http.get(url, httpOptions);
   }
 
   getDownloadUrl(accountId, fileId, type) {
