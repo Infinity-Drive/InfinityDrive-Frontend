@@ -5,8 +5,10 @@ import {BehaviorSubject} from 'rxjs';
 @Injectable()
 export class AccountService {
 
-  private accounts = new BehaviorSubject<any>([]);
-  accountsObservable = this.accounts.asObservable();
+  // private accounts = new BehaviorSubject<any>([]);
+  // accountsObservable = this.accounts.asObservable();
+
+  accounts = [];
 
   constructor(private http: HttpClient) {
   }
@@ -40,12 +42,7 @@ export class AccountService {
       })
     };
     // returning promise with user account array
-    this.http.get('http://localhost:3000/users/getAccounts', httpOptions).subscribe((data: any) => {
-      console.log(data);
-      this.accounts.next(data);
-    }, (err: any) => {
-      this.accounts.next([]);
-    });
+    return this.http.get('http://localhost:3000/users/getAccounts', httpOptions);
 
   }
 

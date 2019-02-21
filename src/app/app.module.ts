@@ -16,6 +16,7 @@ import { FilesComponent } from './files/files.component';
 import { UserService } from './services/user.service';
 import { AccountService } from './services/account.service';
 import { AuthGuardService } from './services/auth-guard.service';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { AuthGuardService } from './services/auth-guard.service';
     ForgotPasswordComponent,
     UserDashboardComponent,
     AccountsComponent,
-    FilesComponent
+    FilesComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

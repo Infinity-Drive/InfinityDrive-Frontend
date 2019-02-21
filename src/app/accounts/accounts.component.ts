@@ -3,6 +3,7 @@ import {AccountService} from '../services/account.service';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import Swal from 'sweetalert2';
+import {__await} from 'tslib';
 
 @Component({
   selector: 'app-accounts',
@@ -13,10 +14,9 @@ export class AccountsComponent implements OnInit {
 
   // user accounts array
   accounts = [];
-
   accountsToMerge = [];
-
   name = '';
+  loading = false;
 
   constructor(private router: Router, private account: AccountService, private activateRoute: ActivatedRoute) {
   }
@@ -44,13 +44,24 @@ export class AccountsComponent implements OnInit {
           console.log(err.status);
         });
       } else {
-        this.account.getAccounts();
-        this.router.navigateByUrl('Dashboard');
+        this.accounts = this.account.accounts;
+        if (this.accounts.length === 0) {
+          this.loading = true;
+          this.account.getAccounts().subscribe((data: any) => {
+            this.accounts = data;
+            this.account.accounts = data;
+            this.loading = false;
+          }, (err: any) => {
+            this.accounts = [];
+            this.account.accounts = [];
+          });
+        }
+        // this.router.navigateByUrl('Dashboard');
       }
     });
 
     // setting user account array
-    this.account.accountsObservable.subscribe(data => this.accounts = data);
+    // this.account.accountsObservable.subscribe(data => this.accounts = data);
 
   }
 
