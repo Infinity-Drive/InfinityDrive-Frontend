@@ -29,10 +29,15 @@ export class AccountsComponent implements OnInit {
         // calling account service method to send this code to server
         this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
           // updating account list
-          this.account.getAccounts();
+          // this.account.getAccounts();
           this.router.navigateByUrl('Dashboard');
         }, (err: HttpErrorResponse) => {
-          Swal.fire('Shame on us', 'Unable to add account', 'error');
+          if (err.error === 'Account already exists') {
+            Swal.fire('Account already exists', 'add a different account', 'error');
+          } else {
+            Swal.fire('Shame on us', 'Unable to add account', 'error');
+          }
+          this.router.navigateByUrl('Dashboard');
           console.log(err);
           console.log(err.name);
           console.log(err.message);
@@ -123,7 +128,7 @@ export class AccountsComponent implements OnInit {
 
   demergeAccounts() {
     this.account.changeMergeStatus(this.getMergedAccounts(), false).subscribe((data) => {
-      this.accounts.filter(value => value.merged = false)
+      this.accounts.filter(value => value.merged = false);
       this.accountsToMerge = [];
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to demerge accounts', 'error');
