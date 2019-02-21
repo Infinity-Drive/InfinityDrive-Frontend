@@ -114,3 +114,7 @@ body {
 .td-word-wrap{
   word-wrap:break-word
 }
+
+.point:hover{
+  cursor: pointer;
+}

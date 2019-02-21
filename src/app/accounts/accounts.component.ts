@@ -164,5 +164,9 @@ export class AccountsComponent implements OnInit {
 
     return {used: (used / Math.pow(1024, 3)).toFixed(2), total: (total / Math.pow(1024, 3)).toFixed(2)};
   }
+
+  accountNavigate(accountID) {
+    this.router.navigateByUrl(`Dashboard/Storage/${accountID}`);
+  }
 }
 

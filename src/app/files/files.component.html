@@ -36,7 +36,7 @@
       </ng-template>
 
       <ng-template #file>
-        <td (click)="getDownloadLink(f.id)" class="td-word-wrap">
+        <td (click)="getDownloadLink(f.id)" class="td-word-wrap point">
           <span class="oi" data-glyph="file"></span>
           {{f.name}}
         </td>
@@ -49,7 +49,7 @@
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false"></a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" (click)="deleteFile(f.id)">Delete</a>
+          <a class="dropdown-item point" (click)="deleteFile(f.id)">Delete</a>
           <a class="dropdown-item">Share</a>
         </div>
       </td>

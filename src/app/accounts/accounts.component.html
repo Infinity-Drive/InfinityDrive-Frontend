@@ -35,7 +35,7 @@
           <a routerLink="Storage/{{a['_id']}}">{{a['account']}}</a>
         </td>
 
-        <td>{{a['email']}}</td>
+        <td class="point" (click)="accountNavigate(a['_id'])">{{a['email']}}</td>
 
         <td class="d-none d-md-block">
           <div class="progress" style="height: 20px;">
