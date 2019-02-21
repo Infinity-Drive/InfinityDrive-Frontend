@@ -17,6 +17,7 @@ import { UserService } from './services/user.service';
 import { AccountService } from './services/account.service';
 import { AuthGuardService } from './services/auth-guard.service';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { MergedAccountComponent } from './merged-account/merged-account.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
     UserDashboardComponent,
     AccountsComponent,
     FilesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    MergedAccountComponent
   ],
   imports: [
     BrowserModule,

@@ -9,19 +9,23 @@ import { AccountsComponent } from './accounts/accounts.component';
 import { FilesComponent } from './files/files.component';
 
 import { AuthGuardService } from './services/auth-guard.service';
+import { MergedAccountComponent } from './merged-account/merged-account.component';
 
 // routes array for components
 
 const routes: Routes = [
-  {path : '', component : LoginComponent, pathMatch : 'full'},
-  {path : 'Signup', component : SignupComponent},
-  {path : 'PasswordReset', component : ForgotPasswordComponent},
-  {path : 'Dashboard', component : UserDashboardComponent , canActivate : [AuthGuardService]
-    , children :  [
-      {path : '' , component : AccountsComponent , pathMatch : 'full'},
-      { path : 'Storage/:id' , component : FilesComponent }
-                  ]
+  { path: '', component: LoginComponent, pathMatch: 'full' },
+  { path: 'Signup', component: SignupComponent },
+  { path: 'PasswordReset', component: ForgotPasswordComponent },
+  {
+    path: 'Dashboard', component: UserDashboardComponent, canActivate: [AuthGuardService]
+    , children: [
+      { path: '', component: AccountsComponent, pathMatch: 'full' },
+      { path: 'Storage/:id', component: FilesComponent },
+      { path: 'Merged', component: MergedAccountComponent }
+    ]
   },
+
 ];
 
 @NgModule({

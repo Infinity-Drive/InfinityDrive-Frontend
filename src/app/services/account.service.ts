@@ -64,6 +64,17 @@ export class AccountService {
     return this.http.get(url, httpOptions);
   }
 
+  getMergedAccountFiles(){
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    
+    return this.http.get('http://localhost:3000/mergedAccount/listFiles/', httpOptions);
+  }
+
   getDownloadUrl(accountId, fileId, type) {
     const httpOptions = {
       headers: new HttpHeaders({

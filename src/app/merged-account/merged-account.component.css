@@ -1,0 +1,26 @@
+.bodyCard
+{
+  background: white;
+  width: 80%;
+  margin: 5%;
+  margin-left: 10%;
+  margin-right: 10%;
+  border-radius: 10px;
+  padding: 10px;
+}
+.actions
+{
+  float: right;
+}
+.actions > span
+{
+  margin: 5px;
+  cursor: pointer;
+}
+.name
+{
+  float: left;
+}
+.border-fix{
+  border-bottom: none;
+}

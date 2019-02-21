@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {ActivatedRoute} from '@angular/router';
-import {HttpErrorResponse} from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import Swal from 'sweetalert2';
 
@@ -137,7 +137,7 @@ export class FilesComponent implements OnInit {
   }
 
   getFolderItems(folderId) {
-      this.loading = true;
+    this.loading = true;
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
       console.log(data);
       this.loading = false;

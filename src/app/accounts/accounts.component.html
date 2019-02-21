@@ -84,7 +84,7 @@
         <td>
           <ul>
             <li *ngFor="let a of getMergedAccounts();">
-              <a routerLink="Storage/{{a['_id']}}">{{a['account']}}</a>
+              <a routerLink="Merged">{{a['account']}}</a>
             </li>
           </ul>
         </td>
@@ -96,8 +96,7 @@
           </ul>
         </td>
         <td>
-          <div class="progress" style="height: 20px;" data-tooltip="tooltip" data-html="true"
-               title="<b>Dropbox</b><br/>(mahad@gmail.com)<br/>Used: 15/15 GB <hr/> <b>OneDrive</b><br/>(mahad1@gmail.com)<br/>Used: 15/15 GB">
+          <div class="progress" style="height: 20px;">
 
             <div class="progress-bar" role="progressbar"
                  [ngStyle]="{'width': getMergedAccountsStorage().used/getMergedAccountsStorage().total*100+'%', 'color': 'black'}">
