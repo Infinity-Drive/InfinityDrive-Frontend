@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-merged-account',
@@ -102,6 +105,18 @@ export class MergedAccountComponent implements OnInit {
       console.log(data);
       this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
       // console.log(this.files);
+    });
+  }
+
+  getDownloadLink(file) {
+    this.account.getDownloadUrl(file.accountId, file.id, file.accountType).subscribe((url: string) => {
+      window.open(url['downloadUrl'], '_blank');
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Shame on us', 'Unable to download file', 'error');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
     });
   }
 

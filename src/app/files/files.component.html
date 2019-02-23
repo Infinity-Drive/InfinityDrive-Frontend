@@ -1,61 +1,71 @@
 <div class="bodyCard p-5">
 
-  <div class="name">
-    <h3><a routerLink="/Dashboard">Dashboard</a> > {{currentAccount.account}} - {{currentAccount.email}}</h3>
+  <div class="table-responsive">
+
+    <div class="name">
+      <h3>
+        <a routerLink="/Dashboard">Dashboard</a> > {{currentAccount.account}} - {{currentAccount.email}}
+      </h3>
+    </div>
+
+    <div class="actions">
+      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
+      <span class="oi d-none d-lg-inline" data-glyph="list"></span>
+      <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span>
+    </div>
+
+    <div style="clear:both"></div>
+
+    <app-spinner *ngIf="loading"></app-spinner>
+
+    <table class="table table-hover" *ngIf="!loading">
+      <thead>
+        <tr>
+          <th scope="col" class="border-fix">Name</th>
+          <th scope="col" class="d-none d-lg-block border-fix">Type</th>
+          <th scope="col" class="border-fix">Size</th>
+          <th scope="col" class="border-fix d-none d-md-block">Modified</th>
+          <th scope="col" class="border-fix">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of files; let i = index">
+
+          <div *ngIf="f.mimeType=='folder'; then folder ; else file">
+          </div>
+
+          <ng-template #folder>
+            <td class="td-word-wrap" (click)="getFolderItems(f.id)">
+              <a href="javascript:;">
+                <span class="oi" data-glyph="folder"></span>
+                {{f.name}}
+              </a>
+            </td>
+          </ng-template>
+
+          <ng-template #file>
+            <td (click)="getDownloadLink(f.id)" class="td-word-wrap point">
+              <span class="oi" data-glyph="file"></span>
+              {{f.name}}
+            </td>
+          </ng-template>
+
+          <td class="d-none d-lg-block">{{f.mimeType}}</td>
+          <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
+          <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime }}</td>
+          <td>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false"></a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item point" (click)="deleteFile(f.id)">Delete</a>
+              <a class="dropdown-item">Share</a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="actions">
-    <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
-    <span class="oi d-none d-lg-inline" data-glyph="list"></span>
-    <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span>
-  </div>
 
-  <app-spinner *ngIf="loading"></app-spinner>
-  <table class="table table-hover" *ngIf="!loading">
-    <thead>
-    <tr>
-      <th scope="col" class="border-fix">Name</th>
-      <th scope="col" class="d-none d-lg-block border-fix">Type</th>
-      <th scope="col" class="border-fix">Size</th>
-      <th scope="col" class="border-fix d-none d-md-block">Modified</th>
-      <th scope="col" class="border-fix">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let f of files; let i = index">
-
-      <div *ngIf="f.mimeType=='folder'; then folder ; else file">
-      </div>
-
-      <ng-template #folder>
-        <td class="td-word-wrap" (click)="getFolderItems(f.id)">
-          <a href="javascript:;">
-            <span class="oi" data-glyph="folder"></span> 
-            {{f.name}}
-          </a>
-        </td>
-      </ng-template>
-
-      <ng-template #file>
-        <td (click)="getDownloadLink(f.id)" class="td-word-wrap point">
-          <span class="oi" data-glyph="file"></span>
-          {{f.name}}
-        </td>
-      </ng-template>
-
-      <td class="d-none d-lg-block">{{f.mimeType}}</td>
-      <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-      <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime }}</td>
-      <td>
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false"></a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item point" (click)="deleteFile(f.id)">Delete</a>
-          <a class="dropdown-item">Share</a>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
 
 
   <div class="modal fade" id="uploadmodal" tabindex="-1" role="dialog" aria-labelledby="uploadmodal" aria-hidden="true">
@@ -64,10 +74,7 @@
         <div class="modal-body">
           <div class="form-group" onsubmit="upl">
             <label for="file">Choose File</label>
-            <input type="file"
-                   id="file"
-                   name="myfile"
-                   (change)="handleFileInput($event.target.files)">
+            <input type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)">
             <input type="button" value="Upload" (click)="uploadFile()">
           </div>
         </div>

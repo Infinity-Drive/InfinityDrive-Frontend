@@ -4,63 +4,58 @@
   </div>
 
   <div class="actions">
-      <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal" data-tooltip="tooltip"
-            title="Merge Accounts"></span>
+    <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal" data-tooltip="tooltip"
+      title="Merge Accounts"></span>
     <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
-          title="Link Account"></span>
+      title="Link Account"></span>
   </div>
 
-  <div style="clear:both"></div>
   <app-spinner *ngIf="loading"></app-spinner>
-  <div style="height: auto; overflow: auto">
+
+  <div class="table-responsive">
     <table class="table table-hover" *ngIf="!loading">
 
       <thead>
-      <tr>
-        <th class="border-fix">#</th>
-        <th class="border-fix">Account</th>
-        <th class="border-fix">Email</th>
-        <th class="border-fix">Used</th>
-        <th class="border-fix">Action</th>
-      </tr>
+        <tr>
+          <th class="d-none d-lg-block border-fix">#</th>
+          <th class="border-fix">Account</th>
+          <th class="border-fix">Email</th>
+          <th class="border-fix">Used</th>
+          <th class="border-fix">Action</th>
+        </tr>
       </thead>
 
       <tbody>
 
-      <tr *ngFor="let a of getIndividualAccounts(); let i = index">
+        <tr *ngFor="let a of getIndividualAccounts(); let i = index">
 
-        <th>{{i+1}}</th>
+          <th class="d-none d-lg-block">{{i+1}}</th>
 
-        <td>
-          <a routerLink="Storage/{{a['_id']}}">{{a['account']}}</a>
-        </td>
+          <td>
+            <a routerLink="Storage/{{a['_id']}}">{{a['account']}}</a>
+          </td>
 
-        <td class="point" (click)="accountNavigate(a['_id'])">{{a['email']}}</td>
+          <td class="point" (click)="accountNavigate(a['_id'])">{{a['email']}}</td>
 
-        <td class="d-none d-md-block">
-          <div class="progress" style="height: 20px;">
-            <div class="progress-bar" role="progressbar"
-                 [ngStyle]="{'width': getSizeInGb(a.storage.used)/getSizeInGb(a.storage.total)*100+'%', 'color': 'black'}">
-              {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
+          <td>
+            <div class="progress" style="height: 20px">
+              <div class="progress-bar" role="progressbar"
+                [ngStyle]="{'width': getSizeInGb(a.storage.used)/getSizeInGb(a.storage.total)*100+'%', 'color': 'black'}">
+                {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
+              </div>
             </div>
-          </div>
-        </td>
+          </td>
 
-        <td class="d-md-none">
-          {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
-        </td>
+          <td>
+            <a class="nav-link dropdown-toggle" href="#" id="individualnavbarDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+            <div class="dropdown-menu" aria-labelledby="individualnavbarDropdown">
+              <a class="dropdown-item" href="#">Edit</a>
+              <a (click)="removeAccount(a['_id'])" class="dropdown-item">Unlink</a>
+            </div>
+          </td>
 
-        <td>
-          <a class="nav-link dropdown-toggle" href="#" id="individualnavbarDropdown" role="button"
-             data-toggle="dropdown"
-             aria-haspopup="true" aria-expanded="false"></a>
-          <div class="dropdown-menu" aria-labelledby="individualnavbarDropdown">
-            <a class="dropdown-item" href="#">Edit</a>
-            <a (click)="removeAccount(a['_id'])" class="dropdown-item">Unlink</a>
-          </div>
-        </td>
-
-      </tr>
+        </tr>
 
       </tbody>
 
@@ -69,53 +64,54 @@
       </div>
 
       <thead *ngIf="getMergedAccounts().length != 0">
-      <tr>
-        <th scope="col" class="border-fix">#</th>
-        <th scope="col" class=" border-fix">Accounts</th>
-        <th scope="col" class="border-fix">Emails</th>
-        <th scope="col" class="border-fix">Used</th>
-        <th scope="col" class="border-fix">Action</th>
-      </tr>
+        <tr>
+          <th scope="col" class="d-none d-lg-block border-fix">#</th>
+          <th scope="col" class="border-fix">Accounts</th>
+          <th scope="col" class="border-fix">Emails</th>
+          <th scope="col" class="border-fix">Used</th>
+          <th scope="col" class="border-fix">Action</th>
+        </tr>
       </thead>
 
       <tbody *ngIf="getMergedAccounts().length != 0">
-      <tr>
-        <th scope="row">1</th>
-        <td>
-          <ul>
-            <li *ngFor="let a of getMergedAccounts();">
-              <a routerLink="Merged">{{a['account']}}</a>
-            </li>
-          </ul>
-        </td>
-        <td>
-          <ul>
-            <li *ngFor="let a of getMergedAccounts();">
-              {{a.email}}
-            </li>
-          </ul>
-        </td>
-        <td>
-          <div class="progress" style="height: 20px;">
+        <tr>
+          <th scope="row" class="d-none d-lg-block">1</th>
 
-            <div class="progress-bar" role="progressbar"
-                 [ngStyle]="{'width': getMergedAccountsStorage().used/getMergedAccountsStorage().total*100+'%', 'color': 'black'}">
-              {{ getMergedAccountsStorage().used + 'GB / ' + getMergedAccountsStorage().total + 'GB' }}
+          <td>
+            <ul>
+              <li *ngFor="let a of getMergedAccounts();">
+                <a routerLink="Merged">{{a['account']}}</a>
+              </li>
+            </ul>
+          </td>
+
+          <td>
+            <ul>
+              <li *ngFor="let a of getMergedAccounts();">
+                {{a.email}}
+              </li>
+            </ul>
+          </td>
+
+          <td>
+            <div class="progress" style="height: 20px;">
+              <div class="progress-bar" role="progressbar"
+                [ngStyle]="{'width': getMergedAccountsStorage().used/getMergedAccountsStorage().total*100+'%', 'color': 'black'}">
+                {{ getMergedAccountsStorage().used + 'GB / ' + getMergedAccountsStorage().total + 'GB' }}
+              </div>
             </div>
-          </div>
-        </td>
+          </td>
 
-        <td>
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-             aria-haspopup="true" aria-expanded="false"></a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Edit</a>
-            <a (click)="demergeAccounts()" class="dropdown-item" data-toggle="modal" href="#"
-               data-target="#demerge-modal">Demerge</a>
-          </div>
-        </td>
-      </tr>
-
+          <td>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false"></a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Edit</a>
+              <a (click)="demergeAccounts()" class="dropdown-item" data-toggle="modal" href="#"
+                data-target="#demerge-modal">Demerge</a>
+            </div>
+          </td>
+        </tr>
 
       </tbody>
 
@@ -124,7 +120,7 @@
   </div>
 
   <div class="modal fade" id="accountsModal" tabindex="-1" role="dialog" aria-labelledby="accountsModalTitle"
-       aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -163,14 +159,15 @@
             <h5 class="modal-title">Accounts available to merge</h5>
             <button type="button" class="close" data-dismiss="modal"></button>
           </div>
-          <div class="modal-body">
+
+          <div class="modal-body table-responsive">
             <table class="table table-hover">
 
               <thead>
-              <th scope="col" class="border-fix">Select</th>
-              <th scope="col" class="d-none d-lg-block border-fix">Account</th>
-              <th scope="col" class="border-fix">Email</th>
-              <th scope="col" class="border-fix">Used</th>
+                <th scope="col" class="border-fix">Select</th>
+                <th scope="col" class="d-none d-lg-block border-fix">Account</th>
+                <th scope="col" class="border-fix">Email</th>
+                <th scope="col" class="border-fix">Used</th>
               </thead>
 
               <tr *ngFor="let a of getIndividualAccounts()">
@@ -190,7 +187,7 @@
                 <td>
                   <div class="progress" style="height: 20px;">
                     <div class="progress-bar" role="progressbar"
-                         [ngStyle]="{'width': getSizeInGb(a.storage.used)/getSizeInGb(a.storage.total)*100+'%', 'color': 'black'}">
+                      [ngStyle]="{'width': getSizeInGb(a.storage.used)/getSizeInGb(a.storage.total)*100+'%', 'color': 'black'}">
                       {{ getSizeInGb(a.storage.used) + 'GB / ' + getSizeInGb(a.storage.total) + 'GB'}}
                     </div>
                   </div>
