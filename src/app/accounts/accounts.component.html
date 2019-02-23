@@ -5,7 +5,7 @@
 
   <div class="actions">
     <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal" data-tooltip="tooltip"
-      title="Merge Accounts"></span>
+      title="Merge Accounts" *ngIf="getIndividualAccounts().length >= 2"></span>
     <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
       title="Link Account"></span>
   </div>

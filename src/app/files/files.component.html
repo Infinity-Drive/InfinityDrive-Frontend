@@ -52,7 +52,7 @@
 
           <td class="d-none d-lg-block">{{f.mimeType}}</td>
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-          <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime }}</td>
+          <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime.split('T')[0] }}</td>
           <td>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false"></a>
@@ -65,8 +65,6 @@
       </tbody>
     </table>
   </div>
-
-
 
   <div class="modal fade" id="uploadmodal" tabindex="-1" role="dialog" aria-labelledby="uploadmodal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -81,6 +79,5 @@
       </div>
     </div>
   </div>
-
-
+  
 </div>

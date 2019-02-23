@@ -15,7 +15,7 @@
     <div style="clear:both"></div>
 
     <app-spinner *ngIf="loading"></app-spinner>
-    
+
     <table class="table table-hover" *ngIf="!loading">
       <thead>
         <tr>
@@ -52,7 +52,7 @@
             <a routerLink="../Storage/{{f.accountId}}">{{f.accountType}}</a>
           </td>
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-          <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime }}</td>
+          <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime.split('T')[0] }}</td>
           <td>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false"></a>
