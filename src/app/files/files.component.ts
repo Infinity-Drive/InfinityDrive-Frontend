@@ -167,7 +167,7 @@ export class FilesComponent implements OnInit {
       if (result.value) {
 
         this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
-          this.getfiles(this.accountId);
+          this.files = this.files.filter((f) => f.id !== Fileid);
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
@@ -191,6 +191,11 @@ export class FilesComponent implements OnInit {
   uploadFile() {
     this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
       this.getfiles(this.accountId);
+      Swal.fire({
+        type: 'success',
+        title: 'Successful',
+        text: 'File has been uploaded'
+      });
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to upload file', 'error');
       console.log(err);
