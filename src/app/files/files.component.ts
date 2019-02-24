@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {AccountService} from '../services/account.service';
 import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -19,6 +19,8 @@ export class FilesComponent implements OnInit {
   accounts = [];
   fileToUpload: File = null;
   loading = false;
+
+  @ViewChild ('btnClose') btnClose: ElementRef;
 
   standarizeFileData = (items, accountType) => {
 
@@ -190,6 +192,7 @@ export class FilesComponent implements OnInit {
   uploadFile() {
     this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
       this.getfiles(this.accountId);
+      this.btnClose.nativeElement.click();
       Swal.fire({
         type: 'success',
         title: 'Successful',
