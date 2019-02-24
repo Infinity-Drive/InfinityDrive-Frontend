@@ -1,4 +1,4 @@
-<div class="bodyCard p-5">
+<div class="bodyCard p-5 shadow">
   <div class="name">
     <h3>Individual Accounts</h3>
   </div>
@@ -50,7 +50,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="individualnavbarDropdown" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
             <div class="dropdown-menu" aria-labelledby="individualnavbarDropdown">
-              <a class="dropdown-item">Edit</a>
+              <!-- <a class="dropdown-item">Edit</a> -->
               <a (click)="removeAccount(a['_id'])" class="dropdown-item point">Unlink</a>
             </div>
           </td>
@@ -106,7 +106,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false"></a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item">Edit</a>
+              <!-- <a class="dropdown-item">Edit</a> -->
               <a (click)="demergeAccounts()" class="dropdown-item point" data-toggle="modal" href="#"
                 data-target="#demerge-modal">Demerge</a>
             </div>
