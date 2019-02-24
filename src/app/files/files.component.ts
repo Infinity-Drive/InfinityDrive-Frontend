@@ -142,8 +142,8 @@ export class FilesComponent implements OnInit {
     this.loading = true;
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
       console.log(data);
-      this.loading = false;
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      this.loading = false;
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to get files', 'error');
