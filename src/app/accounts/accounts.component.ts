@@ -97,21 +97,40 @@ export class AccountsComponent implements OnInit {
 
   // method for removing an account
   removeAccount(id) {
-    this.account.deleteAccount(id).subscribe((data) => {
-      this.account.accounts = this.account.accounts.filter(function (value, index, arr) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This storage will be removed from your account',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+      if (result.value) {
 
-        return value['_id'] !== id;
+        this.account.deleteAccount(id).subscribe((data) => {
+          this.account.accounts = this.account.accounts.filter(function (value, index, arr) {
 
-      });
-      this.accounts = this.account.accounts;
-      // this.account.getAccounts();
-    }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to unlink account', 'error');
-      console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
+            return value['_id'] !== id;
+
+          });
+          Swal.fire(
+            'Removed!',
+            'Storage has been removed successfully',
+            'success'
+          );
+          this.accounts = this.account.accounts;
+          // this.account.getAccounts();
+        }, (err: HttpErrorResponse) => {
+          Swal.fire('Shame on us', 'Unable to unlink account', 'error');
+          console.log(err);
+          console.log(err.name);
+          console.log(err.message);
+          console.log(err.status);
+        });
+      }
     });
+
   }
 
   mergeAccounts() {
@@ -138,15 +157,33 @@ export class AccountsComponent implements OnInit {
   }
 
   demergeAccounts() {
-    this.account.changeMergeStatus(this.getMergedAccounts(), false).subscribe((data) => {
-      this.accounts.filter(value => value.merged = false);
-      this.accountsToMerge = [];
-    }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to demerge accounts', 'error');
-      console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You storages will be demerged!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, demerge it!'
+    }).then((result) => {
+      if (result.value) {
+
+        this.account.changeMergeStatus(this.getMergedAccounts(), false).subscribe((data) => {
+          this.accounts.filter(value => value.merged = false);
+          this.accountsToMerge = [];
+          Swal.fire(
+            'Demerged!',
+            'Your storages has been demerged.',
+            'success'
+          );
+        }, (err: HttpErrorResponse) => {
+          Swal.fire('Shame on us', 'Unable to demerge accounts', 'error');
+          console.log(err);
+          console.log(err.name);
+          console.log(err.message);
+          console.log(err.status);
+        });
+      }
     });
   }
 

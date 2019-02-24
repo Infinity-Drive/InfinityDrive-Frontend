@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../services/account.service';
-import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {AccountService} from '../services/account.service';
+import {ActivatedRoute} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
 
 import Swal from 'sweetalert2';
 
@@ -154,14 +154,33 @@ export class FilesComponent implements OnInit {
   }
 
   deleteFile(Fileid) {
-    this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
-      this.getfiles(this.accountId);
-    }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to delete file', 'error');
-      console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.value) {
+
+        this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
+          this.getfiles(this.accountId);
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          );
+        }, (err: HttpErrorResponse) => {
+          Swal.fire('Shame on us', 'Unable to delete file', 'error');
+          console.log(err);
+          console.log(err.name);
+          console.log(err.message);
+          console.log(err.status);
+        });
+      }
     });
   }
 

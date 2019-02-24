@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../services/account.service';
-import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {AccountService} from '../services/account.service';
+import {ActivatedRoute} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
 
 import Swal from 'sweetalert2';
 
@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 })
 export class MergedAccountComponent implements OnInit {
 
-  files:any = []; 
+  files: any = [];
   loading = false;
 
   standarizeFileData = (items, accountType, accountId) => {
@@ -80,9 +80,9 @@ export class MergedAccountComponent implements OnInit {
     this.getFiles();
   }
 
-  getFiles(){
+  getFiles() {
     this.loading = true;
-    this.account.getMergedAccountFiles().subscribe((mergedAccountFiles:any) => {
+    this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
       mergedAccountFiles.forEach(mergedAccount => {
         // console.log(mergedAccount.files, mergedAccount.accountType);
         this.files.push(...this.standarizeFileData(mergedAccount.files, mergedAccount.accountType, mergedAccount['_id']));
@@ -90,12 +90,29 @@ export class MergedAccountComponent implements OnInit {
       console.log('merged files', this.files);
       this.loading = false;
     });
-    
+
   }
 
   deleteFile(file) {
-    this.account.deleteFile(file.accountId, file.id, file.accountType).subscribe((data) => {
-      this.files = this.files.filter((f) => f.id != file.id);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.value) {
+        this.account.deleteFile(file.accountId, file.id, file.accountType).subscribe((data) => {
+          this.files = this.files.filter((f) => f.id !== file.id);
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          );
+        });
+      }
     });
   }
 
