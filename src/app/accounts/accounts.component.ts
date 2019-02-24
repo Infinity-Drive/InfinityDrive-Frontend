@@ -98,11 +98,12 @@ export class AccountsComponent implements OnInit {
   // method for removing an account
   removeAccount(id) {
     this.account.deleteAccount(id).subscribe((data) => {
-      this.accounts = this.accounts.filter(function (value, index, arr) {
+      this.account.accounts = this.account.accounts.filter(function (value, index, arr) {
 
         return value['_id'] !== id;
 
       });
+      this.accounts = this.account.accounts;
       // this.account.getAccounts();
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to unlink account', 'error');
