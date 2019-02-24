@@ -50,8 +50,8 @@
             <a class="nav-link dropdown-toggle" href="#" id="individualnavbarDropdown" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
             <div class="dropdown-menu" aria-labelledby="individualnavbarDropdown">
-              <a class="dropdown-item" href="#">Edit</a>
-              <a (click)="removeAccount(a['_id'])" class="dropdown-item">Unlink</a>
+              <a class="dropdown-item">Edit</a>
+              <a (click)="removeAccount(a['_id'])" class="dropdown-item point">Unlink</a>
             </div>
           </td>
 
@@ -87,7 +87,7 @@
 
           <td>
             <ul>
-              <li *ngFor="let a of getMergedAccounts();">
+              <li (click)="navigateToMerged()" class="point" *ngFor="let a of getMergedAccounts();">
                 {{a.email}}
               </li>
             </ul>
@@ -106,8 +106,8 @@
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false"></a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Edit</a>
-              <a (click)="demergeAccounts()" class="dropdown-item" data-toggle="modal" href="#"
+              <a class="dropdown-item">Edit</a>
+              <a (click)="demergeAccounts()" class="dropdown-item point" data-toggle="modal" href="#"
                 data-target="#demerge-modal">Demerge</a>
             </div>
           </td>

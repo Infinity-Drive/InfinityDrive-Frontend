@@ -166,8 +166,14 @@ export class AccountsComponent implements OnInit {
     return {used: (used / Math.pow(1024, 3)).toFixed(2), total: (total / Math.pow(1024, 3)).toFixed(2)};
   }
 
+  // navigating to respective route
   accountNavigate(accountID) {
     this.router.navigateByUrl(`Dashboard/Storage/${accountID}`);
+  }
+
+  // navigating to merged route
+  navigateToMerged() {
+    this.router.navigateByUrl(`Dashboard/Merged`);
   }
 }
 
