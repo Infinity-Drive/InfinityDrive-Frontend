@@ -117,11 +117,12 @@ export class MergedAccountComponent implements OnInit {
   }
 
   getFolderItems(folder) {
-    // this.loading = true;
+    this.loading = true;
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
       console.log(data);
       this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
       // console.log(this.files);
+      this.loading = false;
     });
   }
 

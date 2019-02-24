@@ -165,7 +165,6 @@ export class FilesComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.value) {
-
         this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
           this.files = this.files.filter((f) => f.id !== Fileid);
           Swal.fire(
