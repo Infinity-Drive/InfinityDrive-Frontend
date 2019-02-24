@@ -71,7 +71,6 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    
     return this.http.get('http://localhost:3000/mergedAccount/listFiles/', httpOptions);
   }
 
