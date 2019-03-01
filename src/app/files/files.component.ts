@@ -1,7 +1,7 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {ActivatedRoute} from '@angular/router';
-import {HttpErrorResponse} from '@angular/common/http';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import Swal from 'sweetalert2';
 
@@ -18,9 +18,10 @@ export class FilesComponent implements OnInit {
   // user accounts array
   accounts = [];
   fileToUpload: File = null;
+  uploadProgress = 0;
   loading = false;
 
-  @ViewChild ('btnClose') btnClose: ElementRef;
+  @ViewChild('btnClose') btnClose: ElementRef;
 
   standarizeFileData = (items, accountType) => {
 
@@ -190,14 +191,24 @@ export class FilesComponent implements OnInit {
   }
 
   uploadFile() {
-    this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((url: string) => {
-      this.getfiles(this.accountId);
-      this.btnClose.nativeElement.click();
-      Swal.fire({
-        type: 'success',
-        title: 'Successful',
-        text: 'File has been uploaded'
-      });
+    this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((event: any) => {
+
+      if (event.type === HttpEventType.UploadProgress) {
+        this.uploadProgress = Math.round(100 * event.loaded / event.total);
+      } 
+      
+      else if (event instanceof HttpResponse) {
+        console.log('File is completely uploaded!');
+        this.getfiles(this.accountId);
+        this.btnClose.nativeElement.click();
+        Swal.fire({
+          type: 'success',
+          title: 'Successful',
+          text: 'File has been uploaded'
+        });
+        this.uploadProgress = 0;
+      }
+
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to upload file', 'error');
       console.log(err);

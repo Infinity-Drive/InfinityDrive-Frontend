@@ -81,8 +81,16 @@
           </div>
         <div class="modal-body">
           <div class="form-group" onsubmit="upl">
-            <input type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)">
-            <input class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()">
+            <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)" *ngIf="uploadProgress == 0">
+            <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()" *ngIf="uploadProgress == 0">
+            <div *ngIf="uploadProgress != 0">
+              <h4> Uploading...</h4>
+              <div class="progress" style="height:20px" >
+                <div class="progress-bar progress-bar-striped progress-bar-animated" [ngStyle]="{ 'width': uploadProgress + '%'}">
+                  {{uploadProgress}} %
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

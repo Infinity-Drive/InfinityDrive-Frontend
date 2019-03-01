@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable()
@@ -121,22 +121,26 @@ export class AccountService {
       headers: new HttpHeaders({
         'x-auth': localStorage.getItem('infinityToken')
       }),
-      responseType: 'text' as 'text'
+      responseType: 'text' as 'text',
+      reportProgress: true
     };
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    return this.http.post(`http://localhost:3000/${type}/upload/${accountid}`, formData , httpOptions);
+    const req = new HttpRequest('POST', `http://localhost:3000/${type}/upload/${accountid}`, formData, httpOptions);
+    return this.http.request(req);
   }
   
   splitUpload(file) {
     const httpOptions = {
       headers: new HttpHeaders({
         'x-auth': localStorage.getItem('infinityToken')
-      })
+      }),
+      reportProgress: true
     };
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    return this.http.post(`http://localhost:3000/merged/upload`, formData , httpOptions);
+    const req = new HttpRequest('POST', 'http://localhost:3000/merged/upload', formData, httpOptions);
+    return this.http.request(req);
   }
 }
 

@@ -1,7 +1,7 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {ActivatedRoute} from '@angular/router';
-import {HttpErrorResponse} from '@angular/common/http';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import Swal from 'sweetalert2';
 
@@ -15,8 +15,9 @@ export class MergedAccountComponent implements OnInit {
   files: any = [];
   loading = false;
   fileToUpload: File = null;
+  uploadProgress = 0;
 
-  @ViewChild ('btnClose') btnClose: ElementRef;
+  @ViewChild('btnClose') btnClose: ElementRef;
 
   standarizeFileData = (items, accountType, accountId) => {
 
@@ -146,15 +147,22 @@ export class MergedAccountComponent implements OnInit {
   }
 
   uploadFile() {
-    this.account.splitUpload(this.fileToUpload).subscribe((file) => {
-      console.log(file);
-      this.files.push(file);
-      this.btnClose.nativeElement.click();
-      Swal.fire({
-        type: 'success',
-        title: 'Successful',
-        text: 'File has been uploaded'
-      });
+  
+    this.account.splitUpload(this.fileToUpload).subscribe((event: any) => {
+
+      if (event.type === HttpEventType.UploadProgress) {
+        this.uploadProgress = Math.round(100 * event.loaded / event.total);
+      }
+
+      else if (event instanceof HttpResponse) {
+        this.files.push(event.body);
+        this.btnClose.nativeElement.click();
+        Swal.fire({
+          type: 'success',
+          title: 'Successful',
+          text: 'File has been uploaded'
+        });
+      }
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to upload file', 'error');
       console.log(err);
