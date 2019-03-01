@@ -71,7 +71,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.get('http://localhost:3000/mergedAccount/listFiles/', httpOptions);
+    return this.http.get('http://localhost:3000/merged/listFiles/', httpOptions);
   }
 
   getDownloadUrl(accountId, fileId, type) {
@@ -116,7 +116,6 @@ export class AccountService {
     return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, {accountIds, status}, httpOptions);
   }
 
-
   uploadFile(accountid, type, file) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -127,6 +126,17 @@ export class AccountService {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
     return this.http.post(`http://localhost:3000/${type}/upload/${accountid}`, formData , httpOptions);
+  }
+  
+  splitUpload(file) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post(`http://localhost:3000/merged/upload`, formData , httpOptions);
   }
 }
 

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {AccountService} from '../services/account.service';
 import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -14,6 +14,9 @@ export class MergedAccountComponent implements OnInit {
 
   files: any = [];
   loading = false;
+  fileToUpload: File = null;
+
+  @ViewChild ('btnClose') btnClose: ElementRef;
 
   standarizeFileData = (items, accountType, accountId) => {
 
@@ -131,6 +134,29 @@ export class MergedAccountComponent implements OnInit {
       window.open(url['downloadUrl'], '_blank');
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to download file', 'error');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
+    });
+  }
+
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
+
+  uploadFile() {
+    this.account.splitUpload(this.fileToUpload).subscribe((file) => {
+      console.log(file);
+      this.files.push(file);
+      this.btnClose.nativeElement.click();
+      Swal.fire({
+        type: 'success',
+        title: 'Successful',
+        text: 'File has been uploaded'
+      });
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Shame on us', 'Unable to upload file', 'error');
       console.log(err);
       console.log(err.name);
       console.log(err.message);
