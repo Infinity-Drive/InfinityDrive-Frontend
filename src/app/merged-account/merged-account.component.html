@@ -3,7 +3,7 @@
   <div class="table-responsive">
 
     <div *ngIf="accounts.length!==0" style="display: block">
-      <canvas baseChart
+      <canvas height="80px" baseChart
               [data]="pieChartData"
               [labels]="pieChartLabels"
               [chartType]="pieChartType"></canvas>

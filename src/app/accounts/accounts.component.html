@@ -117,6 +117,8 @@
 
     </table>
 
+    <button data-toggle="modal" data-target="#accountsModal" *ngIf="accounts.length === 0 && !loading" class="btn btn-primary">Add Account</button>
+
   </div>
 
   <div class="modal fade" id="accountsModal" tabindex="-1" role="dialog" aria-labelledby="accountsModalTitle"
