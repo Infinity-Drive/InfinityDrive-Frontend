@@ -118,3 +118,15 @@ body {
 .point:hover{
   cursor: pointer;
 }
+
+/* Add application styles & imports to this file! */
+.ng-sidebar {
+  background: white;
+  width: 13rem;
+}
+
+.ng-sidebar--right {
+  color: red !important;
+  background: antiquewhite;
+  width: 12rem;
+}

@@ -4,6 +4,7 @@
       <a routerLink="../Dashboard" class="navbar-brand text-uppercase font-weight-bold">
         <span style="font-size:1.4em; color:#0052D4">∞</span> Infinity Drive
       </a>
+      <button><span (click)="_toggleSidebar()" class="oi" data-glyph="menu"></span></button>
     </div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -24,4 +25,21 @@
     </div>
   </div>
 </nav>
-<router-outlet></router-outlet>
+
+
+<ng-sidebar-container style="height: 100vh;">
+  <!-- A sidebar -->
+  <ng-sidebar [(opened)]="_opened" position="left" showBackdrop="true" closeOnClickOutside="true">
+    <ul class="sideBar">
+      <li>Menu Item</li>
+      <li>Menu Item</li>
+      <li>Menu Item</li>
+    </ul>
+  </ng-sidebar>
+
+  <!-- Page content -->
+  <div ng-sidebar-content>
+    <router-outlet class="abc"></router-outlet>
+  </div>
+
+</ng-sidebar-container>
