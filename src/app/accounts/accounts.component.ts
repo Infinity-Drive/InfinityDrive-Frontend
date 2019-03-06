@@ -26,17 +26,18 @@ export class AccountsComponent implements OnInit {
       if (params['code']) {
         // console.log(params['code'])
         // calling account service method to send this code to server
+        this.loading = true;
         this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
           // updating account list
           // this.account.getAccounts();
-          this.router.navigateByUrl('Dashboard');
+          this.router.navigateByUrl('Dashboard/Accounts');
         }, (err: HttpErrorResponse) => {
           if (err.error === 'Account already exists') {
             Swal.fire('Account already exists', 'add a different account', 'error');
           } else {
             Swal.fire('Shame on us', 'Unable to add account', 'error');
           }
-          this.router.navigateByUrl('Dashboard');
+          this.router.navigateByUrl('Dashboard/Accounts');
           console.log(err);
           console.log(err.name);
           console.log(err.message);
