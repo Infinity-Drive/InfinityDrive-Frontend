@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg shadow navbar-light bg-white">
   <div class="container-fluid">
     <div class="d-flex">
-      <button style="background:transparent; border:0" class="mr-4 mt-1">
-        <span (click)="toggleSidebar()" class="oi" data-glyph="menu"></span>
+      <button (click)="toggleSidebar()" style="background:transparent; border:0" class="mr-4 mt-1">
+        <span class="oi" data-glyph="menu"></span>
       </button>
       <a routerLink="../Dashboard" class="navbar-brand text-uppercase font-weight-bold">
         <span style="font-size:1.4em; color:#0052D4">∞</span> Infinity Drive
@@ -35,8 +35,8 @@
   <div class="border-right" id="sidebar-wrapper">
     <!-- <div class="sidebar-heading">Infinity Drive</div> -->
     <div class="list-group list-group-flush">
-      <a routerLink="/Dashboard" routerLinkActive="active" class="list-group-item list-group-item-action">Dashboard</a>
-      <a routerLink="/Dashboard/Accounts" routerLinkActive="active" class="list-group-item list-group-item-action">Accounts</a>
+      <a routerLink="/Dashboard" class="list-group-item list-group-item-action">Dashboard</a>
+      <a routerLink="/Dashboard/Accounts" class="list-group-item list-group-item-action">Accounts</a>
       <a href="#" class="list-group-item list-group-item-action">Profile</a>
       <a href="#" class="list-group-item list-group-item-action">Settings</a>
       <a href="#" (click)="logout()" class="list-group-item list-group-item-action">Logout</a>

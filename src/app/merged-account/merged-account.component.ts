@@ -146,6 +146,22 @@ export class MergedAccountComponent implements OnInit {
     });
   }
 
+  // method for adding client drive
+  addDrive(type) {
+    localStorage.setItem('AddingAccountType', type);
+    // calling accounts service method for adding a google drive account
+    this.account.getAuthLink(type).subscribe((data) => {
+      // opening a window for drive link for authentication
+      window.open(data['url'], '_self');
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Shame on us', 'Server Not responding', 'error');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
+    });
+  }
+
   getSizeInMb(size) {
     if (isNaN(size))
       return '-';
