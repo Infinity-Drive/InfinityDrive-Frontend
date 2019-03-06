@@ -12,6 +12,12 @@ export class UserDashboardComponent implements OnInit {
   userName: string;
   constructor(private route: Router, private accpunt: AccountService) { }
 
+  private _opened = false;
+
+  private _toggleSidebar() {
+    this._opened = !this._opened;
+  }
+
   ngOnInit() {
     this.userName = localStorage.getItem('infinityName');
   }

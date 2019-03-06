@@ -20,9 +20,9 @@ const routes: Routes = [
   {
     path: 'Dashboard', component: UserDashboardComponent, canActivate: [AuthGuardService]
     , children: [
-      { path: '', component: AccountsComponent, pathMatch: 'full' },
+      { path: '', component: MergedAccountComponent, pathMatch: 'full' },
       { path: 'Storage/:id', component: FilesComponent },
-      { path: 'Merged', component: MergedAccountComponent }
+      { path: 'Accounts', component: AccountsComponent }
     ]
   },
 

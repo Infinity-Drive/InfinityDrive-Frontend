@@ -1,11 +1,11 @@
 <div class="bodyCard p-5 shadow">
   <div class="name">
-    <h3>Individual Accounts</h3>
+    <h3>Connected Accounts</h3>
   </div>
 
   <div class="actions">
-    <span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal" data-tooltip="tooltip"
-      title="Merge Accounts" *ngIf="getIndividualAccounts().length >= 2"></span>
+    <!--<span class="oi" data-glyph="fullscreen-exit" data-toggle="modal" data-target="#mergeModal" data-tooltip="tooltip"-->
+      <!--title="Merge Accounts" *ngIf="getIndividualAccounts().length >= 2"></span>-->
     <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
       title="Link Account"></span>
   </div>
@@ -59,61 +59,61 @@
 
       </tbody>
 
-      <div class="name" *ngIf="getMergedAccounts().length != 0">
-        <h3>Merged Accounts</h3>
-      </div>
+      <!--<div class="name" *ngIf="getMergedAccounts().length != 0">-->
+        <!--<h3>Merged Accounts</h3>-->
+      <!--</div>-->
 
-      <thead *ngIf="getMergedAccounts().length != 0">
-        <tr>
-          <th scope="col" class="d-none d-lg-block border-fix">#</th>
-          <th scope="col" class="border-fix">Accounts</th>
-          <th scope="col" class="border-fix">Emails</th>
-          <th scope="col" class="border-fix">Used</th>
-          <th scope="col" class="border-fix">Action</th>
-        </tr>
-      </thead>
+      <!--<thead *ngIf="getMergedAccounts().length != 0">-->
+        <!--<tr>-->
+          <!--<th scope="col" class="d-none d-lg-block border-fix">#</th>-->
+          <!--<th scope="col" class="border-fix">Accounts</th>-->
+          <!--<th scope="col" class="border-fix">Emails</th>-->
+          <!--<th scope="col" class="border-fix">Used</th>-->
+          <!--<th scope="col" class="border-fix">Action</th>-->
+        <!--</tr>-->
+      <!--</thead>-->
 
-      <tbody *ngIf="getMergedAccounts().length != 0">
-        <tr>
-          <th scope="row" class="d-none d-lg-block">1</th>
+      <!--<tbody *ngIf="getMergedAccounts().length != 0">-->
+        <!--<tr>-->
+          <!--<th scope="row" class="d-none d-lg-block">1</th>-->
 
-          <td>
-            <ul>
-              <li *ngFor="let a of getMergedAccounts();">
-                <a routerLink="Merged">{{a['account']}}</a>
-              </li>
-            </ul>
-          </td>
+          <!--<td>-->
+            <!--<ul>-->
+              <!--<li *ngFor="let a of getMergedAccounts();">-->
+                <!--<a routerLink="Merged">{{a['account']}}</a>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</td>-->
 
-          <td>
-            <ul>
-              <li (click)="navigateToMerged()" class="point" *ngFor="let a of getMergedAccounts();">
-                {{a.email}}
-              </li>
-            </ul>
-          </td>
+          <!--<td>-->
+            <!--<ul>-->
+              <!--<li (click)="navigateToMerged()" class="point" *ngFor="let a of getMergedAccounts();">-->
+                <!--{{a.email}}-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</td>-->
 
-          <td>
-            <div class="progress" style="height: 20px;">
-              <div class="progress-bar" role="progressbar"
-                [ngStyle]="{'width': getMergedAccountsStorage().used/getMergedAccountsStorage().total*100+'%', 'color': 'black'}">
-                {{ getMergedAccountsStorage().used + 'GB / ' + getMergedAccountsStorage().total + 'GB' }}
-              </div>
-            </div>
-          </td>
+          <!--<td>-->
+            <!--<div class="progress" style="height: 20px;">-->
+              <!--<div class="progress-bar" role="progressbar"-->
+                <!--[ngStyle]="{'width': getMergedAccountsStorage().used/getMergedAccountsStorage().total*100+'%', 'color': 'black'}">-->
+                <!--{{ getMergedAccountsStorage().used + 'GB / ' + getMergedAccountsStorage().total + 'GB' }}-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</td>-->
 
-          <td>
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false"></a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <!-- <a class="dropdown-item">Edit</a> -->
-              <a (click)="demergeAccounts()" class="dropdown-item point" data-toggle="modal" href="#"
-                data-target="#demerge-modal">Demerge</a>
-            </div>
-          </td>
-        </tr>
+          <!--<td>-->
+            <!--<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"-->
+              <!--aria-haspopup="true" aria-expanded="false"></a>-->
+            <!--<div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+              <!--&lt;!&ndash; <a class="dropdown-item">Edit</a> &ndash;&gt;-->
+              <!--<a (click)="demergeAccounts()" class="dropdown-item point" data-toggle="modal" href="#"-->
+                <!--data-target="#demerge-modal">Demerge</a>-->
+            <!--</div>-->
+          <!--</td>-->
+        <!--</tr>-->
 
-      </tbody>
+      <!--</tbody>-->
 
     </table>
 
