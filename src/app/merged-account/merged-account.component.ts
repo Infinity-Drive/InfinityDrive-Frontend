@@ -19,64 +19,6 @@ export class MergedAccountComponent implements OnInit {
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
-  standarizeFileData = (items, accountType, accountId) => {
-
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-
-      items.forEach(item => {
-
-        if (item.mimeType === 'application/vnd.google-apps.folder')
-          item['mimeType'] = 'folder';
-
-        item['accountType'] = 'gdrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-
-      });
-
-    }
-
-    if (accountType === 'odrive') {
-
-      items.forEach(item => {
-        // item has a file property if its a file and a folder property if its a folder
-        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-        item['accountType'] = 'odrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-      });
-
-    }
-
-    if (accountType === 'dropbox') {
-
-      items.entries.forEach(item => {
-        if (item['.tag'] === 'folder')
-          item['mimeType'] = 'folder';
-        else
-          item['mimeType'] = item.name.split('.')[1];
-
-        if (!item['client_modified'])
-          item['client_modified'] = '-';
-
-        standarizedItems.push({
-          id: item.id,
-          name: item.name,
-          mimeType: item['mimeType'],
-          size: item.size,
-          modifiedTime: item['client_modified'],
-          accountType: 'dropbox',
-          accountId: accountId
-        });
-      });
-
-    }
-    return standarizedItems;
-  };
-
   constructor(private account: AccountService, private activeRoute: ActivatedRoute) {
   }
 
@@ -147,7 +89,7 @@ export class MergedAccountComponent implements OnInit {
   }
 
   uploadFile() {
-  
+
     this.account.splitUpload(this.fileToUpload).subscribe((event: any) => {
 
       if (event.type === HttpEventType.UploadProgress) {
@@ -155,6 +97,7 @@ export class MergedAccountComponent implements OnInit {
       }
 
       else if (event instanceof HttpResponse) {
+        console.log(event.body);
         this.files.push(event.body);
         this.btnClose.nativeElement.click();
         Swal.fire({
@@ -162,9 +105,11 @@ export class MergedAccountComponent implements OnInit {
           title: 'Successful',
           text: 'File has been uploaded'
         });
+        this.uploadProgress = 0;
       }
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to upload file', 'error');
+      this.uploadProgress = 0;
       console.log(err);
       console.log(err.name);
       console.log(err.message);
@@ -175,8 +120,72 @@ export class MergedAccountComponent implements OnInit {
   getSizeInMb(size) {
     if (isNaN(size))
       return '-';
-    else
-      return (Number(size) / Math.pow(1024, 2)).toFixed(2) + ' MB';
+    
+    return (Number(size) / Math.pow(1024, 2)).toFixed(2) + ' MB';
   }
+
+  getModifiedTime(isoTime) {
+    if (isoTime != '-')
+      return new Date(isoTime).toLocaleString();
+    return '-'
+  }
+
+  standarizeFileData = (items, accountType, accountId) => {
+
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+
+      items.forEach(item => {
+
+        if (item.mimeType === 'application/vnd.google-apps.folder')
+          item['mimeType'] = 'folder';
+
+        item['accountType'] = 'gdrive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+
+      });
+
+    }
+
+    if (accountType === 'odrive') {
+
+      items.forEach(item => {
+        // item has a file property if its a file and a folder property if its a folder
+        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+        item['accountType'] = 'odrive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+      });
+
+    }
+
+    if (accountType === 'dropbox') {
+
+      items.entries.forEach(item => {
+        if (item['.tag'] === 'folder')
+          item['mimeType'] = 'folder';
+        else
+          item['mimeType'] = item.name.split('.')[1];
+
+        if (!item['client_modified'])
+          item['client_modified'] = '-';
+
+        standarizedItems.push({
+          id: item.id,
+          name: item.name,
+          mimeType: item['mimeType'],
+          size: item.size,
+          modifiedTime: item['client_modified'],
+          accountType: 'dropbox',
+          accountId: accountId
+        });
+      });
+
+    }
+    return standarizedItems;
+  };
 
 }

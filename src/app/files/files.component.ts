@@ -23,61 +23,6 @@ export class FilesComponent implements OnInit {
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
-  standarizeFileData = (items, accountType) => {
-
-    console.log(items);
-
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-
-      items.forEach(item => {
-
-        if (item.mimeType === 'application/vnd.google-apps.folder')
-          item['mimeType'] = 'folder';
-
-        standarizedItems.push(item);
-
-      });
-
-    }
-
-    if (accountType === 'odrive') {
-
-      items.forEach(item => {
-        // item has a file property if its a file and a folder property if its a folder
-        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-        standarizedItems.push(item);
-      });
-
-    }
-
-    if (accountType === 'dropbox') {
-
-      items.entries.forEach(item => {
-        if (item['.tag'] === 'folder')
-          item['mimeType'] = 'folder';
-        else
-          item['mimeType'] = item.name.split('.')[1];
-
-        if (!item['client_modified'])
-          item['client_modified'] = '-';
-
-        standarizedItems.push({
-          id: item.id,
-          name: item.name,
-          mimeType: item['mimeType'],
-          size: item.size,
-          modifiedTime: item['client_modified']
-        });
-      });
-
-    }
-    console.log(standarizedItems);
-    return standarizedItems;
-  };
-
   constructor(private account: AccountService, private activeRoute: ActivatedRoute) {
   }
 
@@ -195,8 +140,8 @@ export class FilesComponent implements OnInit {
 
       if (event.type === HttpEventType.UploadProgress) {
         this.uploadProgress = Math.round(100 * event.loaded / event.total);
-      } 
-      
+      }
+
       else if (event instanceof HttpResponse) {
         console.log('File is completely uploaded!');
         this.getfiles(this.accountId);
@@ -215,6 +160,7 @@ export class FilesComponent implements OnInit {
       console.log(err.name);
       console.log(err.message);
       console.log(err.status);
+      this.uploadProgress = 0;
     });
   }
 
@@ -224,5 +170,58 @@ export class FilesComponent implements OnInit {
     else
       return (Number(size) / Math.pow(1024, 2)).toFixed(2) + ' MB';
   }
+
+  getModifiedTime(isoTime){
+    return new Date(isoTime).toLocaleString();
+  }
+
+  standarizeFileData = (items, accountType) => {
+
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+      items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item.mimeType === 'application/vnd.google-apps.folder')
+            item['mimeType'] = 'folder';
+          standarizedItems.push(item);
+        }
+      });
+    }
+
+    if (accountType === 'odrive') {
+      items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          // item has a file property if its a file and a folder property if its a folder
+          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+          standarizedItems.push(item);
+        }
+      });
+    }
+
+    if (accountType === 'dropbox') {
+      items.entries.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item['.tag'] === 'folder')
+            item['mimeType'] = 'folder';
+          else
+            item['mimeType'] = item.name.split('.')[1];
+
+          if (!item['client_modified'])
+            item['client_modified'] = '-';
+
+          standarizedItems.push({
+            id: item.id,
+            name: item.name,
+            mimeType: item['mimeType'],
+            size: item.size,
+            modifiedTime: item['client_modified']
+          });
+        }
+      });
+    }
+    return standarizedItems;
+  };
 
 }
