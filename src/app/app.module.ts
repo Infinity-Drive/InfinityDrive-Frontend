@@ -19,7 +19,6 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MergedAccountComponent } from './merged-account/merged-account.component';
 
-import { SidebarModule } from 'ng-sidebar';
 import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -39,7 +38,6 @@ import { ChartsModule } from 'ng2-charts';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    SidebarModule.forRoot(),
     ChartsModule
   ],
   providers: [UserService, AccountService, AuthGuardService],
