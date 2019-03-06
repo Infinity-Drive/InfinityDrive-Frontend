@@ -30,10 +30,17 @@
 <ng-sidebar-container style="height: 100vh;">
   <!-- A sidebar -->
   <ng-sidebar [(opened)]="_opened" position="left" showBackdrop="true" closeOnClickOutside="true">
-    <ul class="sideBar">
-      <li>Menu Item</li>
-      <li>Menu Item</li>
-      <li>Menu Item</li>
+    <ul class="sideBar" style="color: dodgerblue">
+      <hr>
+      <li class="point" routerLink="/Dashboard"><h5>Infinity Drive</h5></li>
+      <hr>
+      <li class="point" routerLink="/Dashboard/Accounts"><h5>Accounts</h5></li>
+      <hr>
+      <li><h5>Profile</h5></li>
+      <hr>
+      <li><h5>Settings</h5></li>
+      <hr>
+      <li class="point" (click)="logout()"><h5>Signout</h5></li>
     </ul>
   </ng-sidebar>
 
