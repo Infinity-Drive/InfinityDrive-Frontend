@@ -10,6 +10,9 @@
       <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
       <!-- <span class="oi d-none d-lg-inline" data-glyph="list"></span>
       <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span> -->
+      <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+        Tooltip on left
+      </button>
     </div>
 
     <div style="clear:both"></div>
@@ -52,7 +55,7 @@
             <a routerLink="../Storage/{{f.accountId}}">{{f.accountType}}</a>
           </td>
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-          <td scope="col" class="border-fix d-none d-md-block">{{ f.modifiedTime.split('T')[0] }}</td>
+          <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
           <td>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false"></a>
@@ -74,7 +77,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">Select a file to upload</h5>
+            <h5 class="modal-title">File Upload</h5>
             <button type="button" #btnClose class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
