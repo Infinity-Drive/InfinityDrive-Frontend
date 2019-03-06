@@ -5,6 +5,7 @@
 }
 
 body {
+  overflow-x: hidden;
   background: #9CECFB;
   /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #0052D4, #65C7F7, #9CECFB);
@@ -117,16 +118,4 @@ body {
 
 .point:hover{
   cursor: pointer;
-}
-
-/* Add application styles & imports to this file! */
-.ng-sidebar {
-  background: white;
-  width: 13rem;
-}
-
-.ng-sidebar--right {
-  color: red !important;
-  background: antiquewhite;
-  width: 12rem;
 }

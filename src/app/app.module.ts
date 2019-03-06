@@ -19,8 +19,6 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MergedAccountComponent } from './merged-account/merged-account.component';
 
-import { SidebarModule } from 'ng-sidebar';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +36,6 @@ import { SidebarModule } from 'ng-sidebar';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    SidebarModule.forRoot()
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

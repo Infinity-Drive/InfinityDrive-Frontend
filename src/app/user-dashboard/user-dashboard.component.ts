@@ -10,13 +10,9 @@ import { AccountService } from '../services/account.service';
 })
 export class UserDashboardComponent implements OnInit {
   userName: string;
+  isOpened = false;
+
   constructor(private route: Router, private accpunt: AccountService) { }
-
-  private _opened = false;
-
-  private _toggleSidebar() {
-    this._opened = !this._opened;
-  }
 
   ngOnInit() {
     this.userName = localStorage.getItem('infinityName');
@@ -30,6 +26,10 @@ export class UserDashboardComponent implements OnInit {
     localStorage.removeItem('infinityName');
     this.accpunt.accounts = [];
     this.route.navigate(['']);
+  }
+
+  toggleSidebar(){
+    this.isOpened = !this.isOpened;
   }
 
 }
