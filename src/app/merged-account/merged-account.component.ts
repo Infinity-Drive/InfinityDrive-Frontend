@@ -16,14 +16,43 @@ export class MergedAccountComponent implements OnInit {
   loading = false;
   fileToUpload: File = null;
   uploadProgress = 0;
+  accounts = []
 
   @ViewChild('btnClose') btnClose: ElementRef;
+
+
+  public pieChartLabels = [];
+  public pieChartData = [];
+  public pieChartType = 'pie';
 
   constructor(private account: AccountService, private activeRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.getFiles();
+
+    this.accounts = this.account.accounts;
+
+    if (this.accounts.length === 0) {
+      this.loading = true;
+      this.account.getAccounts().subscribe((data: any) => {
+        this.accounts = data;
+        this.account.accounts = data;
+        this.loading = false;
+        this.getFiles();
+         this.plotGraph();
+
+      }, (err: any) => {
+        this.loading = false;
+        this.accounts = [];
+        this.account.accounts = [];
+      });
+    } else {
+      this.getFiles();
+      this.plotGraph();
+    }
+
+
+
   }
 
   getFiles() {
@@ -187,5 +216,22 @@ export class MergedAccountComponent implements OnInit {
     }
     return standarizedItems;
   };
+
+  getSizeInGb(size) {
+    return (size / Math.pow(1024, 3)).toFixed(2);
+  }
+
+  plotGraph() {
+    let total = 0;
+    this.accounts.forEach((value) => {
+    this.pieChartLabels.push(value.email);
+    this.pieChartData.push(this.getSizeInGb(value.storage.used));
+    total = total + parseInt(value.storage.total);
+    });
+    this.pieChartLabels.push("Total Storage");
+    this.pieChartData.push(this.getSizeInGb(total));
+
+
+  }
 
 }

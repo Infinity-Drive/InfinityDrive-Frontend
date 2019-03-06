@@ -20,6 +20,7 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { MergedAccountComponent } from './merged-account/merged-account.component';
 
 import { SidebarModule } from 'ng-sidebar';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SidebarModule } from 'ng-sidebar';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    SidebarModule.forRoot()
+    SidebarModule.forRoot(),
+    ChartsModule
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

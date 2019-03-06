@@ -2,6 +2,14 @@
 
   <div class="table-responsive">
 
+    <div *ngIf="accounts.length!==0" style="display: block">
+      <canvas baseChart
+              [data]="pieChartData"
+              [labels]="pieChartLabels"
+              [chartType]="pieChartType"></canvas>
+    </div>
+
+
     <div class="name">
       <h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Infinity Drive</a></h3>
     </div>
