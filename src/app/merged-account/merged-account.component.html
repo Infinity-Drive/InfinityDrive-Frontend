@@ -6,18 +6,21 @@
       <canvas height="80px" baseChart
               [data]="pieChartData"
               [labels]="pieChartLabels"
-              [chartType]="pieChartType"></canvas>
+              [chartType]="pieChartType" height="80px"></canvas>
     </div>
 
 
     <div class="name">
-      <h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Infinity Drive</a></h3>
+      <h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Files</a></h3>
     </div>
 
     <div class="actions">
-      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
-      <!-- <span class="oi d-none d-lg-inline" data-glyph="list"></span>
-      <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span> -->
+      <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
+      title="Link Account"></span>
+      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal"
+       data-target="#uploadmodal" data-tooltip="tooltip" title="Upload"></span>
+      <span routerLink="/Dashboard/Accounts" class="oi" data-glyph="cog" 
+      data-tooltip="tooltip" title="Accounts"></span>
     </div>
 
     <div style="clear:both"></div>
@@ -104,5 +107,34 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="accountsModal" tabindex="-1" role="dialog" aria-labelledby="accountsModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="accountsModalTitle">Select a service</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body accounts">
+          <div class="account" (click)="addDrive('gdrive')">
+            <img src="../../assets/images/gdrive.png" style="width:30px;height:auto;" class="mr-2">
+            <h6 style="display: inline">Google Drive</h6>
+          </div>
+          <div class="account" (click)="addDrive('odrive')">
+            <img src="../../assets/images/odrive.png" style=" width:40px;height:auto;" class="mr-3">
+            <h6 style="display: inline">OneDrive</h6>
+          </div>
+          <div class="account" (click)="addDrive('dropbox')">
+            <img src="../../assets/images/dropbox.png" style="width:40px;height:auto;" class="mr-3">
+            <h6 style="display: inline">Dropbox</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
