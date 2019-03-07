@@ -119,6 +119,7 @@ export class AccountService {
   uploadFile(accountid, type, file) {
     const httpOptions = {
       headers: new HttpHeaders({
+        'x-filesize': file.size.toString(),
         'x-auth': localStorage.getItem('infinityToken')
       }),
       responseType: 'text' as 'text',
@@ -133,6 +134,7 @@ export class AccountService {
   splitUpload(file) {
     const httpOptions = {
       headers: new HttpHeaders({
+        'x-filesize': file.size.toString(),
         'x-auth': localStorage.getItem('infinityToken')
       }),
       reportProgress: true
