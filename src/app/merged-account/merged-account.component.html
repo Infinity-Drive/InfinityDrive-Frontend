@@ -2,25 +2,18 @@
 
   <div class="table-responsive">
 
-    <div *ngIf="accounts.length!==0" style="display: block">
-      <canvas height="80px" baseChart
-              [data]="pieChartData"
-              [labels]="pieChartLabels"
-              [chartType]="pieChartType" height="80px"></canvas>
-    </div>
-
+    <canvas *ngIf="accounts.length!==0" height="80" baseChart [datasets]="barChartData" [labels]="barChartLabels" [chartType]="barChartType" [options]="barChartOptions">
+    </canvas>
 
     <div class="name">
       <h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Files</a></h3>
     </div>
 
     <div class="actions">
-      <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
-      title="Link Account"></span>
-      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal"
-       data-target="#uploadmodal" data-tooltip="tooltip" title="Upload"></span>
-      <span routerLink="/Dashboard/Accounts" class="oi" data-glyph="cog" 
-      data-tooltip="tooltip" title="Accounts"></span>
+      <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip" title="Link Account"></span>
+      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal" data-tooltip="tooltip"
+        title="Upload"></span>
+      <span routerLink="/Dashboard/Accounts" class="oi" data-glyph="cog" data-tooltip="tooltip" title="Accounts"></span>
     </div>
 
     <div style="clear:both"></div>
@@ -60,7 +53,7 @@
           </ng-template>
 
           <td class="d-none d-lg-block">
-            <a routerLink="../Dashboard/Storage/{{f.accountId}}">{{f.accountType}}</a>
+            <a routerLink="../Dashboard/Storage/{{f.accountId}}">{{f.account}}</a>
           </td>
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
@@ -85,18 +78,19 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">File Upload</h5>
-            <button type="button" #btnClose class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+          <h5 class="modal-title">File Upload</h5>
+          <button type="button" #btnClose class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="modal-body">
           <div class="form-group" onsubmit="upl">
             <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)" *ngIf="uploadProgress == 0">
-            <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()" *ngIf="uploadProgress == 0">
+            <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()"
+              *ngIf="uploadProgress == 0">
             <div *ngIf="uploadProgress != 0">
               <h4> Uploading...</h4>
-              <div class="progress" style="height:20px" >
+              <div class="progress" style="height:20px">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" [ngStyle]="{ 'width': uploadProgress + '%'}">
                   {{uploadProgress}} %
                 </div>

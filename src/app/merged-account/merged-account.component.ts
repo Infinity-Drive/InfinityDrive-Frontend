@@ -1,7 +1,7 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import Swal from 'sweetalert2';
 
@@ -20,66 +20,25 @@ export class MergedAccountComponent implements OnInit {
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
-
-  public pieChartLabels = [];
-  public pieChartData = [];
-  public pieChartType = 'pie';
-  standarizeFileData = (items, accountType, accountId) => {
-
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-
-      items.forEach(item => {
-
-        if (item.mimeType === 'application/vnd.google-apps.folder')
-          item['mimeType'] = 'folder';
-
-        item['accountType'] = 'gdrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-
-      });
-
-    }
-
-    if (accountType === 'odrive') {
-
-      items.forEach(item => {
-        // item has a file property if its a file and a folder property if its a folder
-        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-        item['accountType'] = 'odrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-      });
-
-    }
-
-    if (accountType === 'dropbox') {
-
-      items.entries.forEach(item => {
-        if (item['.tag'] === 'folder')
-          item['mimeType'] = 'folder';
-        else
-          item['mimeType'] = item.name.split('.')[1];
-
-        if (!item['client_modified'])
-          item['client_modified'] = '-';
-
-        standarizedItems.push({
-          id: item.id,
-          name: item.name,
-          mimeType: item['mimeType'],
-          size: item.size,
-          modifiedTime: item['client_modified'],
-          accountType: 'dropbox',
-          accountId: accountId
-        });
-      });
-
-    }
-    return standarizedItems;
+  public barChartLabels = [];
+  public barChartData = [];
+  public barChartType = 'bar';
+  public barChartOptions = {
+    // We use these empty structures as placeholders for dynamic theming.
+    title: {
+      text: 'Storage Usage (GB)',
+      display: true
+    },
+    scales: {
+      yAxes: [{
+          ticks: {
+              // Include a dollar sign in the ticks
+              callback: function(value, index, values) {
+                  return value + ' GB';
+              }
+          }
+      }]
+  }
   };
 
   constructor(private account: AccountService, private route: Router) {
@@ -245,16 +204,90 @@ export class MergedAccountComponent implements OnInit {
     return (size / Math.pow(1024, 3)).toFixed(2);
   }
 
-  plotGraph() {
-    let total = 0;
-    this.accounts.forEach((value) => {
-      this.pieChartLabels.push(value.email);
-      this.pieChartData.push(this.getSizeInGb(value.storage.used));
-      total = total + parseInt(value.storage.total);
-    });
-    this.pieChartLabels.push('Total Storage');
-    this.pieChartData.push(this.getSizeInGb(total));
+  standarizeFileData = (items, accountType, accountId) => {
 
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+
+      items.forEach(item => {
+
+        if (item.mimeType === 'application/vnd.google-apps.folder')
+          item['mimeType'] = 'folder';
+
+        item['accountType'] = 'gdrive';
+        item['account'] = 'Google Drive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+
+      });
+
+    }
+
+    if (accountType === 'odrive') {
+
+      items.forEach(item => {
+        // item has a file property if its a file and a folder property if its a folder
+        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+        item['accountType'] = 'odrive';
+        item['account'] = 'OneDrive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+      });
+
+    }
+
+    if (accountType === 'dropbox') {
+
+      items.entries.forEach(item => {
+        if (item['.tag'] === 'folder')
+          item['mimeType'] = 'folder';
+        else
+          item['mimeType'] = item.name.split('.')[1];
+
+        if (!item['client_modified'])
+          item['client_modified'] = '-';
+
+        standarizedItems.push({
+          id: item.id,
+          name: item.name,
+          mimeType: item['mimeType'],
+          size: item.size,
+          modifiedTime: item['client_modified'],
+          accountType: 'dropbox',
+          account: 'Dropbox',
+          accountId: accountId
+        });
+      });
+
+    }
+    return standarizedItems;
+  };
+
+  plotGraph() {
+
+    console.log(this.accounts)
+    let usedDataSet = [];
+    let totalDataSet = [];
+    let total = 0;
+    let used = 0;
+    this.accounts.forEach((value) => {
+      this.barChartLabels.push(`${value.account}(${value.email.split('@')[0]})`);
+      usedDataSet.push(this.getSizeInGb(value.storage.used));
+      totalDataSet.push(this.getSizeInGb(value.storage.total));
+      total += parseInt(value.storage.total);
+      used += parseInt(value.storage.used);
+    });
+
+    this.barChartLabels.push('Infinity Drive');
+    usedDataSet.push(this.getSizeInGb(used));
+    totalDataSet.push(this.getSizeInGb(total));
+
+    this.barChartData= [
+      { data: usedDataSet, label: 'Used' },
+      { data: totalDataSet, label: 'Total' }
+    ];
 
   }
 
