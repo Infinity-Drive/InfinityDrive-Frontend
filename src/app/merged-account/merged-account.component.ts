@@ -17,6 +17,7 @@ export class MergedAccountComponent implements OnInit {
   fileToUpload: File = null;
   uploadProgress = 0;
   accounts = [];
+  breadCrumbs = [];
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -72,6 +73,7 @@ export class MergedAccountComponent implements OnInit {
 
   getFiles() {
     this.loading = true;
+    this.breadCrumbs = []
     this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
       mergedAccountFiles.forEach(mergedAccount => {
         // console.log(mergedAccount.files, mergedAccount.accountType);
@@ -118,10 +120,21 @@ export class MergedAccountComponent implements OnInit {
 
   getFolderItems(folder) {
     this.loading = true;
+
+    // for maintaining breadCrumbs
+    const currentFolder = this.files.filter((f) => {
+      if (f.id === folder.id) {
+        return f;
+      }
+
+    });
+
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
       console.log(data);
       this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
       // console.log(this.files);
+      if (currentFolder.length !== 0)
+        this.breadCrumbs.push(currentFolder[0]);
       this.loading = false;
     });
   }
@@ -289,6 +302,12 @@ export class MergedAccountComponent implements OnInit {
       { data: totalDataSet, label: 'Total' }
     ];
 
+  }
+
+  // handling breadcrumb navigation
+  breadCrumbNavigation(folder, index) {
+    this.getFolderItems(folder)
+    this.breadCrumbs.splice(index + 1);
   }
 
 }

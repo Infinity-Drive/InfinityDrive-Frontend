@@ -6,7 +6,12 @@
     </canvas>
 
     <div class="name">
-      <h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Files</a></h3>
+      <!--<h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Files</a></h3>-->
+
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getFiles()">Infinity Drive</li>
+        <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue" (click)="breadCrumbNavigation(crum,i)" class="breadcrumb-item point">{{crum.name}}</li>
+      </ol>
     </div>
 
     <div class="actions">
