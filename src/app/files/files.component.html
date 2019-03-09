@@ -8,9 +8,9 @@
       <!--</h3>-->
 
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active point" routerLink="/Dashboard/Accounts">Accounts</li>
-        <li class="breadcrumb-item active point" (click)="getfiles(accountId)">{{currentAccount.account}} - {{currentAccount.email}}</li>
-        <li *ngFor="let crum of breadCrumbs;let i = index" (click)="breadCrumbNavigation(crum.id,i)" class="breadcrumb-item active point">{{crum.name}}</li>
+        <li class="breadcrumb-item point" style="color: dodgerblue" routerLink="/Dashboard/Accounts">Accounts</li>
+        <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getfiles(accountId)">{{currentAccount.account}} - {{currentAccount.email}}</li>
+        <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue" (click)="breadCrumbNavigation(crum.id,i)" class="breadcrumb-item point">{{crum.name}}</li>
       </ol>
     </div>
 
