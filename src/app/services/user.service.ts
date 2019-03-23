@@ -6,7 +6,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   // authenticating user
-  authnticateUser(email, pass) {
+  authenticateUser(email, pass) {
       // returning server result to the component
       return this.http.post('http://localhost:3000/users/login', {'email': email, 'password': pass} , {observe: 'response'});
   }

@@ -57,9 +57,21 @@
             </td>
           </ng-template>
 
-          <td class="d-none d-lg-block">
-            <a routerLink="../Dashboard/Storage/{{f.accountId}}">{{f.account}}</a>
+          <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
+            <a routerLink="../Dashboard/Storage/{{f.accountId}}">
+              <i class="fab fa-dropbox" *ngIf="f.accountType == 'dropbox'"></i>
+              <i class="fab fa-google-drive" *ngIf="f.accountType == 'gdrive'"></i>
+              <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
+              {{f.account}}
+            </a>
           </td>
+
+          <ng-template #merged>
+            <td class="d-none d-lg-block">
+              <i class="fas fa-infinity"></i> Infinity Drive
+            </td>
+          </ng-template>
+          
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
           <td>

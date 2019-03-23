@@ -76,7 +76,6 @@ export class MergedAccountComponent implements OnInit {
     this.breadCrumbs = []
     this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
       mergedAccountFiles.forEach(mergedAccount => {
-        // console.log(mergedAccount.files, mergedAccount.accountType);
         this.files.push(...this.standarizeFileData(mergedAccount.files, mergedAccount.accountType, mergedAccount['_id']));
       });
       console.log('merged files', this.files);
@@ -249,6 +248,14 @@ export class MergedAccountComponent implements OnInit {
         standarizedItems.push(item);
       });
 
+    }
+
+    if (accountType === 'merged') {
+      items.forEach(item => {
+        item['accountType'] = 'merged';
+        item['account'] = 'Merged';
+        standarizedItems.push(item);
+      });
     }
 
     if (accountType === 'dropbox') {

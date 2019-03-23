@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
     // to prevent page refresh on login button
     event.preventDefault();
     // calling authenticate method in userService to authenticate user
-    this.user.authnticateUser(email, pass).subscribe((data) => {
+    this.user.authenticateUser(email, pass).subscribe((data) => {
       // if header is returned then the user exsist
       if (data.headers.get('x-auth')) {
         // setting value to yes which means that the user is logged in and can access all routes
