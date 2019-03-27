@@ -1,6 +1,5 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
-import {BehaviorSubject} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 
 @Injectable()
 export class AccountService {
@@ -29,7 +28,7 @@ export class AccountService {
       })
     };
     // sending token code to server
-    return this.http.post(`http://localhost:3000/${type}/saveToken`, {code}, httpOptions);
+    return this.http.post(`http://localhost:3000/${type}/saveToken`, { code }, httpOptions);
   }
 
   // getting user accounts
@@ -48,7 +47,7 @@ export class AccountService {
 
   // getting files for a user account
   getFiles(id, type, folderId = undefined) {
-    
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -57,14 +56,11 @@ export class AccountService {
     };
 
     var url = `http://localhost:3000/${type}/listFiles/${id}`
-    
-    if(folderId)
-      url += `/${folderId}`;
-
+    folderId ? url += `/${folderId}` : url ;
     return this.http.get(url, httpOptions);
   }
 
-  getMergedAccountFiles(){
+  getMergedAccountFiles() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -113,7 +109,7 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     }
-    return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, {accountIds, status}, httpOptions);
+    return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, { accountIds, status }, httpOptions);
   }
 
   uploadFile(accountid, type, file) {
@@ -130,7 +126,7 @@ export class AccountService {
     const req = new HttpRequest('POST', `http://localhost:3000/${type}/upload/${accountid}`, formData, httpOptions);
     return this.http.request(req);
   }
-  
+
   splitUpload(file) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -143,6 +139,16 @@ export class AccountService {
     formData.append('file', file, file.name);
     const req = new HttpRequest('POST', 'http://localhost:3000/merged/upload', formData, httpOptions);
     return this.http.request(req);
+  }
+
+  downloadStream(fileId, type) {
+    return this.http.get(`http://localhost:3000/${type}/download/${fileId}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/octet-stream',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'blob',
+    });
   }
 }
 

@@ -2,7 +2,8 @@
 
   <div class="table-responsive">
 
-    <canvas *ngIf="accounts.length!==0" height="80" baseChart [datasets]="barChartData" [labels]="barChartLabels" [chartType]="barChartType" [options]="barChartOptions">
+    <canvas *ngIf="accounts.length!==0" height="80" baseChart [datasets]="barChartData" [labels]="barChartLabels"
+      [chartType]="barChartType" [options]="barChartOptions">
     </canvas>
 
     <div class="name">
@@ -10,14 +11,16 @@
 
       <ol class="breadcrumb">
         <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getFiles()">Infinity Drive</li>
-        <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue" (click)="breadCrumbNavigation(crum,i)" class="breadcrumb-item point">{{crum.name}}</li>
+        <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue"
+          (click)="breadCrumbNavigation(crum,i)" class="breadcrumb-item point">{{crum.name}}</li>
       </ol>
     </div>
 
     <div class="actions">
-      <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip" title="Link Account"></span>
-      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal" data-tooltip="tooltip"
-        title="Upload"></span>
+      <span class="oi" data-glyph="plus" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
+        title="Link Account"></span>
+      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"
+        data-tooltip="tooltip" title="Upload"></span>
       <span routerLink="/Dashboard/Accounts" class="oi" data-glyph="cog" data-tooltip="tooltip" title="Accounts"></span>
     </div>
 
@@ -51,10 +54,18 @@
           </ng-template>
 
           <ng-template #file>
-            <td (click)="getDownloadLink(f)" class="td-word-wrap point">
+            <td *ngIf="f.accountType != 'merged'; else mergedDownload" (click)="getDownloadLink(f)"
+              class="td-word-wrap point">
               <span class="oi" data-glyph="file"></span>
               {{f.name}}
             </td>
+            <ng-template #mergedDownload>
+              <td (click)="getDownloadStream(f)" class="td-word-wrap point">
+                <span class="oi" data-glyph="file"></span>
+                {{f.name}}
+              </td>
+            </ng-template>
+
           </ng-template>
 
           <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
@@ -71,7 +82,7 @@
               <i class="fas fa-infinity"></i> Infinity Drive
             </td>
           </ng-template>
-          
+
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
           <td>
@@ -102,13 +113,15 @@
         </div>
         <div class="modal-body">
           <div class="form-group" onsubmit="upl">
-            <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)" *ngIf="uploadProgress == 0">
+            <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)"
+              *ngIf="uploadProgress == 0">
             <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()"
               *ngIf="uploadProgress == 0">
             <div *ngIf="uploadProgress != 0">
               <h4> Uploading...</h4>
               <div class="progress" style="height:20px">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" [ngStyle]="{ 'width': uploadProgress + '%'}">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                  [ngStyle]="{ 'width': uploadProgress + '%'}">
                   {{uploadProgress}} %
                 </div>
               </div>

@@ -150,6 +150,21 @@ export class MergedAccountComponent implements OnInit {
     });
   }
 
+  getDownloadStream(file){
+    this.account.downloadStream(file._id, file.accountType).subscribe(blob =>{
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = file.name;
+      link.click();
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Shame on us', 'Unable to download file', 'error');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
+    });
+  }
+
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
   }
