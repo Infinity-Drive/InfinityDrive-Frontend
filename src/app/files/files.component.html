@@ -14,11 +14,11 @@
       </ol>
     </div>
 
-    <div class="actions">
-      <span class="oi" data-glyph="data-transfer-upload" data-toggle="modal" data-target="#uploadmodal"></span>
-      <!-- <span class="oi d-none d-lg-inline" data-glyph="list"></span>
-      <span class="oi d-none d-lg-inline" data-glyph="grid-three-up"></span> -->
-    </div>
+    <div class="actions mt-3" style="font-size:1.1em">
+        <i class="fas fa-file-upload mr-1" data-toggle="modal" data-target="#uploadmodal"
+        data-tooltip="tooltip" title="Upload"></i>
+        <i class="fas fa-archive" routerLink="/Dashboard/Accounts" data-tooltip="tooltip" title="Accounts"></i>
+      </div>
 
     <div style="clear:both"></div>
 
@@ -43,7 +43,7 @@
           <ng-template #folder>
             <td class="td-word-wrap" (click)="getFolderItems(f.id)">
               <a href="javascript:;">
-                <span class="oi" data-glyph="folder"></span>
+                <i class="fas fa-folder"></i>
                 {{f.name}}
               </a>
             </td>
@@ -51,7 +51,7 @@
 
           <ng-template #file>
             <td (click)="getDownloadLink(f.id)" class="td-word-wrap point">
-              <span class="oi" data-glyph="file"></span>
+              <i class="fas fa-file"></i>
               {{f.name}}
             </td>
           </ng-template>

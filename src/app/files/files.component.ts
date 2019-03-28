@@ -233,7 +233,9 @@ export class FilesComponent implements OnInit {
   }
 
   getModifiedTime(isoTime) {
-    return new Date(isoTime).toLocaleString();
+    if (isoTime != '-')
+      return new Date(isoTime).toLocaleString();
+    return '-';
   }
 
   // handling breadcrumb navigation

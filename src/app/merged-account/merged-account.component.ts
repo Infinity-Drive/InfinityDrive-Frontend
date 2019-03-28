@@ -124,12 +124,7 @@ export class MergedAccountComponent implements OnInit {
     this.loading = true;
 
     // for maintaining breadCrumbs
-    const currentFolder = this.files.filter((f) => {
-      if (f.id === folder.id) {
-        return f;
-      }
-
-    });
+    const currentFolder = this.files.filter(f => f.id === folder.id);
 
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
       console.log(data);
