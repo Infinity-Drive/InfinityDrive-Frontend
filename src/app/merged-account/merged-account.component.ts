@@ -3,6 +3,8 @@ import { AccountService } from '../services/account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
+import * as streamSaver from 'streamsaver';
+
 import Swal from 'sweetalert2';
 
 @Component({
@@ -23,7 +25,7 @@ export class MergedAccountComponent implements OnInit {
 
   public barChartLabels = [];
   public barChartData = [];
-  public barChartType = 'bar';
+  public barChartType = 'horizontalBar';
   public barChartOptions = {
     // We use these empty structures as placeholders for dynamic theming.
     title: {
@@ -31,15 +33,16 @@ export class MergedAccountComponent implements OnInit {
       display: true
     },
     scales: {
-      yAxes: [{
-          ticks: {
-              // Include a dollar sign in the ticks
-              callback: function(value, index, values) {
-                  return value + ' GB';
-              }
+      xAxes: [{
+        ticks: {
+          // Include a dollar sign in the ticks
+          callback: function (value, index, values) {
+            return value + ' GB';
           }
+        }
       }]
-  }
+    },
+    maintainAspectRatio: false
   };
 
   constructor(private account: AccountService, private route: Router) {
@@ -150,12 +153,32 @@ export class MergedAccountComponent implements OnInit {
     });
   }
 
-  getDownloadStream(file){
-    this.account.downloadStream(file._id, file.accountType).subscribe(blob =>{
-      var link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = file.name;
-      link.click();
+  getDownloadStream(file) {
+    this.account.downloadStream(file._id, file.accountType).then(res => {
+
+      const fileStream = streamSaver.createWriteStream(file.name, file.size);
+      const writer = fileStream.getWriter()
+
+      // more optimized
+      if (res.body.pipeTo) {
+        // like as we never did fileStream.getWriter()
+        writer.releaseLock()
+        return res.body.pipeTo(fileStream)
+      }
+
+      const reader = res.body.getReader()
+      const pump = () => reader.read()
+        .then(({ value, done }) => done
+          // close the stream so we stop writing
+          ? writer.close()
+          // Write one chunk, then get the next one
+          : writer.write(value).then(pump)
+        )
+
+      // Start the reader
+      pump().then(() =>
+        console.log('Closed the stream, Done writing')
+      )
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Unable to download file', 'error');
       console.log(err);
@@ -164,6 +187,20 @@ export class MergedAccountComponent implements OnInit {
       console.log(err.status);
     });
   }
+  // getDownloadStream(file){
+  //   this.account.downloadStream(file._id, file.accountType).subscribe(blob =>{
+  //     var link = document.createElement('a');
+  //     link.href = window.URL.createObjectURL(blob);
+  //     link.download = file.name;
+  //     link.click();
+  //   }, (err: HttpErrorResponse) => {
+  //     Swal.fire('Shame on us', 'Unable to download file', 'error');
+  //     console.log(err);
+  //     console.log(err.name);
+  //     console.log(err.message);
+  //     console.log(err.status);
+  //   });
+  // }
 
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
@@ -319,7 +356,7 @@ export class MergedAccountComponent implements OnInit {
     usedDataSet.push(this.getSizeInGb(used));
     totalDataSet.push(this.getSizeInGb(total));
 
-    this.barChartData= [
+    this.barChartData = [
       { data: usedDataSet, label: 'Used' },
       { data: totalDataSet, label: 'Total' }
     ];

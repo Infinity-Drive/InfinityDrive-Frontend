@@ -142,12 +142,12 @@ export class AccountService {
   }
 
   downloadStream(fileId, type) {
-    return this.http.get(`http://localhost:3000/${type}/download/${fileId}`, {
-      headers: new HttpHeaders({
+    return fetch(`http://localhost:3000/${type}/download/${fileId}`, {
+      method: "GET",
+      headers:{
         'Content-Type': 'application/octet-stream',
         'x-auth': localStorage.getItem('infinityToken')
-      }),
-      responseType: 'blob',
+      }
     });
   }
 }

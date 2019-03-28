@@ -1,10 +1,16 @@
 <div class="bodyCard p-5 shadow">
 
-  <div class="table-responsive">
+  <div *ngIf="accounts.length!==0" class="d-none d-sm-block">
+    <div>
+      <div style="height: 330px">
+        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+          [chartType]="barChartType">
+        </canvas>
+      </div>
+    </div>
+  </div>
 
-    <canvas *ngIf="accounts.length!==0" height="80" baseChart [datasets]="barChartData" [labels]="barChartLabels"
-      [chartType]="barChartType" [options]="barChartOptions">
-    </canvas>
+  <div class="table-responsive">
 
     <div class="name">
       <!--<h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Files</a></h3>-->
