@@ -5,7 +5,7 @@
     left: -250px;
     height: 100vh;
     z-index: 999;
-    background: white;
+    background: #FFFFFF;
     transition: all 0.3s;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
 }

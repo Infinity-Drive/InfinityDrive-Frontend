@@ -197,6 +197,18 @@ export class MergedAccountComponent implements OnInit {
   //   });
   // }
 
+  getProperties(file) {
+    this.account.getProperties(file.accountId, file.id, file.accountType).subscribe((data) => {
+      console.table(data);
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Shame on us', 'Unable to get file properties', 'error');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
+    });
+  }
+
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
   }
