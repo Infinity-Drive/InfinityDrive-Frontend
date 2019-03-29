@@ -75,6 +75,7 @@ export class MergedAccountComponent implements OnInit {
   }
 
   getFiles() {
+    this.files = []
     this.loading = true;
     this.breadCrumbs = []
     this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
