@@ -39,7 +39,7 @@ export class SignupComponent implements OnInit {
          // localStorage.setItem('infinityId', data.body['_id']);
          // localStorage.setItem('infinityName', data.body['name']);
 
-         Swal.fire('Congratulation!', 'Account created successfully', 'success');
+         Swal.fire('Account created successfully', 'Verify email to login', 'success');
          this.route.navigateByUrl('');
 
     }, (err: HttpErrorResponse) => {
