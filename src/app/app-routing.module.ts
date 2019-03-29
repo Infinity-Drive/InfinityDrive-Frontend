@@ -7,7 +7,7 @@ import { UserDashboardComponent } from './user-dashboard/user-dashboard.componen
 import { SignupComponent } from './signup/signup.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { FilesComponent } from './files/files.component';
-
+import { EmailVerificationComponent } from './email-verification/email-verification.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { MergedAccountComponent } from './merged-account/merged-account.component';
 
@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'Signup', component: SignupComponent },
   { path: 'PasswordReset', component: ForgotPasswordComponent },
+  { path: 'EmailVerification/:id', component: EmailVerificationComponent},
   {
     path: 'Dashboard', component: UserDashboardComponent, canActivate: [AuthGuardService]
     , children: [

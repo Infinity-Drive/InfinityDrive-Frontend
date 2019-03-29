@@ -20,6 +20,7 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { MergedAccountComponent } from './merged-account/merged-account.component';
 
 import { ChartsModule } from 'ng2-charts';
+import { EmailVerificationComponent } from './email-verification/email-verification.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ChartsModule } from 'ng2-charts';
     AccountsComponent,
     FilesComponent,
     SpinnerComponent,
-    MergedAccountComponent
+    MergedAccountComponent,
+    EmailVerificationComponent
   ],
   imports: [
     BrowserModule,

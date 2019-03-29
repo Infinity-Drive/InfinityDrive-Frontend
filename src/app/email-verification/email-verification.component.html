@@ -1,0 +1,11 @@
+<div class="bodyCard p-5 shadow">
+<h1>Email verification</h1>
+
+  <app-spinner *ngIf="loading"></app-spinner>
+  <div *ngIf="!loading && verified">
+    <h3 >You're Email has been verified You can now login</h3>
+    <a routerLink="">Sign In</a>
+  </div>
+  <h3 *ngIf="!loading && !verified">Unable to verify your Email Please try again</h3>
+
+</div>

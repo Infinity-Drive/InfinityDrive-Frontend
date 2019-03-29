@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 @Injectable()
 export class UserService {
 
@@ -16,6 +16,16 @@ export class UserService {
     // returning server result to the component
     return this.http.post('http://localhost:3000/users', {'email': email, 'password': pass, 'name': name } , { observe: 'response'});
   }
+
+  // verifying email
+  verifyEmail(token) {
+    const httpOptions = {
+      responseType: 'text' as 'text'
+    }
+    // returning server result to the component
+    return this.http.post('http://localhost:3000/users/verifyEmail', {'token': token} , httpOptions);
+  }
+
 }
 
 
