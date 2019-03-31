@@ -8,6 +8,7 @@ export class AccountService {
   // accountsObservable = this.accounts.asObservable();
 
   accounts = [];
+  baseUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {
   }
@@ -15,7 +16,7 @@ export class AccountService {
   // method for getting drive link for google authentication
   getAuthLink(type) {
     // this will return a promise with google authntication link
-    return this.http.get(`http://localhost:3000/${type}/authorize`);
+    return this.http.get(`${this.baseUrl}/${type}/authorize`);
   }
 
 
@@ -28,7 +29,7 @@ export class AccountService {
       })
     };
     // sending token code to server
-    return this.http.post(`http://localhost:3000/${type}/saveToken`, { code }, httpOptions);
+    return this.http.post(`${this.baseUrl}/${type}/saveToken`, { code }, httpOptions);
   }
 
   // getting user accounts
@@ -41,7 +42,7 @@ export class AccountService {
       })
     };
     // returning promise with user account array
-    return this.http.get('http://localhost:3000/users/getAccounts', httpOptions);
+    return this.http.get(`${this.baseUrl}/users/getAccounts`, httpOptions);
 
   }
 
@@ -55,7 +56,7 @@ export class AccountService {
       })
     };
 
-    var url = `http://localhost:3000/${type}/listFiles/${id}`
+    var url = `${this.baseUrl}/${type}/listFiles/${id}`
     folderId ? url += `/${folderId}` : url ;
     return this.http.get(url, httpOptions);
   }
@@ -67,7 +68,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.get('http://localhost:3000/merged/listFiles/', httpOptions);
+    return this.http.get(`${this.baseUrl}/merged/listFiles/`, httpOptions);
   }
 
   getDownloadUrl(accountId, fileId, type) {
@@ -77,7 +78,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.get(`http://localhost:3000/${type}/downloadUrl/${accountId}/${fileId}`, httpOptions);
+    return this.http.get(`${this.baseUrl}/${type}/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
 
   deleteAccount(id) {
@@ -87,7 +88,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.delete(`http://localhost:3000/users/remove/${id}`, httpOptions);
+    return this.http.delete(`${this.baseUrl}/users/remove/${id}`, httpOptions);
   }
 
   deleteFile(accountId, fileId, type) {
@@ -98,7 +99,9 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     }
-    return this.http.delete(`http://localhost:3000/${type}/delete/${accountId}/${fileId}`, httpOptions);
+    
+    const url = type === 'merged' ? `${this.baseUrl}/${type}/delete/${fileId}` : `${this.baseUrl}/${type}/delete/${accountId}/${fileId}`;
+    return this.http.delete(url, httpOptions);
   }
 
   getProperties(accountId, fileId, type) {
@@ -108,7 +111,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       }),
     }
-    return this.http.get(`http://localhost:3000/${type}/properties/${accountId}/${fileId}`, httpOptions);
+    return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
   changeMergeStatus(accountIds, status) {
@@ -119,7 +122,7 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     }
-    return this.http.patch(`http://localhost:3000/users/manage/accounts/merge`, { accountIds, status }, httpOptions);
+    return this.http.patch(`${this.baseUrl}/users/manage/accounts/merge`, { accountIds, status }, httpOptions);
   }
 
   uploadFile(accountid, type, file) {
@@ -133,7 +136,7 @@ export class AccountService {
     };
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    const req = new HttpRequest('POST', `http://localhost:3000/${type}/upload/${accountid}`, formData, httpOptions);
+    const req = new HttpRequest('POST', `${this.baseUrl}/${type}/upload/${accountid}`, formData, httpOptions);
     return this.http.request(req);
   }
 
@@ -147,12 +150,12 @@ export class AccountService {
     };
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    const req = new HttpRequest('POST', 'http://localhost:3000/merged/upload', formData, httpOptions);
+    const req = new HttpRequest('POST', `${this.baseUrl}/merged/upload`, formData, httpOptions);
     return this.http.request(req);
   }
 
   downloadStream(fileId, type) {
-    return fetch(`http://localhost:3000/${type}/download/${fileId}`, {
+    return fetch(`${this.baseUrl}/${type}/download/${fileId}`, {
       method: "GET",
       headers:{
         'Content-Type': 'application/octet-stream',

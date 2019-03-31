@@ -315,6 +315,7 @@ export class MergedAccountComponent implements OnInit {
 
     if (accountType === 'merged') {
       items.forEach(item => {
+        item['id'] = item._id;
         item['accountType'] = 'merged';
         item['account'] = 'Merged';
         standarizedItems.push(item);
