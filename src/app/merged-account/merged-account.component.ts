@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { AccountService } from '../services/account.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {AccountService} from '../services/account.service';
+import { Router} from '@angular/router';
+import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
 
@@ -44,6 +44,75 @@ export class MergedAccountComponent implements OnInit {
     },
     maintainAspectRatio: false
   };
+  standarizeFileData = (items, accountType, accountId) => {
+
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+
+      items.forEach(item => {
+
+        if (item.mimeType === 'application/vnd.google-apps.folder')
+          item['mimeType'] = 'folder';
+
+        item['accountType'] = 'gdrive';
+        item['account'] = 'Google Drive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+
+      });
+
+    }
+
+    if (accountType === 'odrive') {
+
+      items.forEach(item => {
+        // item has a file property if its a file and a folder property if its a folder
+        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+        item['accountType'] = 'odrive';
+        item['account'] = 'OneDrive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+      });
+
+    }
+
+    if (accountType === 'merged') {
+      items.forEach(item => {
+        item['id'] = item._id;
+        item['accountType'] = 'merged';
+        item['account'] = 'Merged';
+        standarizedItems.push(item);
+      });
+    }
+
+    if (accountType === 'dropbox') {
+
+      items.entries.forEach(item => {
+        if (item['.tag'] === 'folder')
+          item['mimeType'] = 'folder';
+        else
+          item['mimeType'] = item.name.split('.')[1];
+
+        if (!item['client_modified'])
+          item['client_modified'] = '-';
+
+        standarizedItems.push({
+          id: item.id,
+          name: item.name,
+          mimeType: item['mimeType'],
+          size: item.size,
+          modifiedTime: item['client_modified'],
+          accountType: 'dropbox',
+          account: 'Dropbox',
+          accountId: accountId
+        });
+      });
+
+    }
+    return standarizedItems;
+  };
 
   constructor(private account: AccountService, private route: Router) {
   }
@@ -57,7 +126,7 @@ export class MergedAccountComponent implements OnInit {
       this.account.getAccounts().subscribe((data: any) => {
         this.accounts = data;
         this.account.accounts = data;
-        if ( this.accounts.length === 0) {
+        if (this.accounts.length === 0) {
           this.route.navigateByUrl('Dashboard/Accounts');
         }
         this.loading = false;
@@ -78,9 +147,9 @@ export class MergedAccountComponent implements OnInit {
   }
 
   getFiles() {
-    this.files = []
+    this.files = [];
     this.loading = true;
-    this.breadCrumbs = []
+    this.breadCrumbs = [];
     this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
       mergedAccountFiles.forEach(mergedAccount => {
         this.files.push(...this.standarizeFileData(mergedAccount.files, mergedAccount.accountType, mergedAccount['_id']));
@@ -152,40 +221,6 @@ export class MergedAccountComponent implements OnInit {
     });
   }
 
-  getDownloadStream(file) {
-    this.account.downloadStream(file._id, file.accountType).then(res => {
-
-      const fileStream = streamSaver.createWriteStream(file.name, file.size);
-      const writer = fileStream.getWriter()
-
-      // more optimized
-      if (res.body.pipeTo) {
-        // like as we never did fileStream.getWriter()
-        writer.releaseLock()
-        return res.body.pipeTo(fileStream)
-      }
-
-      const reader = res.body.getReader()
-      const pump = () => reader.read()
-        .then(({ value, done }) => done
-          // close the stream so we stop writing
-          ? writer.close()
-          // Write one chunk, then get the next one
-          : writer.write(value).then(pump)
-        )
-
-      // Start the reader
-      pump().then(() =>
-        console.log('Closed the stream, Done writing')
-      )
-    }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to download file', 'error');
-      console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
-    });
-  }
   // getDownloadStream(file){
   //   this.account.downloadStream(file._id, file.accountType).subscribe(blob =>{
   //     var link = document.createElement('a');
@@ -200,6 +235,41 @@ export class MergedAccountComponent implements OnInit {
   //     console.log(err.status);
   //   });
   // }
+
+  getDownloadStream(file) {
+    this.account.downloadStream(file._id, file.accountType).then(res => {
+
+      const fileStream = streamSaver.createWriteStream(file.name, file.size);
+      const writer = fileStream.getWriter();
+
+      // more optimized
+      if (res.body.pipeTo) {
+        // like as we never did fileStream.getWriter()
+        writer.releaseLock();
+        return res.body.pipeTo(fileStream);
+      }
+
+      const reader = res.body.getReader();
+      const pump = () => reader.read()
+        .then(({value, done}) => done
+          // close the stream so we stop writing
+          ? writer.close()
+          // Write one chunk, then get the next one
+          : writer.write(value).then(pump)
+        );
+
+      // Start the reader
+      pump().then(() =>
+        console.log('Closed the stream, Done writing')
+      );
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Shame on us', 'Unable to download file', 'error');
+      console.log(err);
+      console.log(err.name);
+      console.log(err.message);
+      console.log(err.status);
+    });
+  }
 
   getProperties(file) {
     this.account.getProperties(file.accountId, file.id, file.accountType).subscribe((data) => {
@@ -279,79 +349,9 @@ export class MergedAccountComponent implements OnInit {
     return (size / Math.pow(1024, 3)).toFixed(2);
   }
 
-  standarizeFileData = (items, accountType, accountId) => {
-
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-
-      items.forEach(item => {
-
-        if (item.mimeType === 'application/vnd.google-apps.folder')
-          item['mimeType'] = 'folder';
-
-        item['accountType'] = 'gdrive';
-        item['account'] = 'Google Drive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-
-      });
-
-    }
-
-    if (accountType === 'odrive') {
-
-      items.forEach(item => {
-        // item has a file property if its a file and a folder property if its a folder
-        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-        item['accountType'] = 'odrive';
-        item['account'] = 'OneDrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-      });
-
-    }
-
-    if (accountType === 'merged') {
-      items.forEach(item => {
-        item['id'] = item._id;
-        item['accountType'] = 'merged';
-        item['account'] = 'Merged';
-        standarizedItems.push(item);
-      });
-    }
-
-    if (accountType === 'dropbox') {
-
-      items.entries.forEach(item => {
-        if (item['.tag'] === 'folder')
-          item['mimeType'] = 'folder';
-        else
-          item['mimeType'] = item.name.split('.')[1];
-
-        if (!item['client_modified'])
-          item['client_modified'] = '-';
-
-        standarizedItems.push({
-          id: item.id,
-          name: item.name,
-          mimeType: item['mimeType'],
-          size: item.size,
-          modifiedTime: item['client_modified'],
-          accountType: 'dropbox',
-          account: 'Dropbox',
-          accountId: accountId
-        });
-      });
-
-    }
-    return standarizedItems;
-  };
-
   plotGraph() {
 
-    console.log(this.accounts)
+    console.log(this.accounts);
     let usedDataSet = [];
     let totalDataSet = [];
     let total = 0;
@@ -369,16 +369,21 @@ export class MergedAccountComponent implements OnInit {
     totalDataSet.push(this.getSizeInGb(total));
 
     this.barChartData = [
-      { data: usedDataSet, label: 'Used' },
-      { data: totalDataSet, label: 'Total' }
+      {data: usedDataSet, label: 'Used'},
+      {data: totalDataSet, label: 'Total'}
     ];
 
   }
 
   // handling breadcrumb navigation
   breadCrumbNavigation(folder, index) {
-    this.getFolderItems(folder)
+    this.getFolderItems(folder);
     this.breadCrumbs.splice(index + 1);
+  }
+
+  // method for account navigation
+  navigateToAccount(id) {
+    this.route.navigateByUrl(`Dashboard/Storage/${id};from=root`);
   }
 
 }

@@ -12,7 +12,7 @@ export class UserDashboardComponent implements OnInit {
   userName: string;
   isOpened = false;
 
-  constructor(private route: Router, private accpunt: AccountService) { }
+  constructor(private route: Router, private account: AccountService) { }
 
   ngOnInit() {
     this.userName = localStorage.getItem('infinityName');
@@ -24,7 +24,7 @@ export class UserDashboardComponent implements OnInit {
     localStorage.removeItem('infinityEmail');
     localStorage.removeItem('infinityId');
     localStorage.removeItem('infinityName');
-    this.accpunt.accounts = [];
+    this.account.accounts = [];
     this.route.navigate(['']);
   }
 

@@ -4,21 +4,32 @@
 
     <div class="name">
       <!--<h3>-->
-        <!--<a routerLink="/Dashboard/Accounts">Accounts</a> > {{currentAccount.account}} - {{currentAccount.email}}-->
+      <!--<a routerLink="/Dashboard/Accounts">Accounts</a> > {{currentAccount.account}} - {{currentAccount.email}}-->
       <!--</h3>-->
 
       <ol class="breadcrumb">
-        <li class="breadcrumb-item point" style="color: dodgerblue" routerLink="/Dashboard/Accounts">Accounts</li>
-        <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getfiles(accountId)">{{currentAccount.account}} - {{currentAccount.email}}</li>
-        <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue" (click)="breadCrumbNavigation(crum.id,i)" class="breadcrumb-item point">{{crum.name}}</li>
+        <li *ngIf="from; else elseBlock" class="breadcrumb-item point" style="color: dodgerblue"
+            routerLink="/Dashboard">Infinity Drive
+        </li>
+        <ng-template #elseBlock>
+          <li class="breadcrumb-item point" style="color: dodgerblue" routerLink="/Dashboard/Accounts">
+            Accounts
+          </li>
+        </ng-template>
+        <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getfiles(accountId)">
+          {{currentAccount.account}} - {{currentAccount.email}}
+        </li>
+        <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue"
+            (click)="breadCrumbNavigation(crum.id,i)" class="breadcrumb-item point">{{crum.name}}
+        </li>
       </ol>
     </div>
 
     <div class="actions mt-3" style="font-size:1.1em">
-        <i class="fas fa-file-upload mr-3 point" data-toggle="modal" data-target="#uploadmodal"
-        data-tooltip="tooltip" title="Upload"></i>
-        <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" data-tooltip="tooltip" title="Accounts"></i>
-      </div>
+      <i class="fas fa-file-upload mr-3 point" data-toggle="modal" data-target="#uploadmodal"
+         data-tooltip="tooltip" title="Upload"></i>
+      <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" data-tooltip="tooltip" title="Accounts"></i>
+    </div>
 
     <div style="clear:both"></div>
 
@@ -26,48 +37,48 @@
 
     <table class="table table-hover" *ngIf="!loading && files.length != 0">
       <thead>
-        <tr>
-          <th scope="col" class="border-fix">Name</th>
-          <th scope="col" class="d-none d-lg-block border-fix">Type</th>
-          <th scope="col" class="border-fix">Size</th>
-          <th scope="col" class="border-fix d-none d-md-block">Modified</th>
-          <th scope="col" class="border-fix">Action</th>
-        </tr>
+      <tr>
+        <th scope="col" class="border-fix">Name</th>
+        <th scope="col" class="d-none d-lg-block border-fix">Type</th>
+        <th scope="col" class="border-fix">Size</th>
+        <th scope="col" class="border-fix d-none d-md-block">Modified</th>
+        <th scope="col" class="border-fix">Action</th>
+      </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let f of files; let i = index">
+      <tr *ngFor="let f of files; let i = index">
 
-          <div *ngIf="f.mimeType=='folder'; then folder ; else file">
-          </div>
+        <div *ngIf="f.mimeType=='folder'; then folder ; else file">
+        </div>
 
-          <ng-template #folder>
-            <td class="td-word-wrap" (click)="getFolderItems(f.id)">
-              <a href="javascript:;">
-                <i class="fas fa-folder"></i>
-                {{f.name}}
-              </a>
-            </td>
-          </ng-template>
-
-          <ng-template #file>
-            <td (click)="getDownloadLink(f.id)" class="td-word-wrap point">
-              <i class="fas fa-file"></i>
+        <ng-template #folder>
+          <td class="td-word-wrap" (click)="getFolderItems(f.id)">
+            <a href="javascript:;">
+              <i class="fas fa-folder"></i>
               {{f.name}}
-            </td>
-          </ng-template>
-
-          <td class="d-none d-lg-block">{{f.mimeType}}</td>
-          <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-          <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
-          <td>
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false"></a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item point" (click)="deleteFile(f.id)">Delete</a>
-              <!-- <a class="dropdown-item">Share</a> -->
-            </div>
+            </a>
           </td>
-        </tr>
+        </ng-template>
+
+        <ng-template #file>
+          <td (click)="getDownloadLink(f.id)" class="td-word-wrap point">
+            <i class="fas fa-file"></i>
+            {{f.name}}
+          </td>
+        </ng-template>
+
+        <td class="d-none d-lg-block">{{f.mimeType}}</td>
+        <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
+        <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
+        <td>
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false"></a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item point" (click)="deleteFile(f.id)">Delete</a>
+            <!-- <a class="dropdown-item">Share</a> -->
+          </div>
+        </td>
+      </tr>
       </tbody>
     </table>
 
@@ -80,19 +91,22 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">File Upload</h5>
-            <button type="button" #btnClose class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+          <h5 class="modal-title">File Upload</h5>
+          <button type="button" #btnClose class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="modal-body">
           <div class="form-group" onsubmit="upl">
-            <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)" *ngIf="uploadProgress == 0">
-            <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()" *ngIf="uploadProgress == 0">
+            <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)"
+                   *ngIf="uploadProgress == 0">
+            <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()"
+                   *ngIf="uploadProgress == 0">
             <div *ngIf="uploadProgress != 0">
               <h4> Uploading...</h4>
-              <div class="progress" style="height:20px" >
-                <div class="progress-bar progress-bar-striped progress-bar-animated" [ngStyle]="{ 'width': uploadProgress + '%'}">
+              <div class="progress" style="height:20px">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     [ngStyle]="{ 'width': uploadProgress + '%'}">
                   {{uploadProgress}} %
                 </div>
               </div>

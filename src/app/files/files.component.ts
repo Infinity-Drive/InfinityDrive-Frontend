@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
 
 import Swal from 'sweetalert2';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-files',
@@ -21,65 +22,24 @@ export class FilesComponent implements OnInit {
   uploadProgress = 0;
   loading = false;
   breadCrumbs = [];
+  from = false;
 
   @ViewChild('btnClose') btnClose: ElementRef;
-  standarizeFileData = (items, accountType) => {
 
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-      items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
-          if (item.mimeType === 'application/vnd.google-apps.folder')
-            item['mimeType'] = 'folder';
-          standarizedItems.push(item);
-        }
-      });
-    }
-
-    if (accountType === 'odrive') {
-      items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
-          // item has a file property if its a file and a folder property if its a folder
-          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-          standarizedItems.push(item);
-        }
-      });
-    }
-
-    if (accountType === 'dropbox') {
-      items.entries.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
-          if (item['.tag'] === 'folder')
-            item['mimeType'] = 'folder';
-          else
-            item['mimeType'] = item.name.split('.')[1];
-
-          if (!item['client_modified'])
-            item['client_modified'] = '-';
-
-          standarizedItems.push({
-            id: item.id,
-            name: item.name,
-            mimeType: item['mimeType'],
-            size: item.size,
-            modifiedTime: item['client_modified']
-          });
-        }
-      });
-    }
-    return standarizedItems;
-  };
-
-  constructor(private account: AccountService, private activeRoute: ActivatedRoute) {
+  constructor(private account: AccountService, private activeRoute: ActivatedRoute, private location: Location) {
   }
 
   ngOnInit() {
     this.activeRoute.params.subscribe((params) => {
       this.accountId = params.id;
+      console.log(params);
       // this.account.accountsObservable.subscribe(data => this.accounts = data);
 
+      if (params['from']) {
+        this.from = true;
+        console.log(this.from)
+        this.location.replaceState(`Dashboard/Storage/${params['id']}`);
+      }
       this.accounts = this.account.accounts;
 
       if (this.accounts.length === 0) {
@@ -243,5 +203,54 @@ export class FilesComponent implements OnInit {
     this.getFolderItems(id);
     this.breadCrumbs.splice(index + 1);
   }
+
+  standarizeFileData = (items, accountType) => {
+
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+      items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item.mimeType === 'application/vnd.google-apps.folder')
+            item['mimeType'] = 'folder';
+          standarizedItems.push(item);
+        }
+      });
+    }
+
+    if (accountType === 'odrive') {
+      items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          // item has a file property if its a file and a folder property if its a folder
+          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+          standarizedItems.push(item);
+        }
+      });
+    }
+
+    if (accountType === 'dropbox') {
+      items.entries.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item['.tag'] === 'folder')
+            item['mimeType'] = 'folder';
+          else
+            item['mimeType'] = item.name.split('.')[1];
+
+          if (!item['client_modified'])
+            item['client_modified'] = '-';
+
+          standarizedItems.push({
+            id: item.id,
+            name: item.name,
+            mimeType: item['mimeType'],
+            size: item.size,
+            modifiedTime: item['client_modified']
+          });
+        }
+      });
+    }
+    return standarizedItems;
+  };
 
 }
