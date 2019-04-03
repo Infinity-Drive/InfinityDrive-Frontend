@@ -114,17 +114,6 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
-  changeMergeStatus(accountIds, status) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-auth': localStorage.getItem('infinityToken')
-      }),
-      responseType: 'text' as 'text'
-    }
-    return this.http.patch(`${this.baseUrl}/users/manage/accounts/merge`, { accountIds, status }, httpOptions);
-  }
-
   uploadFile(accountid, type, file) {
     const httpOptions = {
       headers: new HttpHeaders({

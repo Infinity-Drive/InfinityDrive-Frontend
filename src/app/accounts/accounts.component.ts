@@ -9,11 +9,10 @@ import Swal from 'sweetalert2';
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
-export class AccountsComponent implements OnInit {
 
+export class AccountsComponent implements OnInit {
   // user accounts array
   accounts = [];
-  accountsToMerge = [];
   name = '';
   loading = false;
 
@@ -39,9 +38,6 @@ export class AccountsComponent implements OnInit {
           }
           this.router.navigateByUrl('Dashboard/Accounts');
           console.log(err);
-          console.log(err.name);
-          console.log(err.message);
-          console.log(err.status);
         });
       } else {
         this.accounts = this.account.accounts;
@@ -64,22 +60,6 @@ export class AccountsComponent implements OnInit {
     // this.account.accountsObservable.subscribe(data => this.accounts = data);
 
   }
-
-  getIndividualAccounts() {
-    return this.accounts.filter(account => !account.merged);
-  }
-
-  getMergedAccounts() {
-    return this.accounts.filter(account => account.merged);
-  }
-
-  updateMergedAccounts(accountId, values) {
-    if (values.currentTarget.checked)
-      this.accountsToMerge.push(accountId);
-    else
-      this.accountsToMerge = this.accountsToMerge.filter(id => id !== accountId);
-  }
-
   // method for adding client drive
   addDrive(type) {
     localStorage.setItem('AddingAccountType', type);
@@ -90,9 +70,6 @@ export class AccountsComponent implements OnInit {
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Server Not responding', 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -110,11 +87,7 @@ export class AccountsComponent implements OnInit {
       if (result.value) {
 
         this.account.deleteAccount(id).subscribe((data) => {
-          this.account.accounts = this.account.accounts.filter(function (value, index, arr) {
-
-            return value['_id'] !== id;
-
-          });
+          this.account.accounts = this.account.accounts.filter(account =>  account['_id'] !== id);
           Swal.fire(
             'Removed!',
             'Storage has been removed successfully',
@@ -125,83 +98,14 @@ export class AccountsComponent implements OnInit {
         }, (err: HttpErrorResponse) => {
           Swal.fire('Shame on us', 'Unable to unlink account', 'error');
           console.log(err);
-          console.log(err.name);
-          console.log(err.message);
-          console.log(err.status);
         });
       }
     });
 
-  }
-
-  mergeAccounts() {
-    if (this.accountsToMerge.length >= 2) {
-      this.account.changeMergeStatus(this.accountsToMerge, true).subscribe((data) => {
-        this.accountsToMerge.forEach((value) => {
-          this.accounts.filter((value1) => {
-            if (value1['_id'] === value) {
-              value1.merged = true;
-            }
-          });
-        });
-        this.accountsToMerge = [];
-      }, (err: HttpErrorResponse) => {
-        Swal.fire('Shame on us', 'Unable to merge accounts', 'error');
-        console.log(err);
-        console.log(err.name);
-        console.log(err.message);
-        console.log(err.status);
-      });
-    } else
-      return Swal.fire('Select two or more account to merge!');
-
-  }
-
-  demergeAccounts() {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You storages will be demerged!',
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, demerge it!'
-    }).then((result) => {
-      if (result.value) {
-
-        this.account.changeMergeStatus(this.getMergedAccounts(), false).subscribe((data) => {
-          this.accounts.filter(value => value.merged = false);
-          this.accountsToMerge = [];
-          Swal.fire(
-            'Demerged!',
-            'Your storages has been demerged.',
-            'success'
-          );
-        }, (err: HttpErrorResponse) => {
-          Swal.fire('Shame on us', 'Unable to demerge accounts', 'error');
-          console.log(err);
-          console.log(err.name);
-          console.log(err.message);
-          console.log(err.status);
-        });
-      }
-    });
   }
 
   getSizeInGb(size) {
     return (size / Math.pow(1024, 3)).toFixed(2);
-  }
-
-  getMergedAccountsStorage() {
-
-    var total = 0;
-    var used = 0;
-    this.getMergedAccounts().forEach(account => {
-      total += Number(account.storage.total);
-      used += Number(account.storage.used);
-    });
-
-    return {used: (used / Math.pow(1024, 3)).toFixed(2), total: (total / Math.pow(1024, 3)).toFixed(2)};
   }
 
   // navigating to respective route
