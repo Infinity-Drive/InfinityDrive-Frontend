@@ -1,7 +1,7 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import { Router} from '@angular/router';
-import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
 
@@ -27,7 +27,6 @@ export class MergedAccountComponent implements OnInit {
   public barChartData = [];
   public barChartType = 'horizontalBar';
   public barChartOptions = {
-    // We use these empty structures as placeholders for dynamic theming.
     title: {
       text: 'Storage Usage (GB)',
       display: true
@@ -44,6 +43,37 @@ export class MergedAccountComponent implements OnInit {
     },
     maintainAspectRatio: false
   };
+
+  constructor(private account: AccountService, private route: Router) {
+  }
+
+  ngOnInit() {
+
+    this.accounts = this.account.accounts;
+
+    if (this.accounts.length === 0) {
+      this.loading = true;
+      this.account.getAccounts().subscribe((data: any) => {
+        this.accounts = data;
+        this.account.accounts = data;
+        if (this.accounts.length === 0) {
+          this.route.navigateByUrl('Dashboard/Accounts');
+        }
+        this.loading = false;
+        this.getFiles();
+        this.plotGraph();
+
+      }, (err: any) => {
+        this.loading = false;
+        this.accounts = [];
+        this.account.accounts = [];
+      });
+    } else {
+      this.getFiles();
+      this.plotGraph();
+    }
+  }
+
   standarizeFileData = (items, accountType, accountId) => {
 
     var standarizedItems = [];
@@ -114,38 +144,6 @@ export class MergedAccountComponent implements OnInit {
     return standarizedItems;
   };
 
-  constructor(private account: AccountService, private route: Router) {
-  }
-
-  ngOnInit() {
-
-    this.accounts = this.account.accounts;
-
-    if (this.accounts.length === 0) {
-      this.loading = true;
-      this.account.getAccounts().subscribe((data: any) => {
-        this.accounts = data;
-        this.account.accounts = data;
-        if (this.accounts.length === 0) {
-          this.route.navigateByUrl('Dashboard/Accounts');
-        }
-        this.loading = false;
-        this.getFiles();
-        this.plotGraph();
-
-      }, (err: any) => {
-        this.loading = false;
-        this.accounts = [];
-        this.account.accounts = [];
-      });
-    } else {
-      this.getFiles();
-      this.plotGraph();
-    }
-
-
-  }
-
   getFiles() {
     this.files = [];
     this.loading = true;
@@ -154,20 +152,15 @@ export class MergedAccountComponent implements OnInit {
       mergedAccountFiles.forEach(mergedAccount => {
         this.files.push(...this.standarizeFileData(mergedAccount.files, mergedAccount.accountType, mergedAccount['_id']));
       });
-      console.log('merged files', this.files);
       this.loading = false;
     }, (err: HttpErrorResponse) => {
       if (err.error === 'No account found!') {
         this.route.navigateByUrl('Dashboard/Accounts');
       } else {
-        Swal.fire('Shame on us', err.error, 'error');
+        Swal.fire('Error', err.error, 'error');
         console.log(err);
-        console.log(err.name);
-        console.log(err.message);
-        console.log(err.status);
       }
     });
-
   }
 
   deleteFile(file) {
@@ -188,6 +181,9 @@ export class MergedAccountComponent implements OnInit {
             'Your file has been deleted.',
             'success'
           );
+        }, (err: HttpErrorResponse) => {
+          Swal.fire('Error', err.error, 'error');
+          console.log(err);
         });
       }
     });
@@ -200,12 +196,14 @@ export class MergedAccountComponent implements OnInit {
     const currentFolder = this.files.filter(f => f.id === folder.id);
 
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
-      console.log(data);
       this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
       // console.log(this.files);
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
       this.loading = false;
+    }, (err: HttpErrorResponse) => {
+      Swal.fire('Error', err.error, 'error');
+      console.log(err);
     });
   }
 
@@ -213,28 +211,10 @@ export class MergedAccountComponent implements OnInit {
     this.account.getDownloadUrl(file.accountId, file.id, file.accountType).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to download file', 'error');
+      Swal.fire('Error', err.error, 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
-
-  // getDownloadStream(file){
-  //   this.account.downloadStream(file._id, file.accountType).subscribe(blob =>{
-  //     var link = document.createElement('a');
-  //     link.href = window.URL.createObjectURL(blob);
-  //     link.download = file.name;
-  //     link.click();
-  //   }, (err: HttpErrorResponse) => {
-  //     Swal.fire('Shame on us', 'Unable to download file', 'error');
-  //     console.log(err);
-  //     console.log(err.name);
-  //     console.log(err.message);
-  //     console.log(err.status);
-  //   });
-  // }
 
   getDownloadStream(file) {
     this.account.downloadStream(file._id, file.accountType).then(res => {
@@ -251,7 +231,7 @@ export class MergedAccountComponent implements OnInit {
 
       const reader = res.body.getReader();
       const pump = () => reader.read()
-        .then(({value, done}) => done
+        .then(({ value, done }) => done
           // close the stream so we stop writing
           ? writer.close()
           // Write one chunk, then get the next one
@@ -263,11 +243,8 @@ export class MergedAccountComponent implements OnInit {
         console.log('Closed the stream, Done writing')
       );
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to download file', 'error');
+      Swal.fire('Error', err.error, 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -275,11 +252,8 @@ export class MergedAccountComponent implements OnInit {
     this.account.getProperties(file.accountId, file.id, file.accountType).subscribe((data) => {
       console.table(data);
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to get file properties', 'error');
+      Swal.fire('Error', err.error, 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -307,12 +281,9 @@ export class MergedAccountComponent implements OnInit {
         this.uploadProgress = 0;
       }
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to upload file', 'error');
+      Swal.fire('Error', err.error, 'error');
       this.uploadProgress = 0;
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -324,11 +295,8 @@ export class MergedAccountComponent implements OnInit {
       // opening a window for drive link for authentication
       window.open(data['url'], '_self');
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Server Not responding', 'error');
+      Swal.fire('Error', err.error, 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -350,8 +318,6 @@ export class MergedAccountComponent implements OnInit {
   }
 
   plotGraph() {
-
-    console.log(this.accounts);
     let usedDataSet = [];
     let totalDataSet = [];
     let total = 0;
@@ -369,8 +335,8 @@ export class MergedAccountComponent implements OnInit {
     totalDataSet.push(this.getSizeInGb(total));
 
     this.barChartData = [
-      {data: usedDataSet, label: 'Used'},
-      {data: totalDataSet, label: 'Total'}
+      { data: usedDataSet, label: 'Used' },
+      { data: totalDataSet, label: 'Total' }
     ];
 
   }
