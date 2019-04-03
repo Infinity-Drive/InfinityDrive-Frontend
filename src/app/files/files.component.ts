@@ -32,7 +32,6 @@ export class FilesComponent implements OnInit {
   ngOnInit() {
     this.activeRoute.params.subscribe((params) => {
       this.accountId = params.id;
-      console.log(params);
       // this.account.accountsObservable.subscribe(data => this.accounts = data);
 
       if (params['from']) {
@@ -73,12 +72,10 @@ export class FilesComponent implements OnInit {
       this.loading = false;
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to getfiles', 'error');
+      const errorMessage = err.error ? err.error : 'Unable to get files';
+      Swal.fire('Error', errorMessage, 'error');
       this.loading = false;
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -86,11 +83,9 @@ export class FilesComponent implements OnInit {
     this.account.getDownloadUrl(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to download file', 'error');
+      const errorMessage = err.error ? err.error : 'Unable to download file';
+      Swal.fire('Error', errorMessage, 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -98,12 +93,7 @@ export class FilesComponent implements OnInit {
     this.loading = true;
 
     // for maintaining breadCrumbs
-    const currentFolder = this.files.filter((f) => {
-      if (f.id === folderId) {
-        return f;
-      }
-
-    });
+    const currentFolder = this.files.filter(f => f.id === folderId);
 
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
       console.log(data);
@@ -113,12 +103,10 @@ export class FilesComponent implements OnInit {
       this.loading = false;
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to get files', 'error');
+      const errorMessage = err.error ? err.error : 'Unable to get files';
+      Swal.fire('Error', errorMessage, 'error');
       this.loading = false;
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
     });
   }
 
@@ -142,11 +130,9 @@ export class FilesComponent implements OnInit {
             'success'
           );
         }, (err: HttpErrorResponse) => {
-          Swal.fire('Shame on us', 'Unable to delete file', 'error');
+          const errorMessage = err.error ? err.error : 'Unable to delete file';
+          Swal.fire('Error', errorMessage, 'error');
           console.log(err);
-          console.log(err.name);
-          console.log(err.message);
-          console.log(err.status);
         });
       }
     });
@@ -176,11 +162,9 @@ export class FilesComponent implements OnInit {
       }
 
     }, (err: HttpErrorResponse) => {
-      Swal.fire('Shame on us', 'Unable to upload file', 'error');
+      const errorMessage = err.error ? err.error : 'Unable to upload file';
+      Swal.fire('Error', errorMessage, 'error');
       console.log(err);
-      console.log(err.name);
-      console.log(err.message);
-      console.log(err.status);
       this.uploadProgress = 0;
     });
   }
