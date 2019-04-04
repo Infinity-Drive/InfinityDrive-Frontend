@@ -152,6 +152,18 @@ export class AccountService {
       }
     });
   }
+
+  createFolder(accountId, folderName, type, parentFolder, path) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    const body = { folderName, parentFolder, path};
+    return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
+  }
+ 
 }
 
 

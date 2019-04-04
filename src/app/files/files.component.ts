@@ -1,10 +1,10 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {ActivatedRoute} from '@angular/router';
-import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import Swal from 'sweetalert2';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-files',
@@ -167,6 +167,48 @@ export class FilesComponent implements OnInit {
       console.log(err);
       this.uploadProgress = 0;
     });
+  }
+
+  createFolder() {
+    Swal.fire({
+      title: 'New folder',
+      input: 'text',
+      confirmButtonText: 'Create',
+      // inputValue: inputValue,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Folder name can\'t be empty';
+        }
+        this.account.createFolder(this.accountId, value, this.currentAccount['accountType'],
+          this.getCurrentFolder(), this.getCurrentPath()).subscribe((data: any) => {
+            this.getfiles(this.accountId);
+            Swal.fire({
+              type: 'success',
+              title: 'Successful',
+              text: 'Folder created'
+            });
+          }, (err: HttpErrorResponse) => {
+            const errorMessage = err.error ? err.error : 'Unable to create folder';
+            Swal.fire('Error', errorMessage, 'error');
+            console.log(err);
+          });
+      }
+    })
+  }
+
+  getCurrentFolder() {
+    return this.breadCrumbs.length !== 0 ? this.breadCrumbs[this.breadCrumbs.length - 1].id : 'root';
+  }
+
+  getCurrentPath() {
+    let path = '/'
+    if (this.breadCrumbs.length !== 0) {
+      this.breadCrumbs.forEach(crumb => {
+        path += `${crumb.name}/`
+      });
+    }
+    return path;
   }
 
   getSizeInMb(size) {
