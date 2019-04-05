@@ -181,8 +181,8 @@ export class FilesComponent implements OnInit {
           return 'Folder name can\'t be empty';
         }
         this.account.createFolder(this.accountId, value, this.currentAccount['accountType'],
-          this.getCurrentFolder(), this.getCurrentPath()).subscribe((data: any) => {
-            this.getfiles(this.accountId);
+          this.getCurrentFolderId(), this.getCurrentPath()).subscribe((item: any) => {
+            this.files.push(item);
             Swal.fire({
               type: 'success',
               title: 'Successful',
@@ -197,7 +197,7 @@ export class FilesComponent implements OnInit {
     })
   }
 
-  getCurrentFolder() {
+  getCurrentFolderId() {
     return this.breadCrumbs.length !== 0 ? this.breadCrumbs[this.breadCrumbs.length - 1].id : 'root';
   }
 
