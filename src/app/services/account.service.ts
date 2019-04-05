@@ -114,7 +114,7 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
-  uploadFile(accountid, type, file) {
+  uploadFile(accountid, type, file, parentId, path) {
     const httpOptions = {
       headers: new HttpHeaders({
         'x-filesize': file.size.toString(),
@@ -124,6 +124,8 @@ export class AccountService {
       reportProgress: true
     };
     const formData: FormData = new FormData();
+    formData.append('parentId', parentId);
+    formData.append('path', path);
     formData.append('file', file, file.name);
     const req = new HttpRequest('POST', `${this.baseUrl}/${type}/upload/${accountid}`, formData, httpOptions);
     return this.http.request(req);

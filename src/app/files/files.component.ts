@@ -143,30 +143,30 @@ export class FilesComponent implements OnInit {
   }
 
   uploadFile() {
-    this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload).subscribe((event: any) => {
+    this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload,
+      this.getCurrentFolderId(), this.getCurrentPath()).subscribe((event: any) => {
 
-      if (event.type === HttpEventType.UploadProgress) {
-        this.uploadProgress = Math.round(100 * event.loaded / event.total);
-      }
+        if (event.type === HttpEventType.UploadProgress) {
+          this.uploadProgress = Math.round(100 * event.loaded / event.total);
+        }
 
-      else if (event instanceof HttpResponse) {
-        console.log('File is completely uploaded!');
-        this.getfiles(this.accountId);
-        this.btnClose.nativeElement.click();
-        Swal.fire({
-          type: 'success',
-          title: 'Successful',
-          text: 'File has been uploaded'
-        });
+        else if (event instanceof HttpResponse) {
+          this.getfiles(this.accountId);
+          this.btnClose.nativeElement.click();
+          Swal.fire({
+            type: 'success',
+            title: 'Successful',
+            text: 'File has been uploaded'
+          });
+          this.uploadProgress = 0;
+        }
+
+      }, (err: HttpErrorResponse) => {
+        const errorMessage = err.error ? err.error : 'Unable to upload file';
+        Swal.fire('Error', errorMessage, 'error');
+        console.log(err);
         this.uploadProgress = 0;
-      }
-
-    }, (err: HttpErrorResponse) => {
-      const errorMessage = err.error ? err.error : 'Unable to upload file';
-      Swal.fire('Error', errorMessage, 'error');
-      console.log(err);
-      this.uploadProgress = 0;
-    });
+      });
   }
 
   createFolder() {
