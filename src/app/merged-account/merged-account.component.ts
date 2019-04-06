@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
-
 import Swal from 'sweetalert2';
 
 @Component({
@@ -73,7 +72,7 @@ export class MergedAccountComponent implements OnInit {
       this.plotGraph();
     }
   }
-
+  
   getFiles() {
     this.files = [];
     this.loading = true;
@@ -207,7 +206,7 @@ export class MergedAccountComponent implements OnInit {
       else if (data instanceof HttpResponse) {
         // if we're getting a mongo object id we need to assign it to id
         // since, we're always interpreting ids with .id
-        if(data.body._id)
+        if (data.body._id)
           data.body.id = data.body._id;
         console.log(data.body);
         this.files.push(data.body);
