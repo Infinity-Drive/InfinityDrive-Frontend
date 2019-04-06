@@ -11,16 +11,16 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { FilesComponent } from './files/files.component';
-
+import { MergedAccountComponent } from './merged-account/merged-account.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { EmailVerificationComponent } from './email-verification/email-verification.component';
 
 import { UserService } from './services/user.service';
 import { AccountService } from './services/account.service';
 import { AuthGuardService } from './services/auth-guard.service';
-import { SpinnerComponent } from './spinner/spinner.component';
-import { MergedAccountComponent } from './merged-account/merged-account.component';
 
 import { ChartsModule } from 'ng2-charts';
-import { EmailVerificationComponent } from './email-verification/email-verification.component';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -40,7 +40,8 @@ import { EmailVerificationComponent } from './email-verification/email-verificat
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ChartsModule
+    ChartsModule,
+    NgbTooltipModule
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

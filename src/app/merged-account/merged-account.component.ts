@@ -257,6 +257,14 @@ export class MergedAccountComponent implements OnInit {
     return (size / Math.pow(1024, 3)).toFixed(2);
   }
 
+  getAccountEmail(id){
+    const account = this.accounts.find(account => account._id === id);
+    if(account){
+      return account.email;
+    }
+    return '-';
+  }
+
   plotGraph() {
     let usedDataSet = [];
     let totalDataSet = [];

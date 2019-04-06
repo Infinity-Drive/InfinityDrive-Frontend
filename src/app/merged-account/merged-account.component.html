@@ -23,11 +23,11 @@
     </div>
 
     <div class="actions mt-3" style="font-size:1.1em">
-      <i class="fas fa-plus mr-3 point" data-toggle="modal" data-target="#accountsModal" data-tooltip="tooltip"
-      title="Link Account"></i>
+      <i class="fas fa-plus mr-3 point" data-toggle="modal" data-target="#accountsModal"
+      ngbTooltip="Link Account"></i>
       <i class="fas fa-file-upload mr-3 point" data-toggle="modal" data-target="#uploadmodal"
-      data-tooltip="tooltip" title="Upload"></i>
-      <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" data-tooltip="tooltip" title="Accounts"></i>
+      ngbTooltip="Upload"></i>
+      <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
     </div>
 
     <div style="clear:both"></div>
@@ -75,7 +75,8 @@
           </ng-template>
 
           <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
-            <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point">
+            <ng-template #tipContent>{{getAccountEmail(f.accountId)}}</ng-template>
+            <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point" [ngbTooltip]="tipContent">
               <i class="fab fa-dropbox" *ngIf="f.accountType == 'dropbox'"></i>
               <i class="fab fa-google-drive" *ngIf="f.accountType == 'gdrive'"></i>
               <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
@@ -85,7 +86,9 @@
 
           <ng-template #merged>
             <td class="d-none d-lg-block">
-              <i class="fas fa-infinity"></i> Infinity Drive
+              <span ngbTooltip="This file is split across multiple accounts">
+                <i class="fas fa-infinity"></i> Infinity Drive
+              </span> 
             </td>
           </ng-template>
 
