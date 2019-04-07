@@ -64,8 +64,16 @@ export class MergedAccountComponent implements OnInit {
 
       }, (err: any) => {
         this.loading = false;
-        this.accounts = [];
-        this.account.accounts = [];
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Can\'t connect to server! Check your internet connection.',
+          confirmButtonText: 'Retry'
+        }).then((result) => {
+          if (result.value) {
+            this.ngOnInit();
+          }
+        });
       });
     } else {
       this.getFiles();
@@ -95,7 +103,7 @@ export class MergedAccountComponent implements OnInit {
 
   deleteFile(file) {
     Swal.fire({
-      title: 'Are you sure?',
+      title: `Are you sure you want to delete ${file.name}?`,
       text: 'You won\'t be able to revert this!',
       type: 'warning',
       showCancelButton: true,

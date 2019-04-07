@@ -52,8 +52,16 @@ export class FilesComponent implements OnInit {
 
         }, (err: any) => {
           this.loading = false;
-          this.accounts = [];
-          this.account.accounts = [];
+          Swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: 'Can\'t connect to server! Check your internet connection.',
+            confirmButtonText: 'Retry'
+          }).then((result) => {
+            if (result.value) {
+              this.ngOnInit();
+            }
+          });
         });
       } else {
         this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
@@ -110,10 +118,10 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  deleteFile(Fileid) {
+  deleteFile(file) {
 
     Swal.fire({
-      title: 'Are you sure?',
+      title: `Are you sure you want to delete ${file.name}?`,
       text: 'You won\'t be able to revert this!',
       type: 'warning',
       showCancelButton: true,
@@ -122,8 +130,8 @@ export class FilesComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.value) {
-        this.account.deleteFile(this.accountId, Fileid, this.currentAccount['accountType']).subscribe((data) => {
-          this.files = this.files.filter((f) => f.id !== Fileid);
+        this.account.deleteFile(this.accountId, file.id, this.currentAccount['accountType']).subscribe((data) => {
+          this.files = this.files.filter((f) => f.id !== file.id);
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
