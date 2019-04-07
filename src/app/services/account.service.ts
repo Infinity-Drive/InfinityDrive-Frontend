@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import {Subject} from 'rxjs';
 
 @Injectable()
 export class AccountService {
@@ -9,6 +10,9 @@ export class AccountService {
 
   accounts = [];
   baseUrl = 'http://localhost:3000';
+
+  private emitAccounSource = new Subject<any[]>();
+  accountsToBeEmited = this.emitAccounSource.asObservable();
 
   constructor(private http: HttpClient) {
   }
@@ -164,6 +168,11 @@ export class AccountService {
     };
     const body = { folderName, parentFolder, path};
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
+  }
+
+  updateAccounts(updatedAccounts){
+    this.accounts = updatedAccounts;
+    this.emitAccounSource.next(updatedAccounts);
   }
  
 }

@@ -45,7 +45,7 @@ export class FilesComponent implements OnInit {
         this.loading = true;
         this.account.getAccounts().subscribe((data: any) => {
           this.accounts = data;
-          this.account.accounts = data;
+          this.account.updateAccounts(data);
           this.loading = false;
           this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
           this.getfiles(params.id);

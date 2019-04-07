@@ -54,7 +54,7 @@ export class MergedAccountComponent implements OnInit {
       this.loading = true;
       this.account.getAccounts().subscribe((data: any) => {
         this.accounts = data;
-        this.account.accounts = data;
+        this.account.updateAccounts(data);
         if (this.accounts.length === 0) {
           this.route.navigateByUrl('Dashboard/Accounts');
         }

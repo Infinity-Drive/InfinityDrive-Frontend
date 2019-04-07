@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { AccountService } from '../services/account.service';
+import {AccountService} from '../services/account.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -11,11 +11,16 @@ import { AccountService } from '../services/account.service';
 export class UserDashboardComponent implements OnInit {
   userName: string;
   isOpened = false;
+  accounts = [];
 
-  constructor(private route: Router, private account: AccountService) { }
+  constructor(private route: Router, private account: AccountService) {
+  }
 
   ngOnInit() {
     this.userName = localStorage.getItem('infinityName');
+    this.account.accountsToBeEmited.subscribe((value) => {
+      this.accounts = value;
+    });
   }
 
   logout() {
@@ -28,7 +33,7 @@ export class UserDashboardComponent implements OnInit {
     this.route.navigate(['']);
   }
 
-  toggleSidebar(){
+  toggleSidebar() {
     this.isOpened = !this.isOpened;
   }
 

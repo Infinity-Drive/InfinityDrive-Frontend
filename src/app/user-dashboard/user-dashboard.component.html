@@ -3,19 +3,30 @@
   <nav id="sidebar" [ngClass]="{'active': isOpened}">
 
     <div id="dismiss" (click)="toggleSidebar()">
-        <i class="point" class="fas fa-arrow-left mt-3"></i>
+      <i class="point" class="fas fa-arrow-left mt-3"></i>
     </div>
 
     <div class="sidebar-header m-4">
-        <h5 class="text-uppercase font-weight-bold">Infinity Drive</h5>
+      <h5 class="text-uppercase font-weight-bold">Infinity Drive</h5>
     </div>
 
     <ul class="list-unstyled components">
-        <a (click)="toggleSidebar()" routerLink="/Dashboard" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
-        <a (click)="toggleSidebar()" routerLink="/Dashboard/Accounts" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Accounts</a>
-        <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Profile</a>
-        <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Settings</a>
-        <a href="#" (click)="logout()" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Logout</a>
+      <a (click)="toggleSidebar()" routerLink="/Dashboard"
+         class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
+      <a
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold" data-toggle="collapse"
+        href="#test"
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">
+        Accounts
+        <div id="test" class="panel-collapse collapse">
+          <ul class="list-group">
+            <li *ngFor="let account of accounts" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Storage/{{account['_id']}}">{{account['email']}}</li>
+          </ul>
+        </div>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Profile</a>
+      <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Settings</a>
+      <a href="#" (click)="logout()" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Logout</a>
     </ul>
   </nav>
 
@@ -42,8 +53,9 @@
         <div id="navbarNav" class="collapse navbar-collapse">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
-              <a href="index.html" data-toggle="dropdown" class="nav-link dropdown-toggle text-uppercase font-weight-bold"
-                style="color:#191919">
+              <a href="index.html" data-toggle="dropdown"
+                 class="nav-link dropdown-toggle text-uppercase font-weight-bold"
+                 style="color:#191919">
                 {{ userName }}
               </a>
               <div class="dropdown-menu dropdown-menu-right">

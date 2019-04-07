@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AccountService} from '../services/account.service';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import Swal from 'sweetalert2';
 
@@ -45,11 +45,11 @@ export class AccountsComponent implements OnInit {
           this.loading = true;
           this.account.getAccounts().subscribe((data: any) => {
             this.accounts = data;
-            this.account.accounts = data;
+            this.account.updateAccounts(data)
             this.loading = false;
           }, (err: any) => {
             this.accounts = [];
-            this.account.accounts = [];
+            this.account.updateAccounts([]);
           });
         }
         // this.router.navigateByUrl('Dashboard');
@@ -87,13 +87,13 @@ export class AccountsComponent implements OnInit {
       if (result.value) {
 
         this.account.deleteAccount(id).subscribe((data) => {
-          this.account.accounts = this.account.accounts.filter(account =>  account['_id'] !== id);
+          this.accounts = this.accounts.filter(account =>  account['_id'] !== id);
           Swal.fire(
             'Removed!',
             'Storage has been removed successfully',
             'success'
           );
-          this.accounts = this.account.accounts;
+          this.account.updateAccounts(this.accounts);
           // this.account.getAccounts();
         }, (err: HttpErrorResponse) => {
           Swal.fire('Shame on us', 'Unable to unlink account', 'error');
