@@ -34,14 +34,42 @@
 
     <app-spinner *ngIf="loading"></app-spinner>
 
+    <input *ngIf="!loading"
+    type='text'
+    style='padding:8px;margin:15px auto;width:30%;'
+    placeholder='Type to filter the name column...'
+    (keyup)='updateFilter($event)'
+    />
+
     <table class="table table-hover" *ngIf="!loading && files.length != 0">
       <thead>
+
         <tr>
-          <th scope="col" class="border-fix">Name</th>
-          <th scope="col" class="d-none d-lg-block border-fix">Account</th>
-          <th scope="col" class="border-fix">Size</th>
-          <th scope="col" class="border-fix d-none d-md-block">Modified</th>
+          <th scope="col" class="border-fix point" (click)="sortByKey('name')">
+            <span ngbTooltip="Sort by file name">Name </span>
+            <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-sort-up"></i></span>
+            <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-sort-down"></i></span>
+          </th>
+
+          <th scope="col" class="d-none d-lg-block border-fix point" (click)="sortByKey('account')">
+            <span ngbTooltip="Sort by account">Account </span>
+            <span *ngIf="sort.account != undefined && sort.account"><i class="fas fa-sort-up"></i></span>
+            <span *ngIf="sort.account != undefined && !sort.account"><i class="fas fa-sort-down"></i></span>
+          </th>
+
+          <th scope="col" class="border-fix point" (click)="sortByKey('size')">
+            <span ngbTooltip="Sort by file size">Size </span>
+            <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-sort-up"></i></span>
+            <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-sort-down"></i></span>
+          </th>
+
+          <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
+            <span ngbTooltip="Sort by modified time">Modified Time </span>
+            <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i class="fas fa-sort-up"></i></span>
+            <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i class="fas fa-sort-down"></i></span></th>
+
           <th scope="col" class="border-fix">Action</th>
+
         </tr>
       </thead>
       <tbody>

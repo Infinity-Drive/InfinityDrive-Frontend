@@ -5,6 +5,7 @@ import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/
 
 import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
+import { sortBy, mapValues } from 'lodash';
 
 @Component({
   selector: 'app-merged-account',
@@ -19,6 +20,13 @@ export class MergedAccountComponent implements OnInit {
   uploadProgress = 0;
   accounts = [];
   breadCrumbs = [];
+  temp = [];
+  sort = {
+    name: undefined,
+    account: undefined,
+    size: undefined,
+    modifiedTime: undefined
+  }
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -80,7 +88,7 @@ export class MergedAccountComponent implements OnInit {
       this.plotGraph();
     }
   }
-  
+
   getFiles() {
     this.files = [];
     this.loading = true;
@@ -88,6 +96,7 @@ export class MergedAccountComponent implements OnInit {
     this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
       mergedAccountFiles.forEach(mergedAccount => {
         this.files.push(...this.standarizeFileData(mergedAccount.files, mergedAccount.accountType, mergedAccount['_id']));
+        this.temp = [...this.files];
       });
       this.loading = false;
     }, (err: HttpErrorResponse) => {
@@ -265,9 +274,9 @@ export class MergedAccountComponent implements OnInit {
     return (size / Math.pow(1024, 3)).toFixed(2);
   }
 
-  getAccountEmail(id){
+  getAccountEmail(id) {
     const account = this.accounts.find(account => account._id === id);
-    if(account){
+    if (account) {
       return account.email;
     }
     return '-';
@@ -377,5 +386,41 @@ export class MergedAccountComponent implements OnInit {
     }
     return standarizedItems;
   };
+
+  updateFilter(event) {
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.files = temp;
+  }
+
+  sortByKey(key) {
+    this.files = sortBy(this.files, [function (file) {
+      // check if key value isn't undefined in file and if it's value
+      // is a string then return lower case value to provide accurate sort
+      if (file[`${key}`] && isNaN(file[`${key}`])) {
+        return file[`${key}`].toLowerCase();
+      }
+      else {
+        return file[`${key}`];
+      }
+    }]);;
+
+    if (this.sort[`${key}`]) {
+      this.sort[`${key}`] = false;
+      return this.files.reverse();
+    }
+    else {
+      // set the rest of sort variables to undefined, so that their arrows aren't showed
+      this.sort = mapValues(this.sort, () => undefined);
+      this.sort[`${key}`] = true;
+      return this.files;
+    }
+  }
 
 }
