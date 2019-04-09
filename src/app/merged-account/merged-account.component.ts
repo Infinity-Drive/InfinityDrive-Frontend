@@ -123,6 +123,7 @@ export class MergedAccountComponent implements OnInit {
       if (result.value) {
         this.account.deleteFile(file.accountId, file.id, file.accountType).subscribe((data) => {
           this.files = this.files.filter((f) => f.id !== file.id);
+          this.temp = [...this.files];
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
@@ -145,7 +146,7 @@ export class MergedAccountComponent implements OnInit {
 
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
       this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
-      // console.log(this.files);
+      this.temp = [...this.files];
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
       this.loading = false;
@@ -227,6 +228,7 @@ export class MergedAccountComponent implements OnInit {
           data.body.id = data.body._id;
         console.log(data.body);
         this.files.push(data.body);
+        this.temp = [...this.files];
         this.btnClose.nativeElement.click();
         Swal.fire({
           type: 'success',
@@ -331,6 +333,7 @@ export class MergedAccountComponent implements OnInit {
         item['accountType'] = 'gdrive';
         item['account'] = 'Google Drive';
         item['accountId'] = accountId;
+        item['size'] = parseInt(item.size);
         standarizedItems.push(item);
 
       });
