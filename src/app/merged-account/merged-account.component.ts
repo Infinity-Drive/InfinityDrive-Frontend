@@ -74,7 +74,7 @@ export class MergedAccountComponent implements OnInit {
         this.loading = false;
         Swal.fire({
           type: 'error',
-          title: 'Oops...',
+          title: 'Error',
           text: 'Can\'t connect to server! Check your internet connection.',
           confirmButtonText: 'Retry'
         }).then((result) => {
@@ -104,8 +104,17 @@ export class MergedAccountComponent implements OnInit {
         this.route.navigateByUrl('Dashboard/Accounts');
       } else {
         const errorMessage = err.error ? err.error : 'Error getting files';
-        Swal.fire('Error', errorMessage, 'error');
-        console.log(err);
+        this.loading = false;
+        Swal.fire({
+          type: 'error',
+          title: 'Error',
+          text: `${errorMessage}! Check your internet connection.`,
+          confirmButtonText: 'Retry'
+        }).then((result) => {
+          if (result.value) {
+            this.getFiles();
+          }
+        });
       }
     });
   }

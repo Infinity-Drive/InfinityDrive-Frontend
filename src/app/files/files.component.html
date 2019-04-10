@@ -12,7 +12,7 @@
             Accounts
           </li>
         </ng-template>
-        <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getfiles(accountId)">
+        <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getFiles(accountId)">
           {{currentAccount.account}} - {{currentAccount.email}}
         </li>
         <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue"
@@ -23,16 +23,17 @@
 
     <div class="actions mt-3" style="font-size:1.1em">
       <i class="fas fa-file-upload mr-3 point" data-toggle="modal" data-target="#uploadmodal" ngbTooltip="Upload"></i>
-      <i class="fas fa-folder-plus mr-3 point" data-toggle="modal" (click)="createFolder()" ngbTooltip="Create folder"></i>
+      <i class="fas fa-folder-plus mr-3 point" data-toggle="modal" (click)="createFolder()"
+        ngbTooltip="Create folder"></i>
       <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
     </div>
 
     <div style="clear:both"></div>
 
-    <div class="form-group float-right" *ngIf="!loading">
-        <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
-      </div>
-      <span *ngIf="!loading" class="counter float-right mt-2 mr-1">{{files.length}} files </span>
+    <div class="form-group float-right mr-1" *ngIf="!loading">
+      <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
+    </div>
+    <span *ngIf="!loading" class="counter float-right mt-2 mr-1">{{files.length}} files </span>
 
     <app-spinner *ngIf="loading"></app-spinner>
 

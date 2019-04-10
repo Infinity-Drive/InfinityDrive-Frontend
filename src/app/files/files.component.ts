@@ -56,13 +56,13 @@ export class FilesComponent implements OnInit {
           this.account.updateAccounts(data);
           this.loading = false;
           this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-          this.getfiles(params.id);
+          this.getFiles(this.accountId);
 
         }, (err: any) => {
           this.loading = false;
           Swal.fire({
             type: 'error',
-            title: 'Oops...',
+            title: 'Error',
             text: 'Can\'t connect to server! Check your internet connection.',
             confirmButtonText: 'Retry'
           }).then((result) => {
@@ -73,13 +73,13 @@ export class FilesComponent implements OnInit {
         });
       } else {
         this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-        this.getfiles(params.id);
+        this.getFiles(this.accountId);
       }
 
     });
   }
 
-  getfiles(id) {
+  getFiles(id) {
     this.loading = true;
     this.breadCrumbs = [];
     this.account.getFiles(id, this.currentAccount['accountType']).subscribe((data) => {
@@ -92,7 +92,16 @@ export class FilesComponent implements OnInit {
       const errorMessage = err.error ? err.error : 'Unable to get files';
       Swal.fire('Error', errorMessage, 'error');
       this.loading = false;
-      console.log(err);
+      Swal.fire({
+        type: 'error',
+        title: 'Error',
+        text: `${errorMessage}! Check your internet connection.`,
+        confirmButtonText: 'Retry'
+      }).then((result) => {
+        if (result.value) {
+          this.getFiles(this.accountId);
+        }
+      });
     });
   }
 
@@ -170,7 +179,7 @@ export class FilesComponent implements OnInit {
         }
 
         else if (event instanceof HttpResponse) {
-          this.getfiles(this.accountId);
+          this.getFiles(this.accountId);
           this.btnClose.nativeElement.click();
           Swal.fire({
             type: 'success',

@@ -1,5 +1,21 @@
 <div class="bodyCard p-5 shadow">
 
+    <!-- <div class="card shadow mb-4" *ngIf="accounts.length!==0">
+        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+          <h6 class="m-0 font-weight-bold text-primary">Storage Usage</h6>
+        </a>
+        <div class="collapse show" id="collapseCardExample">
+          <div class="card-body">
+              <div style="height: 330px">
+                  <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+        </div>
+      </div> -->
+
+
   <div *ngIf="accounts.length!==0" class="d-none d-sm-block">
     <div>
       <div style="height: 330px">
@@ -34,7 +50,7 @@
 
     <app-spinner *ngIf="loading"></app-spinner>
 
-    <div class="form-group float-right" *ngIf="!loading">
+    <div class="form-group float-right mr-1" *ngIf="!loading">
       <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
     </div>
     <span *ngIf="!loading" class="counter float-right mt-2 mr-1">{{files.length}} files </span>
