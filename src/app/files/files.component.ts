@@ -5,6 +5,7 @@ import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/
 
 import Swal from 'sweetalert2';
 import { Location } from '@angular/common';
+import { sortBy, mapValues } from 'lodash';
 
 @Component({
   selector: 'app-files',
@@ -23,6 +24,13 @@ export class FilesComponent implements OnInit {
   loading = false;
   breadCrumbs = [];
   from = false;
+  temp = []; // used for table searching
+  sort = {
+    name: undefined,
+    email: undefined,
+    size: undefined,
+    modifiedTime: undefined
+  }
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -77,6 +85,7 @@ export class FilesComponent implements OnInit {
     this.account.getFiles(id, this.currentAccount['accountType']).subscribe((data) => {
       console.log(data);
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      this.temp = [...this.files];
       this.loading = false;
       // console.log(this.files);
     }, (err: HttpErrorResponse) => {
@@ -106,6 +115,7 @@ export class FilesComponent implements OnInit {
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
       console.log(data);
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      this.temp = [...this.files];
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
       this.loading = false;
@@ -132,6 +142,7 @@ export class FilesComponent implements OnInit {
       if (result.value) {
         this.account.deleteFile(this.accountId, file.id, this.currentAccount['accountType']).subscribe((data) => {
           this.files = this.files.filter((f) => f.id !== file.id);
+          this.temp = [...this.files];
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
@@ -191,6 +202,7 @@ export class FilesComponent implements OnInit {
         this.account.createFolder(this.accountId, value, this.currentAccount['accountType'],
           this.getCurrentFolderId(), this.getCurrentPath()).subscribe((item: any) => {
             this.files.push(item);
+            this.temp = [...this.files];
             Swal.fire({
               type: 'success',
               title: 'Successful',
@@ -286,5 +298,41 @@ export class FilesComponent implements OnInit {
     }
     return standarizedItems;
   };
+
+  updateFilter(event) {
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.files = temp;
+  }
+
+  sortByKey(key) {
+    this.files = sortBy(this.files, [function (file) {
+      // check if key value isn't undefined in file and if it's value
+      // is a string then return lower case value to provide accurate sort
+      if (file[`${key}`] && isNaN(file[`${key}`])) {
+        return file[`${key}`].toLowerCase();
+      }
+      else {
+        return file[`${key}`];
+      }
+    }]);;
+
+    if (this.sort[`${key}`]) {
+      this.sort[`${key}`] = false;
+      return this.files.reverse();
+    }
+    else {
+      // set the rest of sort variables to undefined, so that their arrows aren't showed
+      this.sort = mapValues(this.sort, () => undefined);
+      this.sort[`${key}`] = true;
+      return this.files;
+    }
+  }
 
 }

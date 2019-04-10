@@ -20,10 +20,10 @@ export class MergedAccountComponent implements OnInit {
   uploadProgress = 0;
   accounts = [];
   breadCrumbs = [];
-  temp = [];
+  temp = []; // used for table searching
   sort = {
     name: undefined,
-    account: undefined,
+    email: undefined,
     size: undefined,
     modifiedTime: undefined
   }
