@@ -170,6 +170,16 @@ export class AccountService {
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
   }
 
+  logout() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    return this.http.delete(`${this.baseUrl}/users/logout`, httpOptions);
+  }
+
   updateAccounts(updatedAccounts){
     this.accounts = updatedAccounts;
     this.emitAccounSource.next(updatedAccounts);
