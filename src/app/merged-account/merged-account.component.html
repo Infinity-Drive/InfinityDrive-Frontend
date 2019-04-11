@@ -1,5 +1,21 @@
 <div class="bodyCard p-5 shadow">
 
+    <!-- <div class="card shadow mb-4" *ngIf="accounts.length!==0">
+        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+          <h6 class="m-0 font-weight-bold text-primary">Storage Usage</h6>
+        </a>
+        <div class="collapse show" id="collapseCardExample">
+          <div class="card-body">
+              <div style="height: 330px">
+                  <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+        </div>
+      </div> -->
+
+
   <div *ngIf="accounts.length!==0" class="d-none d-sm-block">
     <div>
       <div style="height: 330px">
@@ -34,12 +50,10 @@
 
     <app-spinner *ngIf="loading"></app-spinner>
 
-    <input *ngIf="!loading"
-    type='text'
-    style='padding:8px;margin:15px auto;width:30%;'
-    placeholder='Type to filter the name column...'
-    (keyup)='updateFilter($event)'
-    />
+    <div class="form-group float-right mr-1" *ngIf="!loading">
+      <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
+    </div>
+    <span *ngIf="!loading" class="counter float-right mt-2 mr-1">{{files.length}} files </span>
 
     <table class="table table-hover" *ngIf="!loading && files.length != 0">
       <thead>
@@ -47,26 +61,27 @@
         <tr>
           <th scope="col" class="border-fix point" (click)="sortByKey('name')">
             <span ngbTooltip="Sort by file name">Name </span>
-            <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-sort-up"></i></span>
-            <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-sort-down"></i></span>
+            <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-long-arrow-alt-up"></i></span>
+            <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-long-arrow-alt-down"></i></span>
           </th>
 
           <th scope="col" class="d-none d-lg-block border-fix point" (click)="sortByKey('account')">
             <span ngbTooltip="Sort by account">Account </span>
-            <span *ngIf="sort.account != undefined && sort.account"><i class="fas fa-sort-up"></i></span>
-            <span *ngIf="sort.account != undefined && !sort.account"><i class="fas fa-sort-down"></i></span>
+            <span *ngIf="sort.account != undefined && sort.account"><i class="fas fa-long-arrow-alt-up"></i></span>
+            <span *ngIf="sort.account != undefined && !sort.account"><i class="fas fa-long-arrow-alt-down"></i></span>
           </th>
 
           <th scope="col" class="border-fix point" (click)="sortByKey('size')">
             <span ngbTooltip="Sort by file size">Size </span>
-            <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-sort-up"></i></span>
-            <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-sort-down"></i></span>
+            <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-long-arrow-alt-up"></i></span>
+            <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-long-arrow-alt-down"></i></span>
           </th>
 
           <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
             <span ngbTooltip="Sort by modified time">Modified Time </span>
-            <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i class="fas fa-sort-up"></i></span>
-            <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i class="fas fa-sort-down"></i></span></th>
+            <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i class="fas fa-long-arrow-alt-up"></i></span>
+            <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i class="fas fa-long-arrow-alt-down"></i></span>
+          </th>
 
           <th scope="col" class="border-fix">Action</th>
 

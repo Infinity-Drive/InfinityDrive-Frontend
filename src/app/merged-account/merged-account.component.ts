@@ -20,10 +20,10 @@ export class MergedAccountComponent implements OnInit {
   uploadProgress = 0;
   accounts = [];
   breadCrumbs = [];
-  temp = [];
+  temp = []; // used for table searching
   sort = {
     name: undefined,
-    account: undefined,
+    email: undefined,
     size: undefined,
     modifiedTime: undefined
   }
@@ -74,7 +74,7 @@ export class MergedAccountComponent implements OnInit {
         this.loading = false;
         Swal.fire({
           type: 'error',
-          title: 'Oops...',
+          title: 'Error',
           text: 'Can\'t connect to server! Check your internet connection.',
           confirmButtonText: 'Retry'
         }).then((result) => {
@@ -104,8 +104,17 @@ export class MergedAccountComponent implements OnInit {
         this.route.navigateByUrl('Dashboard/Accounts');
       } else {
         const errorMessage = err.error ? err.error : 'Error getting files';
-        Swal.fire('Error', errorMessage, 'error');
-        console.log(err);
+        this.loading = false;
+        Swal.fire({
+          type: 'error',
+          title: 'Error',
+          text: `${errorMessage}! Check your internet connection.`,
+          confirmButtonText: 'Retry'
+        }).then((result) => {
+          if (result.value) {
+            this.getFiles();
+          }
+        });
       }
     });
   }
@@ -123,6 +132,7 @@ export class MergedAccountComponent implements OnInit {
       if (result.value) {
         this.account.deleteFile(file.accountId, file.id, file.accountType).subscribe((data) => {
           this.files = this.files.filter((f) => f.id !== file.id);
+          this.temp = [...this.files];
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
@@ -145,7 +155,7 @@ export class MergedAccountComponent implements OnInit {
 
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
       this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
-      // console.log(this.files);
+      this.temp = [...this.files];
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
       this.loading = false;
@@ -227,6 +237,7 @@ export class MergedAccountComponent implements OnInit {
           data.body.id = data.body._id;
         console.log(data.body);
         this.files.push(data.body);
+        this.temp = [...this.files];
         this.btnClose.nativeElement.click();
         Swal.fire({
           type: 'success',
@@ -331,6 +342,7 @@ export class MergedAccountComponent implements OnInit {
         item['accountType'] = 'gdrive';
         item['account'] = 'Google Drive';
         item['accountId'] = accountId;
+        item['size'] = parseInt(item.size);
         standarizedItems.push(item);
 
       });

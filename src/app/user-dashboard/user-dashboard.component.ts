@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import {AccountService} from '../services/account.service';
+import { AccountService } from '../services/account.service';
 
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
@@ -34,13 +35,30 @@ export class UserDashboardComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('infinityGuard');
-    localStorage.removeItem('infinityToken');
-    localStorage.removeItem('infinityEmail');
-    localStorage.removeItem('infinityId');
-    localStorage.removeItem('infinityName');
-    this.account.accounts = [];
-    this.route.navigate(['']);
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will logged out of Infinity Drive.',
+      type: 'warning',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.value) {
+        this.account.logout().subscribe((data) => {
+          localStorage.removeItem('infinityGuard');
+          localStorage.removeItem('infinityToken');
+          localStorage.removeItem('infinityEmail');
+          localStorage.removeItem('infinityId');
+          localStorage.removeItem('infinityName');
+          this.account.accounts = [];
+          this.route.navigate(['']);
+          // this.account.getAccounts();
+        }, (err: any) => {
+          Swal.fire('Error', 'Unable to logout', 'error');
+          console.log(err);
+        });
+      }
+    });
+
   }
 
   toggleSidebar() {
