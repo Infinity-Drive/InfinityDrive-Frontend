@@ -159,7 +159,12 @@ export class FilesComponent implements OnInit {
         }
 
         else if (event instanceof HttpResponse) {
-          this.getfiles(this.accountId);
+          if(this.getCurrentPath()== "root"){
+            this.getfiles(this.accountId);
+          }
+          else{
+            this.getFolderItems(this.getCurrentFolderId());
+          }
           this.btnClose.nativeElement.click();
           Swal.fire({
             type: 'success',

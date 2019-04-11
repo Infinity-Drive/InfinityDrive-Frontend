@@ -15,13 +15,13 @@
          class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
       <a
         class="list-group-item list-group-item-action text-uppercase font-weight-bold" data-toggle="collapse"
-        href="#test"
-        class="list-group-item list-group-item-action text-uppercase font-weight-bold">
+        href="#test" aria-expanded="true">
         Accounts
-        <div id="test" class="panel-collapse collapse">
+        <div id="test" class="panel-collapse collapse show">
           <ul class="list-group">
             <li *ngFor="let account of accounts" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Storage/{{account['_id']}}">{{account['email']}}</li>
             <li *ngIf="totalAccounts>accountsLimit" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Accounts">{{totalAccounts-accountsLimit}} more accounts</li>
+            <li *ngIf="totalAccounts < accountsLimit" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Accounts">All Accounts</li>
           </ul>
         </div>
       </a>
