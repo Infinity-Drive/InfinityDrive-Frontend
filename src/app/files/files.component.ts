@@ -44,7 +44,7 @@ export class FilesComponent implements OnInit {
 
       if (params['from']) {
         this.from = true;
-        console.log(this.from)
+        console.log(params['folderName'])
         this.location.replaceState(`Dashboard/Storage/${params['id']}`);
       }
       this.accounts = this.account.accounts;
@@ -56,7 +56,12 @@ export class FilesComponent implements OnInit {
           this.account.updateAccounts(data);
           this.loading = false;
           this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-          this.getFiles(this.accountId);
+
+          if(this.from && params['from'] != 'root'){
+            this.getFolderItems(params['from'], params['folderName'])
+          }else{
+            this.getFiles(this.accountId);
+          }
 
         }, (err: any) => {
           this.loading = false;
@@ -73,7 +78,11 @@ export class FilesComponent implements OnInit {
         });
       } else {
         this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-        this.getFiles(this.accountId);
+        if(this.from && params['from'] != 'root'){
+          this.getFolderItems(params['from'], params['folderName'])
+        }else{
+          this.getFiles(this.accountId);
+        }
       }
 
     });
@@ -115,11 +124,16 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  getFolderItems(folderId) {
+  getFolderItems(folderId , folderName = undefined) {
     this.loading = true;
 
     // for maintaining breadCrumbs
-    const currentFolder = this.files.filter(f => f.id === folderId);
+    let currentFolder;
+    if(folderName){
+      currentFolder = [{'name': folderName, 'id': folderId}];
+    }else{
+      currentFolder = this.files.filter(f => f.id === folderId);
+    }
 
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
       console.log(data);

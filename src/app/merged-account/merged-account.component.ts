@@ -328,6 +328,11 @@ export class MergedAccountComponent implements OnInit {
     this.route.navigateByUrl(`Dashboard/Storage/${id};from=root`);
   }
 
+  // method for an account folder navigation
+  navigateToAccountFolder(accountId, folderId, foldername){
+    this.route.navigateByUrl(`Dashboard/Storage/${accountId};from=${folderId};folderName=${foldername}`);
+  }
+
   standarizeFileData = (items, accountType, accountId) => {
 
     var standarizedItems = [];

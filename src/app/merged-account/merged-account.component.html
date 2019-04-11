@@ -94,7 +94,7 @@
           </div>
 
           <ng-template #folder>
-            <td class="td-word-wrap" (click)="getFolderItems(f)">
+            <td class="td-word-wrap" (click)="navigateToAccountFolder(f.accountId,f.id,f.name)">
               <a href="javascript:;">
                 <i class="fas fa-folder"></i>
                 {{f.name}}
