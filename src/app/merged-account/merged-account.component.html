@@ -1,21 +1,5 @@
 <div class="bodyCard p-5 shadow">
 
-    <!-- <div class="card shadow mb-4" *ngIf="accounts.length!==0">
-        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-          <h6 class="m-0 font-weight-bold text-primary">Storage Usage</h6>
-        </a>
-        <div class="collapse show" id="collapseCardExample">
-          <div class="card-body">
-              <div style="height: 330px">
-                  <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-                  [chartType]="barChartType">
-                </canvas>
-              </div>
-            </div>
-        </div>
-      </div> -->
-
-
   <div *ngIf="accounts.length!==0" class="d-none d-sm-block">
     <div>
       <div style="height: 330px">
@@ -39,10 +23,8 @@
     </div>
 
     <div class="actions mt-3" style="font-size:1.1em">
-      <i class="fas fa-plus mr-3 point" data-toggle="modal" data-target="#accountsModal"
-      ngbTooltip="Link Account"></i>
-      <i class="fas fa-file-upload mr-3 point" data-toggle="modal" data-target="#uploadmodal"
-      ngbTooltip="Upload"></i>
+      <i class="fas fa-plus mr-3 point" data-toggle="modal" data-target="#accountsModal" ngbTooltip="Link Account"></i>
+      <i class="fas fa-file-upload mr-3 point" data-toggle="modal" data-target="#uploadmodal" ngbTooltip="Upload"></i>
       <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
     </div>
 
@@ -79,8 +61,10 @@
 
           <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
             <span ngbTooltip="Sort by modified time">Modified Time </span>
-            <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i class="fas fa-long-arrow-alt-up"></i></span>
-            <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i class="fas fa-long-arrow-alt-down"></i></span>
+            <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i
+                class="fas fa-long-arrow-alt-up"></i></span>
+            <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i
+                class="fas fa-long-arrow-alt-down"></i></span>
           </th>
 
           <th scope="col" class="border-fix">Action</th>
@@ -119,7 +103,8 @@
 
           <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
             <ng-template #tipContent>{{getAccountEmail(f.accountId)}}</ng-template>
-            <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point" [ngbTooltip]="tipContent">
+            <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point"
+              [ngbTooltip]="tipContent">
               <i class="fab fa-dropbox" *ngIf="f.accountType == 'dropbox'"></i>
               <i class="fab fa-google-drive" *ngIf="f.accountType == 'gdrive'"></i>
               <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
@@ -131,7 +116,7 @@
             <td class="d-none d-lg-block">
               <span ngbTooltip="This file is split across multiple accounts">
                 <i class="fas fa-infinity"></i> Infinity Drive
-              </span> 
+              </span>
             </td>
           </ng-template>
 

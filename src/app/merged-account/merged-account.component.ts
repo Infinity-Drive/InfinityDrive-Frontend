@@ -210,7 +210,13 @@ export class MergedAccountComponent implements OnInit {
 
   getProperties(file) {
     this.account.getProperties(file.accountId, file.id, file.accountType).subscribe((data) => {
-      console.table(data);
+      let propertiesString = '';
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          propertiesString += `<b>${key}</b>: ${data[key]} <br>`;
+        }
+      }
+      Swal.fire('Properties', propertiesString, 'success');
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Error getting file properties';
       Swal.fire('Error', errorMessage, 'error');
@@ -329,7 +335,7 @@ export class MergedAccountComponent implements OnInit {
   }
 
   // method for an account folder navigation
-  navigateToAccountFolder(accountId, folderId, foldername){
+  navigateToAccountFolder(accountId, folderId, foldername) {
     this.route.navigateByUrl(`Dashboard/Storage/${accountId};from=${folderId};folderName=${foldername}`);
   }
 

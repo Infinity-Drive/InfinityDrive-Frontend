@@ -245,6 +245,22 @@ export class FilesComponent implements OnInit {
     })
   }
 
+  getProperties(file) {
+    this.account.getProperties(this.accountId, file.id, this.currentAccount.accountType).subscribe((data) => {
+      let propertiesString = '';
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          propertiesString += `<b>${key}</b>: ${data[key]} <br>`;
+        }
+      }
+      Swal.fire('Properties', propertiesString, 'success');
+    }, (err: HttpErrorResponse) => {
+      const errorMessage = err.error ? err.error : 'Error getting file properties';
+      Swal.fire('Error', errorMessage, 'error');
+      console.log(err);
+    });
+  }
+
   getCurrentFolderId() {
     return this.breadCrumbs.length !== 0 ? this.breadCrumbs[this.breadCrumbs.length - 1].id : 'root';
   }
