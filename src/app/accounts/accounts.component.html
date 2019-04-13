@@ -23,7 +23,7 @@
 
       <tbody>
 
-        <tr *ngFor="let a of accounts; let i = index">
+        <tr *ngFor="let a of accounts | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize ; let i = index">
 
           <th class="d-none d-lg-block">{{i+1}}</th>
 
@@ -61,6 +61,11 @@
       </tbody>
 
     </table>
+
+    <ngb-pagination class="d-flex justify-content-center"
+                    *ngIf="!loading && accounts.length > 0 && pageSize < accounts.length" [collectionSize]="accounts.length"
+                    [(page)]="page" [boundaryLinks]="true" [maxSize]="10" [rotate]="true" [pageSize]="pageSize"
+                    [boundaryLinks]="true"></ngb-pagination>
 
     <div *ngIf="accounts.length === 0 && !loading">
       <h5 class="text-muted">You haven't connected any accounts to Infinity Drive. Connect an account to get started.

@@ -19,8 +19,9 @@ import { UserService } from './services/user.service';
 import { AccountService } from './services/account.service';
 import { AuthGuardService } from './services/auth-guard.service';
 
+
 import { ChartsModule } from 'ng2-charts';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     FormsModule,
     ChartsModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    NgbPaginationModule
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

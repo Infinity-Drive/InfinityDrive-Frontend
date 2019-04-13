@@ -65,7 +65,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let f of files; let i = index">
+        <tr *ngFor="let f of files | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize ; let i = index">
 
           <div *ngIf="f.mimeType=='folder'; then folder ; else file">
           </div>
@@ -100,6 +100,11 @@
         </tr>
       </tbody>
     </table>
+
+    <ngb-pagination class="d-flex justify-content-center"
+                    *ngIf="!loading && files.length > 0 && pageSize < files.length" [collectionSize]="files.length"
+                    [(page)]="page" [boundaryLinks]="true" [maxSize]="10" [rotate]="true" [pageSize]="pageSize"
+                    [boundaryLinks]="true"></ngb-pagination>
 
     <h5 style="text-align:center" class="text-muted m-5" *ngIf="!loading && files.length == 0">
       No files here

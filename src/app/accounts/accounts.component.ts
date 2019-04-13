@@ -15,6 +15,8 @@ export class AccountsComponent implements OnInit {
   accounts = [];
   name = '';
   loading = false;
+  pageSize = 10;
+  page = 1;
 
   constructor(private router: Router, private account: AccountService, private activateRoute: ActivatedRoute) {
   }

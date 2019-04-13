@@ -4,7 +4,7 @@
     <div>
       <div style="height: 330px">
         <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-          [chartType]="barChartType">
+                [chartType]="barChartType">
         </canvas>
       </div>
     </div>
@@ -18,7 +18,8 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getFiles()">Infinity Drive</li>
         <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue"
-          (click)="breadCrumbNavigation(crum,i)" class="breadcrumb-item point">{{crum.name}}</li>
+            (click)="breadCrumbNavigation(crum,i)" class="breadcrumb-item point">{{crum.name}}
+        </li>
       </ol>
     </div>
 
@@ -40,100 +41,106 @@
     <table class="table table-hover" *ngIf="!loading && files.length != 0">
       <thead>
 
-        <tr>
-          <th scope="col" class="border-fix point" (click)="sortByKey('name')">
-            <span ngbTooltip="Sort by file name">Name </span>
-            <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-long-arrow-alt-up"></i></span>
-            <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-long-arrow-alt-down"></i></span>
-          </th>
+      <tr>
+        <th scope="col" class="border-fix point" (click)="sortByKey('name')">
+          <span ngbTooltip="Sort by file name">Name </span>
+          <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-long-arrow-alt-down"></i></span>
+        </th>
 
-          <th scope="col" class="d-none d-lg-block border-fix point" (click)="sortByKey('account')">
-            <span ngbTooltip="Sort by account">Account </span>
-            <span *ngIf="sort.account != undefined && sort.account"><i class="fas fa-long-arrow-alt-up"></i></span>
-            <span *ngIf="sort.account != undefined && !sort.account"><i class="fas fa-long-arrow-alt-down"></i></span>
-          </th>
+        <th scope="col" class="d-none d-lg-block border-fix point" (click)="sortByKey('account')">
+          <span ngbTooltip="Sort by account">Account </span>
+          <span *ngIf="sort.account != undefined && sort.account"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.account != undefined && !sort.account"><i class="fas fa-long-arrow-alt-down"></i></span>
+        </th>
 
-          <th scope="col" class="border-fix point" (click)="sortByKey('size')">
-            <span ngbTooltip="Sort by file size">Size </span>
-            <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-long-arrow-alt-up"></i></span>
-            <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-long-arrow-alt-down"></i></span>
-          </th>
+        <th scope="col" class="border-fix point" (click)="sortByKey('size')">
+          <span ngbTooltip="Sort by file size">Size </span>
+          <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-long-arrow-alt-down"></i></span>
+        </th>
 
-          <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
-            <span ngbTooltip="Sort by modified time">Modified Time </span>
-            <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i
-                class="fas fa-long-arrow-alt-up"></i></span>
-            <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i
-                class="fas fa-long-arrow-alt-down"></i></span>
-          </th>
+        <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
+          <span ngbTooltip="Sort by modified time">Modified Time </span>
+          <span *ngIf="sort.modifiedTime != undefined && sort.modifiedTime"><i
+            class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.modifiedTime != undefined && !sort.modifiedTime"><i
+            class="fas fa-long-arrow-alt-down"></i></span>
+        </th>
 
-          <th scope="col" class="border-fix">Action</th>
+        <th scope="col" class="border-fix">Action</th>
 
-        </tr>
+      </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let f of files; let i = index">
+      <tr *ngFor="let f of files | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize ; let i = index">
 
-          <div *ngIf="f.mimeType=='folder'; then folder ; else file">
-          </div>
+        <div *ngIf="f.mimeType=='folder'; then folder ; else file">
+        </div>
 
-          <ng-template #folder>
-            <td class="td-word-wrap" (click)="navigateToAccountFolder(f.accountId,f.id,f.name)">
-              <a href="javascript:;">
-                <i class="fas fa-folder"></i>
-                {{f.name}}
-              </a>
-            </td>
-          </ng-template>
+        <ng-template #folder>
+          <td class="td-word-wrap" (click)="navigateToAccountFolder(f.accountId,f.id,f.name)">
+            <a href="javascript:;">
+              <i class="fas fa-folder"></i>
+              {{f.name}}
+            </a>
+          </td>
+        </ng-template>
 
-          <ng-template #file>
-            <td *ngIf="f.accountType != 'merged'; else mergedDownload" (click)="getDownloadLink(f)"
+        <ng-template #file>
+          <td *ngIf="f.accountType != 'merged'; else mergedDownload" (click)="getDownloadLink(f)"
               class="td-word-wrap point">
+            <i class="fas fa-file"></i>
+            {{f.name}}
+          </td>
+          <ng-template #mergedDownload>
+            <td (click)="getDownloadStream(f)" class="td-word-wrap point">
               <i class="fas fa-file"></i>
               {{f.name}}
             </td>
-            <ng-template #mergedDownload>
-              <td (click)="getDownloadStream(f)" class="td-word-wrap point">
-                <i class="fas fa-file"></i>
-                {{f.name}}
-              </td>
-            </ng-template>
-
           </ng-template>
 
-          <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
-            <ng-template #tipContent>{{getAccountEmail(f.accountId)}}</ng-template>
-            <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point"
-              [ngbTooltip]="tipContent">
-              <i class="fab fa-dropbox" *ngIf="f.accountType == 'dropbox'"></i>
-              <i class="fab fa-google-drive" *ngIf="f.accountType == 'gdrive'"></i>
-              <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
-              {{f.account}}
-            </a>
-          </td>
+        </ng-template>
 
-          <ng-template #merged>
-            <td class="d-none d-lg-block">
+        <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
+          <ng-template #tipContent>{{getAccountEmail(f.accountId)}}</ng-template>
+          <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point"
+             [ngbTooltip]="tipContent">
+            <i class="fab fa-dropbox" *ngIf="f.accountType == 'dropbox'"></i>
+            <i class="fab fa-google-drive" *ngIf="f.accountType == 'gdrive'"></i>
+            <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
+            {{f.account}}
+          </a>
+        </td>
+
+        <ng-template #merged>
+          <td class="d-none d-lg-block">
               <span ngbTooltip="This file is split across multiple accounts">
                 <i class="fas fa-infinity"></i> Infinity Drive
               </span>
-            </td>
-          </ng-template>
-
-          <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
-          <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
-          <td>
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false"></a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item point" (click)="deleteFile(f)">Delete</a>
-              <a class="dropdown-item point" (click)="getProperties(f)">View Properties</a>
-              <!-- <a class="dropdown-item">Share</a> -->
-            </div>
           </td>
-        </tr>
+        </ng-template>
+
+        <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
+        <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
+        <td>
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false"></a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item point" (click)="deleteFile(f)">Delete</a>
+            <a class="dropdown-item point" (click)="getProperties(f)">View Properties</a>
+            <!-- <a class="dropdown-item">Share</a> -->
+          </div>
+        </td>
+      </tr>
       </tbody>
     </table>
+
+    <ngb-pagination class="d-flex justify-content-center"
+                    *ngIf="!loading && files.length > 0 && pageSize < files.length" [collectionSize]="files.length"
+                    [(page)]="page" [boundaryLinks]="true" [maxSize]="10" [rotate]="true" [pageSize]="pageSize"
+                    [boundaryLinks]="true"></ngb-pagination>
+
 
     <h5 style="text-align:center" class="text-muted m-5" *ngIf="!loading && files.length == 0">
       No files here
@@ -152,14 +159,14 @@
         <div class="modal-body">
           <div class="form-group" onsubmit="upl">
             <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)"
-              *ngIf="uploadProgress == 0">
+                   *ngIf="uploadProgress == 0">
             <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()"
-              *ngIf="uploadProgress == 0">
+                   *ngIf="uploadProgress == 0">
             <div *ngIf="uploadProgress != 0">
               <h4> Uploading...</h4>
               <div class="progress" style="height:20px">
                 <div class="progress-bar progress-bar-striped progress-bar-animated"
-                  [ngStyle]="{ 'width': uploadProgress + '%'}">
+                     [ngStyle]="{ 'width': uploadProgress + '%'}">
                   {{uploadProgress}} %
                 </div>
               </div>
@@ -171,7 +178,7 @@
   </div>
 
   <div class="modal fade" id="accountsModal" tabindex="-1" role="dialog" aria-labelledby="accountsModalTitle"
-    aria-hidden="true">
+       aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">

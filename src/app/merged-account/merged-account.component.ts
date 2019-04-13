@@ -27,6 +27,8 @@ export class MergedAccountComponent implements OnInit {
     size: undefined,
     modifiedTime: undefined
   }
+  pageSize = 10;
+  page = 1;
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
