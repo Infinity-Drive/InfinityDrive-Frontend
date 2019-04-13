@@ -20,8 +20,9 @@
         <div id="test" class="panel-collapse collapse show">
           <ul class="list-group">
             <li *ngFor="let account of accounts" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Storage/{{account['_id']}}">{{account['email']}}</li>
-            <li *ngIf="totalAccounts>accountsLimit" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Accounts">{{totalAccounts-accountsLimit}} more accounts</li>
-            <li *ngIf="totalAccounts < accountsLimit" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Accounts">All Accounts</li>
+            <li *ngIf="totalAccounts>accountsLimit" class="list-group-item" style="border: none;color: dodgerblue; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Accounts">{{totalAccounts-accountsLimit}} more accounts</li>
+            <li *ngIf="totalAccounts < accountsLimit && totalAccounts > 0" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()" routerLink="Accounts">All Accounts</li>
+            <li *ngIf="totalAccounts == 0" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()" routerLink="Accounts">No accounts added</li>
           </ul>
         </div>
       </a>
