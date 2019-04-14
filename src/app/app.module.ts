@@ -22,6 +22,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 import { ChartsModule } from 'ng2-charts';
 import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedFileComponent } from './shared-file/shared-file.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstra
     FilesComponent,
     SpinnerComponent,
     MergedAccountComponent,
-    EmailVerificationComponent
+    EmailVerificationComponent,
+    SharedFileComponent
   ],
   imports: [
     BrowserModule,

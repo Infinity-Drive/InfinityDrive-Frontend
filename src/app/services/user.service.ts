@@ -28,6 +28,10 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/users/verifyEmail`, {'token': token} , httpOptions);
   }
 
+  getSharedFile(token){
+    return this.http.get(`${this.baseUrl}/share/getsharedFile/${token}`);
+  }
+
 }
 
 
