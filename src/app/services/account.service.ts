@@ -170,12 +170,24 @@ export class AccountService {
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
   }
 
+  shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'text' as 'text'
+    };
+    const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType};
+    return this.http.post(`${this.baseUrl}/share/shareFile`, body, httpOptions);
+  }
+
   logout() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
-      })
+      }),
     };
     return this.http.delete(`${this.baseUrl}/users/logout`, httpOptions);
   }

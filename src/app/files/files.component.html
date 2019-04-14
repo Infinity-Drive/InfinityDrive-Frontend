@@ -94,6 +94,7 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item point" (click)="deleteFile(f)">Delete</a>
               <a class="dropdown-item point" (click)="getProperties(f)">View Properties</a>
+              <a *ngIf="f.mimeType !='folder'" class="dropdown-item point" (click)="shareFile(f.id, f.name, f.size, f.mimeType)">Share File</a>
               <!-- <a class="dropdown-item">Share</a> -->
             </div>
           </td>

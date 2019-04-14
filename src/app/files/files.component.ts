@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AccountService } from '../services/account.service';
-import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AccountService} from '../services/account.service';
+import {ActivatedRoute} from '@angular/router';
+import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
 
 import Swal from 'sweetalert2';
-import { Location } from '@angular/common';
-import { sortBy, mapValues } from 'lodash';
+import {Location} from '@angular/common';
+import {sortBy, mapValues} from 'lodash';
 
 @Component({
   selector: 'app-files',
@@ -30,11 +30,59 @@ export class FilesComponent implements OnInit {
     email: undefined,
     size: undefined,
     modifiedTime: undefined
-  }
+  };
   pageSize = 10;
   page = 1;
 
   @ViewChild('btnClose') btnClose: ElementRef;
+  standarizeFileData = (items, accountType) => {
+
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+      items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item.mimeType === 'application/vnd.google-apps.folder')
+            item['mimeType'] = 'folder';
+          standarizedItems.push(item);
+        }
+      });
+    }
+
+    if (accountType === 'odrive') {
+      items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          // item has a file property if its a file and a folder property if its a folder
+          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+          standarizedItems.push(item);
+        }
+      });
+    }
+
+    if (accountType === 'dropbox') {
+      items.entries.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item['.tag'] === 'folder')
+            item['mimeType'] = 'folder';
+          else
+            item['mimeType'] = item.name.split('.')[1];
+
+          if (!item['client_modified'])
+            item['client_modified'] = '-';
+
+          standarizedItems.push({
+            id: item.id,
+            name: item.name,
+            mimeType: item['mimeType'],
+            size: item.size,
+            modifiedTime: item['client_modified']
+          });
+        }
+      });
+    }
+    return standarizedItems;
+  };
 
   constructor(private account: AccountService, private activeRoute: ActivatedRoute, private location: Location) {
   }
@@ -46,7 +94,7 @@ export class FilesComponent implements OnInit {
 
       if (params['from']) {
         this.from = true;
-        console.log(params['folderName'])
+        console.log(params['folderName']);
         this.location.replaceState(`Dashboard/Storage/${params['id']}`);
       }
       this.accounts = this.account.accounts;
@@ -59,9 +107,9 @@ export class FilesComponent implements OnInit {
           this.loading = false;
           this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
 
-          if(this.from && params['from'] != 'root'){
-            this.getFolderItems(params['from'], params['folderName'])
-          }else{
+          if (this.from && params['from'] != 'root') {
+            this.getFolderItems(params['from'], params['folderName']);
+          } else {
             this.getFiles(this.accountId);
           }
 
@@ -80,9 +128,9 @@ export class FilesComponent implements OnInit {
         });
       } else {
         this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-        if(this.from && params['from'] != 'root'){
-          this.getFolderItems(params['from'], params['folderName'])
-        }else{
+        if (this.from && params['from'] != 'root') {
+          this.getFolderItems(params['from'], params['folderName']);
+        } else {
           this.getFiles(this.accountId);
         }
       }
@@ -126,14 +174,14 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  getFolderItems(folderId , folderName = undefined) {
+  getFolderItems(folderId, folderName = undefined) {
     this.loading = true;
 
     // for maintaining breadCrumbs
     let currentFolder;
-    if(folderName){
+    if (folderName) {
       currentFolder = [{'name': folderName, 'id': folderId}];
-    }else{
+    } else {
       currentFolder = this.files.filter(f => f.id === folderId);
     }
 
@@ -190,32 +238,32 @@ export class FilesComponent implements OnInit {
     this.account.uploadFile(this.accountId, this.currentAccount['accountType'], this.fileToUpload,
       this.getCurrentFolderId(), this.getCurrentPath()).subscribe((event: any) => {
 
-        if (event.type === HttpEventType.UploadProgress) {
-          this.uploadProgress = Math.round(100 * event.loaded / event.total);
-        }
+      if (event.type === HttpEventType.UploadProgress) {
+        this.uploadProgress = Math.round(100 * event.loaded / event.total);
+      }
 
-        else if (event instanceof HttpResponse) {
-          if(this.getCurrentPath()== "root"){
-            this.getFiles(this.accountId);
-          }
-          else{
-            this.getFolderItems(this.getCurrentFolderId());
-          }
-          this.btnClose.nativeElement.click();
-          Swal.fire({
-            type: 'success',
-            title: 'Successful',
-            text: 'File has been uploaded'
-          });
-          this.uploadProgress = 0;
+      else if (event instanceof HttpResponse) {
+        if (this.getCurrentPath() == 'root') {
+          this.getFiles(this.accountId);
         }
-
-      }, (err: HttpErrorResponse) => {
-        const errorMessage = err.error ? err.error : 'Unable to upload file';
-        Swal.fire('Error', errorMessage, 'error');
-        console.log(err);
+        else {
+          this.getFolderItems(this.getCurrentFolderId());
+        }
+        this.btnClose.nativeElement.click();
+        Swal.fire({
+          type: 'success',
+          title: 'Successful',
+          text: 'File has been uploaded'
+        });
         this.uploadProgress = 0;
-      });
+      }
+
+    }, (err: HttpErrorResponse) => {
+      const errorMessage = err.error ? err.error : 'Unable to upload file';
+      Swal.fire('Error', errorMessage, 'error');
+      console.log(err);
+      this.uploadProgress = 0;
+    });
   }
 
   createFolder() {
@@ -231,20 +279,20 @@ export class FilesComponent implements OnInit {
         }
         this.account.createFolder(this.accountId, value, this.currentAccount['accountType'],
           this.getCurrentFolderId(), this.getCurrentPath()).subscribe((item: any) => {
-            this.files.push(item);
-            this.temp = [...this.files];
-            Swal.fire({
-              type: 'success',
-              title: 'Successful',
-              text: 'Folder created'
-            });
-          }, (err: HttpErrorResponse) => {
-            const errorMessage = err.error ? err.error : 'Unable to create folder';
-            Swal.fire('Error', errorMessage, 'error');
-            console.log(err);
+          this.files.push(item);
+          this.temp = [...this.files];
+          Swal.fire({
+            type: 'success',
+            title: 'Successful',
+            text: 'Folder created'
           });
+        }, (err: HttpErrorResponse) => {
+          const errorMessage = err.error ? err.error : 'Unable to create folder';
+          Swal.fire('Error', errorMessage, 'error');
+          console.log(err);
+        });
       }
-    })
+    });
   }
 
   getProperties(file) {
@@ -268,10 +316,10 @@ export class FilesComponent implements OnInit {
   }
 
   getCurrentPath() {
-    let path = '/'
+    let path = '/';
     if (this.breadCrumbs.length !== 0) {
       this.breadCrumbs.forEach(crumb => {
-        path += `${crumb.name}/`
+        path += `${crumb.name}/`;
       });
     }
     return path;
@@ -296,55 +344,6 @@ export class FilesComponent implements OnInit {
     this.breadCrumbs.splice(index + 1);
   }
 
-  standarizeFileData = (items, accountType) => {
-
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-      items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
-          if (item.mimeType === 'application/vnd.google-apps.folder')
-            item['mimeType'] = 'folder';
-          standarizedItems.push(item);
-        }
-      });
-    }
-
-    if (accountType === 'odrive') {
-      items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
-          // item has a file property if its a file and a folder property if its a folder
-          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-          standarizedItems.push(item);
-        }
-      });
-    }
-
-    if (accountType === 'dropbox') {
-      items.entries.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
-          if (item['.tag'] === 'folder')
-            item['mimeType'] = 'folder';
-          else
-            item['mimeType'] = item.name.split('.')[1];
-
-          if (!item['client_modified'])
-            item['client_modified'] = '-';
-
-          standarizedItems.push({
-            id: item.id,
-            name: item.name,
-            mimeType: item['mimeType'],
-            size: item.size,
-            modifiedTime: item['client_modified']
-          });
-        }
-      });
-    }
-    return standarizedItems;
-  };
-
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
 
@@ -367,7 +366,8 @@ export class FilesComponent implements OnInit {
       else {
         return file[`${key}`];
       }
-    }]);;
+    }]);
+    ;
 
     if (this.sort[`${key}`]) {
       this.sort[`${key}`] = false;
@@ -379,6 +379,16 @@ export class FilesComponent implements OnInit {
       this.sort[`${key}`] = true;
       return this.files;
     }
+  }
+
+  shareFile(clientFileId, fileName, fileSize, fileType) {
+    this.account.shareFile(clientFileId, this.accountId, this.currentAccount['accountType'], fileName, fileSize, fileType).subscribe((data) => {
+      Swal.fire('Share Link', `http://localhost:4200/Shared/${data}`, 'success');
+    }, (err: HttpErrorResponse) => {
+      const errorMessage = err.error ? err.error : 'Error sharing file';
+      Swal.fire('Error', errorMessage, 'error');
+      console.log(err);
+    });
   }
 
 }

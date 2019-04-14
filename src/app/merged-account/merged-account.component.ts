@@ -1,11 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { AccountService } from '../services/account.service';
-import { Router } from '@angular/router';
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {AccountService} from '../services/account.service';
+import {Router} from '@angular/router';
+import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
-import { sortBy, mapValues } from 'lodash';
+import {sortBy, mapValues} from 'lodash';
 
 @Component({
   selector: 'app-merged-account',
@@ -26,7 +26,7 @@ export class MergedAccountComponent implements OnInit {
     email: undefined,
     size: undefined,
     modifiedTime: undefined
-  }
+  };
   pageSize = 10;
   page = 1;
 
@@ -51,6 +51,76 @@ export class MergedAccountComponent implements OnInit {
       }]
     },
     maintainAspectRatio: false
+  };
+  standarizeFileData = (items, accountType, accountId) => {
+
+    var standarizedItems = [];
+
+    if (accountType === 'gdrive') {
+
+      items.forEach(item => {
+
+        if (item.mimeType === 'application/vnd.google-apps.folder')
+          item['mimeType'] = 'folder';
+
+        item['accountType'] = 'gdrive';
+        item['account'] = 'Google Drive';
+        item['accountId'] = accountId;
+        item['size'] = parseInt(item.size);
+        standarizedItems.push(item);
+
+      });
+
+    }
+
+    if (accountType === 'odrive') {
+
+      items.forEach(item => {
+        // item has a file property if its a file and a folder property if its a folder
+        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+        item['accountType'] = 'odrive';
+        item['account'] = 'OneDrive';
+        item['accountId'] = accountId;
+        standarizedItems.push(item);
+      });
+
+    }
+
+    if (accountType === 'merged') {
+      items.forEach(item => {
+        item['id'] = item._id;
+        item['accountType'] = 'merged';
+        item['account'] = 'Merged';
+        standarizedItems.push(item);
+      });
+    }
+
+    if (accountType === 'dropbox') {
+
+      items.entries.forEach(item => {
+        if (item['.tag'] === 'folder')
+          item['mimeType'] = 'folder';
+        else
+          item['mimeType'] = item.name.split('.')[1];
+
+        if (!item['client_modified'])
+          item['client_modified'] = '-';
+
+        standarizedItems.push({
+          id: item.id,
+          name: item.name,
+          mimeType: item['mimeType'],
+          size: item.size,
+          modifiedTime: item['client_modified'],
+          accountType: 'dropbox',
+          account: 'Dropbox',
+          accountId: accountId
+        });
+      });
+
+    }
+    return standarizedItems;
   };
 
   constructor(private account: AccountService, private route: Router) {
@@ -192,7 +262,7 @@ export class MergedAccountComponent implements OnInit {
 
       const reader = res.body.getReader();
       const pump = () => reader.read()
-        .then(({ value, done }) => done
+        .then(({value, done}) => done
           // close the stream so we stop writing
           ? writer.close()
           // Write one chunk, then get the next one
@@ -319,8 +389,8 @@ export class MergedAccountComponent implements OnInit {
     totalDataSet.push(this.getSizeInGb(total));
 
     this.barChartData = [
-      { data: usedDataSet, label: 'Used' },
-      { data: totalDataSet, label: 'Total' }
+      {data: usedDataSet, label: 'Used'},
+      {data: totalDataSet, label: 'Total'}
     ];
 
   }
@@ -340,77 +410,6 @@ export class MergedAccountComponent implements OnInit {
   navigateToAccountFolder(accountId, folderId, foldername) {
     this.route.navigateByUrl(`Dashboard/Storage/${accountId};from=${folderId};folderName=${foldername}`);
   }
-
-  standarizeFileData = (items, accountType, accountId) => {
-
-    var standarizedItems = [];
-
-    if (accountType === 'gdrive') {
-
-      items.forEach(item => {
-
-        if (item.mimeType === 'application/vnd.google-apps.folder')
-          item['mimeType'] = 'folder';
-
-        item['accountType'] = 'gdrive';
-        item['account'] = 'Google Drive';
-        item['accountId'] = accountId;
-        item['size'] = parseInt(item.size);
-        standarizedItems.push(item);
-
-      });
-
-    }
-
-    if (accountType === 'odrive') {
-
-      items.forEach(item => {
-        // item has a file property if its a file and a folder property if its a folder
-        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-        item['accountType'] = 'odrive';
-        item['account'] = 'OneDrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
-      });
-
-    }
-
-    if (accountType === 'merged') {
-      items.forEach(item => {
-        item['id'] = item._id;
-        item['accountType'] = 'merged';
-        item['account'] = 'Merged';
-        standarizedItems.push(item);
-      });
-    }
-
-    if (accountType === 'dropbox') {
-
-      items.entries.forEach(item => {
-        if (item['.tag'] === 'folder')
-          item['mimeType'] = 'folder';
-        else
-          item['mimeType'] = item.name.split('.')[1];
-
-        if (!item['client_modified'])
-          item['client_modified'] = '-';
-
-        standarizedItems.push({
-          id: item.id,
-          name: item.name,
-          mimeType: item['mimeType'],
-          size: item.size,
-          modifiedTime: item['client_modified'],
-          accountType: 'dropbox',
-          account: 'Dropbox',
-          accountId: accountId
-        });
-      });
-
-    }
-    return standarizedItems;
-  };
 
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
@@ -434,7 +433,8 @@ export class MergedAccountComponent implements OnInit {
       else {
         return file[`${key}`];
       }
-    }]);;
+    }]);
+    ;
 
     if (this.sort[`${key}`]) {
       this.sort[`${key}`] = false;
@@ -446,6 +446,16 @@ export class MergedAccountComponent implements OnInit {
       this.sort[`${key}`] = true;
       return this.files;
     }
+  }
+
+  shareFile(clientFileId, fileName, fileSize, fileType, accountId, accountType) {
+    this.account.shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType).subscribe((data) => {
+      Swal.fire('Share Link', `http://localhost:4200/Shared/${data}`, 'success');
+    }, (err: HttpErrorResponse) => {
+      const errorMessage = err.error ? err.error : 'Error sharing file';
+      Swal.fire('Error', errorMessage, 'error');
+      console.log(err);
+    });
   }
 
 }
