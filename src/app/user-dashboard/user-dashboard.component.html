@@ -14,15 +14,49 @@
       <a (click)="toggleSidebar()" routerLink="/Dashboard"
          class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
       <a
-        class="list-group-item list-group-item-action text-uppercase font-weight-bold" data-toggle="collapse"
+        class="list-group-item list-group-item-action" data-toggle="collapse"
         href="#test" aria-expanded="true">
-        Accounts
+        <span class="text-uppercase font-weight-bold">Accounts</span>
+        
         <div id="test" class="panel-collapse collapse show">
+
           <ul class="list-group">
-            <li *ngFor="let account of accounts" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Storage/{{account['_id']}}">{{account['email']}}</li>
-            <li *ngIf="totalAccounts>accountsLimit" class="list-group-item" style="border: none;color: dodgerblue; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()" routerLink="Accounts">{{totalAccounts-accountsLimit}} more accounts</li>
-            <li *ngIf="totalAccounts < accountsLimit && totalAccounts > 0" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()" routerLink="Accounts">All Accounts</li>
-            <li *ngIf="totalAccounts == 0" class="list-group-item" style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()" routerLink="Accounts">No accounts added</li>
+
+            <li *ngFor="let account of accounts" 
+            class="list-group-item" 
+            style="border: none; font-size: 0.7em; background: #F8F9FA" 
+            (click)="toggleSidebar()" 
+            routerLink="Storage/{{account['_id']}}">
+              <i class="fab fa-dropbox" *ngIf="account.accountType == 'dropbox'"></i>
+              <i class="fab fa-google-drive" *ngIf="account.accountType == 'gdrive'"></i>
+              <i class="fas fa-cloud" *ngIf="account.accountType == 'odrive'"></i>
+              {{account['email']}}
+            </li>
+
+            <li *ngIf="totalAccounts>accountsLimit" 
+              class="list-group-item" 
+              style="border: none;color: dodgerblue; font-size: 0.7em; background: #F8F9FA" 
+              (click)="toggleSidebar()" 
+              routerLink="Accounts">
+              {{totalAccounts-accountsLimit}} more accounts
+            </li>
+
+            <li *ngIf="totalAccounts < accountsLimit && totalAccounts > 0" 
+              class="list-group-item" 
+              style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" 
+              (click)="toggleSidebar()" 
+              routerLink="Accounts">
+              All Accounts
+            </li>
+
+            <li *ngIf="totalAccounts == 0" 
+              class="list-group-item" 
+              style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" 
+              (click)="toggleSidebar()" 
+              routerLink="Accounts">
+              No accounts added
+            </li>
+
           </ul>
         </div>
       </a>

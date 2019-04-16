@@ -6,10 +6,10 @@
 
 body {
   overflow-x: hidden;
-  /* background: #ececf0; */
-  background: #9CECFB;
+  background: #ececf0;
+  /* background: #9CECFB;
   background: -webkit-linear-gradient(to right, #0052D4, #65C7F7, #9CECFB);
-  background: linear-gradient(to right, #0052D4, #65C7F7, #9CECFB);
+  background: linear-gradient(to right, #0052D4, #65C7F7, #9CECFB); */
 }
 
 .card-auth{
