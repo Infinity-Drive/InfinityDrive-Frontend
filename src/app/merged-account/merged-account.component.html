@@ -48,11 +48,11 @@
           <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-long-arrow-alt-down"></i></span>
         </th>
 
-        <th scope="col" class="d-none d-lg-block border-fix point" (click)="sortByKey('account')">
+        <!-- <th scope="col" class="d-none d-lg-block border-fix point" (click)="sortByKey('account')">
           <span ngbTooltip="Sort by account">Account </span>
           <span *ngIf="sort.account != undefined && sort.account"><i class="fas fa-long-arrow-alt-up"></i></span>
           <span *ngIf="sort.account != undefined && !sort.account"><i class="fas fa-long-arrow-alt-down"></i></span>
-        </th>
+        </th> -->
 
         <th scope="col" class="border-fix point" (click)="sortByKey('size')">
           <span ngbTooltip="Sort by file size">Size </span>
@@ -68,7 +68,7 @@
             class="fas fa-long-arrow-alt-down"></i></span>
         </th>
 
-        <th scope="col" class="border-fix">Action</th>
+        <th scope="col" class="border-fix">Actions</th>
 
       </tr>
       </thead>
@@ -102,7 +102,7 @@
 
         </ng-template>
 
-        <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
+        <!-- <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
           <ng-template #tipContent>{{getAccountEmail(f.accountId)}}</ng-template>
           <a style="color: dodgerblue" (click)="navigateToAccount(f.accountId)" class="point"
              [ngbTooltip]="tipContent">
@@ -111,7 +111,7 @@
             <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
             {{f.account}}
           </a>
-        </td>
+        </td> -->
 
         <ng-template #merged>
           <td class="d-none d-lg-block">
@@ -127,9 +127,15 @@
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
              aria-haspopup="true" aria-expanded="false"></a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item point" (click)="deleteFile(f)">Delete</a>
-            <a class="dropdown-item point" (click)="getProperties(f)">View Properties</a>
-            <a *ngIf="f.mimeType !='folder'" class="dropdown-item point" (click)="shareFile(f.id, f.name, f.size, f.mimeType, f.accountId, f.accountType)">Share File</a>
+            <a class="dropdown-item point" (click)="deleteFile(f)">
+              <i class="fas fa-trash"></i> Delete
+            </a>
+            <a class="dropdown-item point" (click)="getProperties(f)">
+              <i class="fas fa-info-circle"></i> Properties
+            </a>
+            <a *ngIf="f.mimeType !='folder'" class="dropdown-item point" (click)="shareFile(f.id, f.name, f.size, f.mimeType, f.accountId, f.accountType)">
+              <i class="fas fa-share-alt"></i> Share File
+            </a>
             <!-- <a class="dropdown-item">Share</a> -->
           </div>
         </td>
