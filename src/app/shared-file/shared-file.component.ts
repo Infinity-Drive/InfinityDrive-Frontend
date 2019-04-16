@@ -47,7 +47,7 @@ export class SharedFileComponent implements OnInit {
   }
 
   getDownloadStream(id, accountType, name, size) {
-    this.account.downloadStream(id, accountType).then(res => {
+    this.account.downloadStreamShare(id, accountType).then(res => {
 
       const fileStream = streamSaver.createWriteStream(name, size);
       const writer = fileStream.getWriter();
