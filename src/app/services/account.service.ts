@@ -159,6 +159,16 @@ export class AccountService {
     });
   }
 
+  downloadStreamShare(fileId, type) {
+    return fetch(`${this.baseUrl}/${type}/downloadShare/${fileId}`, {
+      method: "GET",
+      headers:{
+        'Content-Type': 'application/octet-stream',
+        'x-auth': localStorage.getItem('infinityToken')
+      }
+    });
+  }
+
   createFolder(accountId, folderName, type, parentFolder, path) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -170,7 +180,7 @@ export class AccountService {
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
   }
 
-  shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType) {
+  shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType, userId) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -178,7 +188,7 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     };
-    const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType};
+    const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType, userId};
     return this.http.post(`${this.baseUrl}/share/shareFile`, body, httpOptions);
   }
 

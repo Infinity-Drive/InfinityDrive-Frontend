@@ -449,7 +449,7 @@ export class MergedAccountComponent implements OnInit {
   }
 
   shareFile(clientFileId, fileName, fileSize, fileType, accountId, accountType) {
-    this.account.shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType).subscribe((data) => {
+    this.account.shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType, localStorage.getItem('infinityId')).subscribe((data) => {
       Swal.fire('Share Link', `http://localhost:4200/Shared/${data}`, 'success');
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Error sharing file';

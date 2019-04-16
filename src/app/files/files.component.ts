@@ -382,7 +382,7 @@ export class FilesComponent implements OnInit {
   }
 
   shareFile(clientFileId, fileName, fileSize, fileType) {
-    this.account.shareFile(clientFileId, this.accountId, this.currentAccount['accountType'], fileName, fileSize, fileType).subscribe((data) => {
+    this.account.shareFile(clientFileId, this.accountId, this.currentAccount['accountType'], fileName, fileSize, fileType, localStorage.getItem('infinityId')).subscribe((data) => {
       Swal.fire('Share Link', `http://localhost:4200/Shared/${data}`, 'success');
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Error sharing file';
