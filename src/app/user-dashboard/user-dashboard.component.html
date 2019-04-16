@@ -7,52 +7,42 @@
     </div>
 
     <div class="sidebar-header m-4">
-      <h5 class="text-uppercase font-weight-bold">Infinity Drive</h5>
+      <h5 class="text-uppercase font-weight-bold">Menu</h5>
     </div>
 
     <ul class="list-unstyled components">
       <a (click)="toggleSidebar()" routerLink="/Dashboard"
-         class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
-      <a
-        class="list-group-item list-group-item-action" data-toggle="collapse"
-        href="#test" aria-expanded="true">
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
+      <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#test" aria-expanded="true">
         <span class="text-uppercase font-weight-bold">Accounts</span>
-        
+
         <div id="test" class="panel-collapse collapse show">
 
           <ul class="list-group">
 
-            <li *ngFor="let account of accounts" 
-            class="list-group-item" 
-            style="border: none; font-size: 0.7em; background: #F8F9FA" 
-            (click)="toggleSidebar()" 
-            routerLink="Storage/{{account['_id']}}">
+            <li *ngFor="let account of accounts" class="list-group-item"
+              style="border: none; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()"
+              routerLink="Storage/{{account['_id']}}">
               <i class="fab fa-dropbox" *ngIf="account.accountType == 'dropbox'"></i>
               <i class="fab fa-google-drive" *ngIf="account.accountType == 'gdrive'"></i>
               <i class="fas fa-cloud" *ngIf="account.accountType == 'odrive'"></i>
               {{account['email']}}
             </li>
 
-            <li *ngIf="totalAccounts>accountsLimit" 
-              class="list-group-item" 
-              style="border: none;color: dodgerblue; font-size: 0.7em; background: #F8F9FA" 
-              (click)="toggleSidebar()" 
+            <li *ngIf="totalAccounts>accountsLimit" class="list-group-item"
+              style="border: none;color: dodgerblue; font-size: 0.7em; background: #F8F9FA" (click)="toggleSidebar()"
               routerLink="Accounts">
               {{totalAccounts-accountsLimit}} more accounts
             </li>
 
-            <li *ngIf="totalAccounts < accountsLimit && totalAccounts > 0" 
-              class="list-group-item" 
-              style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" 
-              (click)="toggleSidebar()" 
+            <li *ngIf="totalAccounts < accountsLimit && totalAccounts > 0" class="list-group-item"
+              style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()"
               routerLink="Accounts">
               All Accounts
             </li>
 
-            <li *ngIf="totalAccounts == 0" 
-              class="list-group-item" 
-              style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" 
-              (click)="toggleSidebar()" 
+            <li *ngIf="totalAccounts == 0" class="list-group-item"
+              style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()"
               routerLink="Accounts">
               No accounts added
             </li>
@@ -62,61 +52,55 @@
       </a>
       <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Profile</a>
       <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Settings</a>
-      <a href="#" (click)="logout()" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Logout</a>
+      <a href="javascript:;" (click)="logout()"
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">Sign out</a>
     </ul>
   </nav>
 
-  <!-- Page Content -->
-  <!-- Dark Overlay element -->
   <div (click)="toggleSidebar()" [ngClass]="{'overlay active': isOpened}"></div>
 
   <div id="content">
 
-    <nav class="navbar navbar-fixed navbar-expand-lg shadow navbar-light bg-white">
-      <div class="container-fluid">
-        <div class="d-flex">
-          <button (click)="toggleSidebar()" style="background:transparent; border:0" class="mr-4 mt-1">
-            <i ngClass="point" class="fas fa-bars"></i>
-          </button>
-          <a routerLink="../Dashboard" class="navbar-brand text-uppercase font-weight-bold">
-            <span style="font-size:1.4em; color:#0052D4">∞</span> Infinity Drive
-          </a>
+    <nav class="navbar navbar-fixed shadow navbar-light bg-white">
 
-        </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
+      <div class="container-fluid">
+
+        <button (click)="toggleSidebar()" style="background:transparent; border:0">
+          <i ngClass="point" class="fas fa-bars"></i>
         </button>
-        <div id="navbarNav" class="collapse navbar-collapse">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-              <a href="index.html" data-toggle="dropdown"
-                 class="nav-link dropdown-toggle text-uppercase font-weight-bold"
-                 style="color:#191919">
-                {{ userName }}
-              </a>
-              <div class="dropdown-menu dropdown-menu-right shadow mt-3">
-                <a class="dropdown-item" routerLink="/Dashboard/Accounts">
-                  <i class="fas fa-archive fa-sm fa-fw mr-2"></i>
-                  Accounts
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
-                  Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="javascript:;" (click)="logout()">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
-                  Logout
-                </a>
-              </div>
-            </li>
-          </ul>
+
+        <a routerLink="../Dashboard" class="navbar-brand text-uppercase font-weight-bold">
+          <span style="font-size:1.4em; color:#0052D4">∞</span> Infinity Drive
+        </a>
+
+        <a data-toggle="dropdown" class="dropdown-toggle" style="font-size: 1.2em; color:#191919">
+          <i class="fas fa-user-circle"></i>
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-right shadow">
+          <a class="dropdown-item point">
+            Signed in as <b>{{userName}}</b>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" routerLink="/Dashboard/Accounts">
+            <i class="fas fa-archive fa-sm fa-fw mr-2"></i>
+            Accounts
+          </a>
+          <a class="dropdown-item" href="#">
+            <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
+            Settings
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="javascript:;" (click)="logout()">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+            Sign out
+          </a>
         </div>
+
       </div>
     </nav>
 
     <router-outlet></router-outlet>
-
   </div>
 
 </div>
