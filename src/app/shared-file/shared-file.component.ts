@@ -36,8 +36,8 @@ export class SharedFileComponent implements OnInit {
   }
 
 
-  getDownloadLink(accountId, id, accountType) {
-    this.account.getDownloadUrl(accountId, id, accountType).subscribe((url: string) => {
+  getDownloadLink(accountId, id, accountType, shareId) {
+    this.account.getDownloadUrlShared(accountId, id, accountType, shareId).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Error downloading file';
@@ -46,8 +46,8 @@ export class SharedFileComponent implements OnInit {
     });
   }
 
-  getDownloadStream(id, accountType, name, size) {
-    this.account.downloadStreamShare(id, accountType).then(res => {
+  getDownloadStream(id, accountType, name, size, shareId) {
+    this.account.downloadStreamShare(id, accountType , shareId).then(res => {
 
       const fileStream = streamSaver.createWriteStream(name, size);
       const writer = fileStream.getWriter();

@@ -10,10 +10,10 @@
     </div>
     <div class="col-4">
       <i *ngIf="file.accountType =='merged'"
-         (click)="getDownloadStream(file.clientFileId, file.accountType,file.fileName,file.fileSize)"
+         (click)="getDownloadStream(file.clientFileId, file.accountType,file.fileName,file.fileSize, file._id)"
          class="fas fa-file-download fa-8x point"></i>
       <i *ngIf="file.accountType !='merged'"
-         (click)="getDownloadLink(file.accountId,file.clientFileId, file.accountType)"
+         (click)="getDownloadLink(file.accountId,file.clientFileId, file.accountType,file._id)"
          class="fas fa-file-download fa-8x point"></i>
     </div>
   </div>

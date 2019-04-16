@@ -85,6 +85,15 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
 
+  getDownloadUrlShared(accountId, fileId, type , shareId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post(`${this.baseUrl}/${type}/downloadUrlShared/${accountId}/${fileId}`, {shareId}, httpOptions);
+  }
+
   deleteAccount(id) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -159,12 +168,12 @@ export class AccountService {
     });
   }
 
-  downloadStreamShare(fileId, type) {
-    return fetch(`${this.baseUrl}/${type}/downloadShare/${fileId}`, {
+  downloadStreamShare(fileId, type , shareId) {
+    // console.log(shareId)
+    return fetch(`${this.baseUrl}/${type}/downloadShare/${fileId}/${shareId}`, {
       method: "GET",
       headers:{
-        'Content-Type': 'application/octet-stream',
-        'x-auth': localStorage.getItem('infinityToken')
+        'Content-Type': 'application/octet-stream'
       }
     });
   }
