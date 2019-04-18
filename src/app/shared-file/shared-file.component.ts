@@ -79,4 +79,11 @@ export class SharedFileComponent implements OnInit {
     });
   }
 
+  getSizeInMb(size) {
+    if (isNaN(size))
+      return '-';
+    else
+      return (Number(size) / Math.pow(1024, 2)).toFixed(2) + ' MB';
+  }
+
 }

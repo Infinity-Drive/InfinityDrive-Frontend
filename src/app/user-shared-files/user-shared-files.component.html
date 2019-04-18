@@ -1,0 +1,112 @@
+<div class="bodyCard p-5 shadow">
+
+  <div class="table-responsive">
+
+    <div class="actions mt-3" style="font-size:1.1em">
+      <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
+    </div>
+
+    <div style="clear:both"></div>
+
+    <div class="form-group float-right mr-1" *ngIf="!loading">
+      <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
+    </div>
+    <span *ngIf="!loading" class="counter float-right mt-2 mr-1">{{files.length}} files </span>
+
+    <app-spinner *ngIf="loading"></app-spinner>
+
+    <table class="table table-hover" *ngIf="!loading && files.length != 0">
+      <thead>
+      <tr>
+
+        <th scope="col" class="border-fix point" (click)="sortByKey('name')">
+          <span ngbTooltip="Sort by file name">Name </span>
+          <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-long-arrow-alt-down"></i></span>
+        </th>
+
+        <th scope="col" class="border-fix point" (click)="sortByKey('size')">
+          <span ngbTooltip="Sort by file size">Size </span>
+          <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-long-arrow-alt-down"></i></span>
+        </th>
+
+        <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
+          <span>Share Link </span>
+        </th>
+
+        <th scope="col" class="border-fix"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let f of files | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize ; let i = index">
+
+          <td class="td-word-wrap point">
+            <i class="fas fa-file"></i>
+            {{f.fileName}}
+          </td>
+
+
+        <td scope="col" class="border-fix">{{ getSizeInMb(f.fileSize) }}</td>
+        <td>
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false"></a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item point" (click)="deleteFile(f)">
+              <i class="fas fa-trash"></i> Delete
+            </a>
+            <a class="dropdown-item point" (click)="getProperties(f)">
+              <i class="fas fa-info-circle"></i> Properties
+            </a>
+            <a *ngIf="f.mimeType !='folder'" class="dropdown-item point"
+               (click)="shareFile(f.id, f.name, f.size, f.mimeType)">
+              <i class="fas fa-share-alt"></i> Share File
+            </a>
+            <!-- <a class="dropdown-item">Share</a> -->
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <ngb-pagination class="d-flex justify-content-center"
+                    *ngIf="!loading && files.length > 0 && pageSize < files.length" [collectionSize]="files.length" [(page)]="page"
+                    [boundaryLinks]="true" [maxSize]="10" [rotate]="true" [pageSize]="pageSize" [boundaryLinks]="true">
+    </ngb-pagination>
+
+    <h5 style="text-align:center" class="text-muted m-5" *ngIf="!loading && files.length == 0">
+      No files here
+    </h5>
+  </div>
+
+  <div class="modal fade" id="uploadmodal" tabindex="-1" role="dialog" aria-labelledby="uploadmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">File Upload</h5>
+          <button type="button" #btnClose class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" onsubmit="upl">
+            <input class="" type="file" id="file" name="myfile" (change)="handleFileInput($event.target.files)"
+                   *ngIf="uploadProgress == 0">
+            <input style="float:right" class="btn btn-primary" type="button" value="Upload" (click)="uploadFile()"
+                   *ngIf="uploadProgress == 0">
+            <div *ngIf="uploadProgress != 0">
+              <h4> Uploading...</h4>
+              <div class="progress" style="height:20px">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     [ngStyle]="{ 'width': uploadProgress + '%'}">
+                  {{uploadProgress}} %
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

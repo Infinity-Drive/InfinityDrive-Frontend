@@ -211,6 +211,17 @@ export class AccountService {
     return this.http.delete(`${this.baseUrl}/users/logout`, httpOptions);
   }
 
+
+  getSharedFiles() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+    };
+    return this.http.get(`${this.baseUrl}/users/sharedFiles`, httpOptions);
+  }
+
   updateAccounts(updatedAccounts){
     this.accounts = updatedAccounts;
     this.emitAccounSource.next(updatedAccounts);
