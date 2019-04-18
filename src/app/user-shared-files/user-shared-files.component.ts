@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClientModule, HttpErrorResponse} from '@angular/common/http';
 import {AccountService} from '../services/account.service';
 
+import {sortBy, mapValues} from 'lodash';
+
 @Component({
   selector: 'app-user-shared-files',
   templateUrl: './user-shared-files.component.html',
@@ -13,10 +15,8 @@ export class UserSharedFilesComponent implements OnInit {
   files = [];
   temp = []; // used for table searching
   sort = {
-    name: undefined,
-    email: undefined,
-    size: undefined,
-    modifiedTime: undefined
+    fileName: undefined,
+     fileSize: undefined
   };
   pageSize = 10;
   page = 1;
@@ -27,7 +27,7 @@ export class UserSharedFilesComponent implements OnInit {
   ngOnInit() {
     this.account.getSharedFiles().subscribe((data: any[]) => {
       this.files = data;
-      console.log(data)
+      this.temp = [...this.files];
       this.loading = false;
     }, (err: HttpErrorResponse) => {
       console.log(err);
@@ -41,4 +41,41 @@ export class UserSharedFilesComponent implements OnInit {
       return (Number(size) / Math.pow(1024, 2)).toFixed(2) + ' MB';
   }
 
+
+  updateFilter(event) {
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.fileName.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.files = temp;
+  }
+
+  sortByKey(key) {
+    this.files = sortBy(this.files, [function (file) {
+      // check if key value isn't undefined in file and if it's value
+      // is a string then return lower case value to provide accurate sort
+      if (file[`${key}`] && isNaN(file[`${key}`])) {
+        return file[`${key}`].toLowerCase();
+      }
+      else {
+        return file[`${key}`];
+      }
+    }]);
+    ;
+
+    if (this.sort[`${key}`]) {
+      this.sort[`${key}`] = false;
+      return this.files.reverse();
+    }
+    else {
+      // set the rest of sort variables to undefined, so that their arrows aren't showed
+      this.sort = mapValues(this.sort, () => undefined);
+      this.sort[`${key}`] = true;
+      return this.files;
+    }
+  }
 }

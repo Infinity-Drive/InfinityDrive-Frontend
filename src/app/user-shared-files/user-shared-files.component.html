@@ -19,29 +19,29 @@
       <thead>
       <tr>
 
-        <th scope="col" class="border-fix point" (click)="sortByKey('name')">
+        <th scope="col" class="border-fix point" (click)="sortByKey('fileName')">
           <span ngbTooltip="Sort by file name">Name </span>
-          <span *ngIf="sort.name != undefined && sort.name"><i class="fas fa-long-arrow-alt-up"></i></span>
-          <span *ngIf="sort.name != undefined && !sort.name"><i class="fas fa-long-arrow-alt-down"></i></span>
+          <span *ngIf="sort.fileName != undefined && sort.fileName"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.fileName != undefined && !sort.fileName"><i class="fas fa-long-arrow-alt-down"></i></span>
         </th>
 
-        <th scope="col" class="border-fix point" (click)="sortByKey('size')">
+        <th scope="col" class="border-fix point" (click)="sortByKey('fileSize')">
           <span ngbTooltip="Sort by file size">Size </span>
-          <span *ngIf="sort.size != undefined && sort.size"><i class="fas fa-long-arrow-alt-up"></i></span>
-          <span *ngIf="sort.size != undefined && !sort.size"><i class="fas fa-long-arrow-alt-down"></i></span>
+          <span *ngIf="sort.fileSize != undefined && sort.fileSize"><i class="fas fa-long-arrow-alt-up"></i></span>
+          <span *ngIf="sort.fileSize != undefined && !sort.fileSize"><i class="fas fa-long-arrow-alt-down"></i></span>
         </th>
 
-        <th scope="col" class="border-fix d-none d-md-block point" (click)="sortByKey('modifiedTime')">
+        <th scope="col" class="border-fix d-none d-md-block">
           <span>Share Link </span>
         </th>
 
-        <th scope="col" class="border-fix"></th>
+        <th scope="col" class="border-fix">Action</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let f of files | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize ; let i = index">
 
-          <td class="td-word-wrap point">
+          <td class="td-word-wrap">
             <i class="fas fa-file"></i>
             {{f.fileName}}
           </td>
@@ -49,21 +49,10 @@
 
         <td scope="col" class="border-fix">{{ getSizeInMb(f.fileSize) }}</td>
         <td>
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-             aria-haspopup="true" aria-expanded="false"></a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item point" (click)="deleteFile(f)">
-              <i class="fas fa-trash"></i> Delete
-            </a>
-            <a class="dropdown-item point" (click)="getProperties(f)">
-              <i class="fas fa-info-circle"></i> Properties
-            </a>
-            <a *ngIf="f.mimeType !='folder'" class="dropdown-item point"
-               (click)="shareFile(f.id, f.name, f.size, f.mimeType)">
-              <i class="fas fa-share-alt"></i> Share File
-            </a>
-            <!-- <a class="dropdown-item">Share</a> -->
-          </div>
+          Link
+        </td>
+        <td>
+          Delete
         </td>
       </tr>
       </tbody>
