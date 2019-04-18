@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 @Injectable()
 export class UserService {
 
-  baseUrl = 'http://localhost:3000';
+  baseUrl = 'https://infinitydrive.herokuapp.com';
   
   constructor(private http: HttpClient) { }
 
