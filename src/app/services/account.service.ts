@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
+=======
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
+import {Subject} from 'rxjs';
+import {environment} from '../../environments/environment';
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
 
 @Injectable()
 export class AccountService {
@@ -34,7 +41,7 @@ export class AccountService {
       })
     };
     // sending token code to server
-    return this.http.post(`${this.baseUrl}/${type}/saveToken`, { code }, httpOptions);
+    return this.http.post(`${this.baseUrl}/${type}/saveToken`, {code}, httpOptions);
   }
 
   // getting user accounts
@@ -61,7 +68,11 @@ export class AccountService {
       })
     };
 
+<<<<<<< HEAD
     var url = `${this.baseUrl}/${type}/listFiles/${id}`
+=======
+    var url = `${this.baseUrl}/${type}/listFiles/${id}`;
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
     folderId ? url += `/${folderId}` : url;
     return this.http.get(url, httpOptions);
   }
@@ -112,9 +123,26 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       }),
       responseType: 'text' as 'text'
+<<<<<<< HEAD
     }
+=======
+    };
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
 
     const url = type === 'merged' ? `${this.baseUrl}/${type}/delete/${fileId}` : `${this.baseUrl}/${type}/delete/${accountId}/${fileId}`;
+    return this.http.delete(url, httpOptions);
+  }
+
+  deleteSharedFile(fileId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'text' as 'text'
+    };
+
+    const url = `${this.baseUrl}/users/deleteShared/${fileId}`;
     return this.http.delete(url, httpOptions);
   }
 
@@ -124,7 +152,7 @@ export class AccountService {
         'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       }),
-    }
+    };
     return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
@@ -162,7 +190,11 @@ export class AccountService {
 
   downloadStream(fileId, type) {
     return fetch(`${this.baseUrl}/${type}/download/${fileId}`, {
+<<<<<<< HEAD
       method: "GET",
+=======
+      method: 'GET',
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
       headers: {
         'Content-Type': 'application/octet-stream',
         'x-auth': localStorage.getItem('infinityToken')
@@ -173,7 +205,11 @@ export class AccountService {
   downloadStreamShare(fileId, type, shareId) {
     // console.log(shareId)
     return fetch(`${this.baseUrl}/${type}/downloadShare/${fileId}/${shareId}`, {
+<<<<<<< HEAD
       method: "GET",
+=======
+      method: 'GET',
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
       headers: {
         'Content-Type': 'application/octet-stream'
       }
@@ -187,7 +223,11 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
+<<<<<<< HEAD
     const body = { folderName, parentFolder, path };
+=======
+    const body = {folderName, parentFolder, path};
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
   }
 
@@ -199,7 +239,11 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     };
+<<<<<<< HEAD
     const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType, userId };
+=======
+    const body = {clientFileId, accountId, accountType, fileName, fileSize, fileType, userId};
+>>>>>>> 4f3821041776058613354e02bcf42e946aa73d2a
     return this.http.post(`${this.baseUrl}/share/shareFile`, body, httpOptions);
   }
 

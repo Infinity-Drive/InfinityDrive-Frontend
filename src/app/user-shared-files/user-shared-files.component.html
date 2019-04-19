@@ -49,10 +49,10 @@
 
         <td scope="col" class="border-fix">{{ getSizeInMb(f.fileSize) }}</td>
         <td>
-          <i class="fas fa-link point" ngbTooltip="File Share Link"></i>
+          <i class="fas fa-link point" (click)="copyMessage(f.sharedToken)" ngbTooltip="File Share Link"></i>
         </td>
         <td>
-          <i class="fas fa-trash point" ngbTooltip="Click to delete"></i>
+          <i class="fas fa-trash point" (click)="deleteFile(f._id)" ngbTooltip="Click to delete"></i>
         </td>
       </tr>
       </tbody>
