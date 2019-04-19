@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { AccountService } from '../services/account.service';
+import {AccountService} from '../services/account.service';
 
 import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
@@ -21,6 +22,11 @@ export class UserDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.userName = localStorage.getItem('infinityName');
+    if (!this.totalAccounts) {
+      this.account.getAccounts().subscribe((data) => {
+        this.account.updateAccounts(data);
+      });
+    }
     this.account.accountsToBeEmited.subscribe((value: any[]) => {
       let count = 0;
       this.totalAccounts = value.length;
