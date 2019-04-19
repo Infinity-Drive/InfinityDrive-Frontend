@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { environment } from '../../environments/environment';
+
 @Injectable()
 export class UserService {
 
-  baseUrl = 'http://localhost:3000';
+  baseUrl = environment.APIEndpoint;
   
   constructor(private http: HttpClient) { }
 

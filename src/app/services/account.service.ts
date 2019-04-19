@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import {Subject} from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AccountService {
@@ -9,7 +10,7 @@ export class AccountService {
   // accountsObservable = this.accounts.asObservable();
 
   accounts = [];
-  baseUrl = 'http://localhost:3000';
+  baseUrl = environment.APIEndpoint;
 
   private emitAccounSource = new Subject<any[]>();
   accountsToBeEmited = this.emitAccounSource.asObservable();

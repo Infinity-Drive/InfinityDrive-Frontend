@@ -243,7 +243,7 @@ export class FilesComponent implements OnInit {
       }
 
       else if (event instanceof HttpResponse) {
-        if (this.getCurrentPath() == 'root') {
+        if (this.getCurrentFolderId() == 'root') {
           this.getFiles(this.accountId);
         }
         else {
