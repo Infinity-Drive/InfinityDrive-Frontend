@@ -1,11 +1,11 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {Router} from '@angular/router';
-import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
-import {sortBy, mapValues} from 'lodash';
+import { sortBy, mapValues, minBy } from 'lodash';
 
 @Component({
   selector: 'app-merged-account',
@@ -29,6 +29,9 @@ export class MergedAccountComponent implements OnInit {
   };
   pageSize = 10;
   page = 1;
+
+  advancedUpload = true;
+  selectedAccounts = []; // accounts where to upload file
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -59,16 +62,16 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'gdrive') {
 
       items.forEach(item => {
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item.mimeType === 'application/vnd.google-apps.folder')
+            item['mimeType'] = 'folder';
 
-        if (item.mimeType === 'application/vnd.google-apps.folder')
-          item['mimeType'] = 'folder';
-
-        item['accountType'] = 'gdrive';
-        item['account'] = 'Google Drive';
-        item['accountId'] = accountId;
-        item['size'] = parseInt(item.size);
-        standarizedItems.push(item);
-
+          item['accountType'] = 'gdrive';
+          item['account'] = 'Google Drive';
+          item['accountId'] = accountId;
+          item['size'] = parseInt(item.size);
+          standarizedItems.push(item);
+        }
       });
 
     }
@@ -76,13 +79,16 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'odrive') {
 
       items.forEach(item => {
-        // item has a file property if its a file and a folder property if its a folder
-        item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-        item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-        item['accountType'] = 'odrive';
-        item['account'] = 'OneDrive';
-        item['accountId'] = accountId;
-        standarizedItems.push(item);
+        if (!item.name.includes('.infinitydrive.part')) {
+          // item has a file property if its a file and a folder property if its a folder
+          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
+          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
+          item['accountType'] = 'odrive';
+          item['account'] = 'OneDrive';
+          item['accountId'] = accountId;
+          standarizedItems.push(item);
+        }
+
       });
 
     }
@@ -99,24 +105,26 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'dropbox') {
 
       items.entries.forEach(item => {
-        if (item['.tag'] === 'folder')
-          item['mimeType'] = 'folder';
-        else
-          item['mimeType'] = item.name.split('.')[1];
+        if (!item.name.includes('.infinitydrive.part')) {
+          if (item['.tag'] === 'folder')
+            item['mimeType'] = 'folder';
+          else
+            item['mimeType'] = item.name.split('.')[1];
 
-        if (!item['client_modified'])
-          item['client_modified'] = '-';
+          if (!item['client_modified'])
+            item['client_modified'] = '-';
 
-        standarizedItems.push({
-          id: item.id,
-          name: item.name,
-          mimeType: item['mimeType'],
-          size: item.size,
-          modifiedTime: item['client_modified'],
-          accountType: 'dropbox',
-          account: 'Dropbox',
-          accountId: accountId
-        });
+          standarizedItems.push({
+            id: item.id,
+            name: item.name,
+            mimeType: item['mimeType'],
+            size: item.size,
+            modifiedTime: item['client_modified'],
+            accountType: 'dropbox',
+            account: 'Dropbox',
+            accountId: accountId
+          });
+        }
       });
 
     }
@@ -159,6 +167,34 @@ export class MergedAccountComponent implements OnInit {
       this.getFiles();
       this.plotGraph();
     }
+  }
+
+  refresh() {
+    this.accounts = this.account.accounts = [];
+    this.barChartLabels = this.barChartData = [];
+    this.loading = true;
+    this.account.getAccounts().subscribe((data: any) => {
+      this.accounts = data;
+      this.account.updateAccounts(data);
+      if (this.accounts.length === 0) {
+        this.route.navigateByUrl('Dashboard/Accounts');
+      }
+      this.loading = false;
+      this.getFiles();
+      this.plotGraph();
+    }, (err: any) => {
+      this.loading = false;
+      Swal.fire({
+        type: 'error',
+        title: 'Error',
+        text: 'Can\'t connect to server! Check your internet connection.',
+        confirmButtonText: 'Retry'
+      }).then((result) => {
+        if (result.value) {
+          this.refresh();
+        }
+      });
+    });
   }
 
   getFiles() {
@@ -210,11 +246,7 @@ export class MergedAccountComponent implements OnInit {
             'Your file has been deleted.',
             'success'
           );
-        }, (err: HttpErrorResponse) => {
-          const errorMessage = err.error ? err.error : 'Error deleting file';
-          Swal.fire('Error', errorMessage, 'error');
-          console.log(err);
-        });
+        }, (err: HttpErrorResponse) => this.errorHandler(err, 'Error deleting file'));
       }
     });
   }
@@ -231,20 +263,13 @@ export class MergedAccountComponent implements OnInit {
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
       this.loading = false;
-    }, (err: HttpErrorResponse) => {
-      Swal.fire('Error', err.error, 'error');
-      console.log(err);
-    });
+    }, (err: HttpErrorResponse) => this.errorHandler(err, 'Error getting folder items'));
   }
 
   getDownloadLink(file) {
     this.account.getDownloadUrl(file.accountId, file.id, file.accountType).subscribe((url: string) => {
       window.open(url['downloadUrl'], '_blank');
-    }, (err: HttpErrorResponse) => {
-      const errorMessage = err.error ? err.error : 'Error downloading file';
-      Swal.fire('Error', errorMessage, 'error');
-      console.log(err);
-    });
+    }, (err: HttpErrorResponse) => this.errorHandler(err, 'Error downloading file'));
   }
 
   getDownloadStream(file) {
@@ -262,7 +287,7 @@ export class MergedAccountComponent implements OnInit {
 
       const reader = res.body.getReader();
       const pump = () => reader.read()
-        .then(({value, done}) => done
+        .then(({ value, done }) => done
           // close the stream so we stop writing
           ? writer.close()
           // Write one chunk, then get the next one
@@ -273,11 +298,7 @@ export class MergedAccountComponent implements OnInit {
       pump().then(() =>
         console.log('Closed the stream, Done writing')
       );
-    }, (err: HttpErrorResponse) => {
-      const errorMessage = err.error ? err.error : 'Error downloading file';
-      Swal.fire('Error', errorMessage, 'error');
-      console.log(err);
-    });
+    }, (err: HttpErrorResponse) => this.errorHandler(err, 'Error downloading file'));
   }
 
   getProperties(file) {
@@ -289,11 +310,7 @@ export class MergedAccountComponent implements OnInit {
         }
       }
       Swal.fire('Properties', propertiesString, 'success');
-    }, (err: HttpErrorResponse) => {
-      const errorMessage = err.error ? err.error : 'Error getting file properties';
-      Swal.fire('Error', errorMessage, 'error');
-      console.log(err);
-    });
+    }, (err: HttpErrorResponse) => this.errorHandler(err, 'Error getting file properties'));
   }
 
   handleFileInput(files: FileList) {
@@ -302,20 +319,14 @@ export class MergedAccountComponent implements OnInit {
 
   uploadFile() {
 
-    this.account.splitUpload(this.fileToUpload).subscribe((data: any) => {
+    const uploadHandler = (event) => {
 
-      if (data.type === HttpEventType.UploadProgress) {
-        this.uploadProgress = Math.round(100 * data.loaded / data.total);
+      if (event.type === HttpEventType.UploadProgress) {
+        this.uploadProgress = Math.round(100 * event.loaded / event.total);
       }
 
-      else if (data instanceof HttpResponse) {
-        // if we're getting a mongo object id we need to assign it to id
-        // since, we're always interpreting ids with .id
-        if (data.body._id)
-          data.body.id = data.body._id;
-        console.log(data.body);
-        this.files.push(data.body);
-        this.temp = [...this.files];
+      else if (event instanceof HttpResponse) {
+        this.getFiles();
         this.btnClose.nativeElement.click();
         Swal.fire({
           type: 'success',
@@ -323,13 +334,63 @@ export class MergedAccountComponent implements OnInit {
           text: 'File has been uploaded'
         });
         this.uploadProgress = 0;
+        this.advancedUpload = false;
+        this.selectedAccounts = [];
       }
-    }, (err: HttpErrorResponse) => {
-      const errorMessage = err.error ? err.error : 'Error uploading file';
-      Swal.fire('Error', errorMessage, 'error');
-      this.uploadProgress = 0;
-      console.log(err);
-    });
+
+    }
+
+    // advanced upload
+    if (this.selectedAccounts.length === 1) {
+      this.account.uploadFile(this.selectedAccounts[0]._id, this.selectedAccounts[0].accountType, this.fileToUpload)
+        .subscribe(
+          (event: any) => uploadHandler(event),
+          (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+        );
+    }
+
+    else if (this.selectedAccounts.length >= 1) {
+      this.account.splitUpload(this.fileToUpload, this.selectedAccounts).subscribe(
+        (event: any) => uploadHandler(event),
+        (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+      );
+    }
+
+    // auto upload (user didn't opt to choose advanced options)
+    else {
+
+      var lowestStorageAccount = minBy(this.accounts, function (account) {
+        return (account.storage.available);
+      });
+
+      // upload to the account that has the least storage and can fit the file
+      if (lowestStorageAccount.storage.used >= this.fileToUpload.size) {
+        this.account.uploadFile(lowestStorageAccount._id, lowestStorageAccount.accountType, this.fileToUpload)
+          .subscribe(
+            (event: any) => uploadHandler(event),
+            (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+          );
+      }
+
+      //split upload
+      else {
+        this.account.splitUpload(this.fileToUpload, this.accounts).subscribe(
+          (event: any) => uploadHandler(event),
+          (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+        );
+      }
+
+    }
+  }
+
+  getFilteredAccounts() {
+    if (this.accounts.length && this.fileToUpload) {
+      return this.accounts.filter((account) => {
+        if (account.storage.available > this.fileToUpload.size) {
+          return account;
+        }
+      });
+    }
   }
 
   // method for adding client drive
@@ -389,8 +450,8 @@ export class MergedAccountComponent implements OnInit {
     totalDataSet.push(this.getSizeInGb(total));
 
     this.barChartData = [
-      {data: usedDataSet, label: 'Used'},
-      {data: totalDataSet, label: 'Total'}
+      { data: usedDataSet, label: 'Used' },
+      { data: totalDataSet, label: 'Total' }
     ];
 
   }
@@ -458,4 +519,14 @@ export class MergedAccountComponent implements OnInit {
     });
   }
 
+  selectAccounts(e, account) {
+    e.target.checked ? this.selectedAccounts.push(account) : this.selectedAccounts.splice(this.selectedAccounts.indexOf(account), 1);
+  }
+
+  errorHandler = (err, fallbackMessage) => {
+    const errorMessage = typeof err.error === 'string' ? err.error : fallbackMessage;
+    Swal.fire('Error', errorMessage, 'error');
+    console.log(err);
+    this.uploadProgress = 0;
+  }
 }

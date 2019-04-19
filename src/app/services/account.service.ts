@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
-import {Subject} from 'rxjs';
+import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable()
@@ -62,7 +62,7 @@ export class AccountService {
     };
 
     var url = `${this.baseUrl}/${type}/listFiles/${id}`
-    folderId ? url += `/${folderId}` : url ;
+    folderId ? url += `/${folderId}` : url;
     return this.http.get(url, httpOptions);
   }
 
@@ -86,13 +86,13 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
 
-  getDownloadUrlShared(accountId, fileId, type , shareId) {
+  getDownloadUrlShared(accountId, fileId, type, shareId) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
-    return this.http.post(`${this.baseUrl}/${type}/downloadUrlShared/${accountId}/${fileId}`, {shareId}, httpOptions);
+    return this.http.post(`${this.baseUrl}/${type}/downloadUrlShared/${accountId}/${fileId}`, { shareId }, httpOptions);
   }
 
   deleteAccount(id) {
@@ -113,7 +113,7 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     }
-    
+
     const url = type === 'merged' ? `${this.baseUrl}/${type}/delete/${fileId}` : `${this.baseUrl}/${type}/delete/${accountId}/${fileId}`;
     return this.http.delete(url, httpOptions);
   }
@@ -128,7 +128,7 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
-  uploadFile(accountid, type, file, parentId, path) {
+  uploadFile(accountid, type, file, parentId = 'root', path = '/') {
     const httpOptions = {
       headers: new HttpHeaders({
         'x-filesize': file.size.toString(),
@@ -145,7 +145,7 @@ export class AccountService {
     return this.http.request(req);
   }
 
-  splitUpload(file) {
+  splitUpload(file, accounts) {
     const httpOptions = {
       headers: new HttpHeaders({
         'x-filesize': file.size.toString(),
@@ -154,6 +154,7 @@ export class AccountService {
       reportProgress: true
     };
     const formData: FormData = new FormData();
+    formData.append('accounts', JSON.stringify(accounts.map((account) => account._id)));
     formData.append('file', file, file.name);
     const req = new HttpRequest('POST', `${this.baseUrl}/merged/upload`, formData, httpOptions);
     return this.http.request(req);
@@ -162,18 +163,18 @@ export class AccountService {
   downloadStream(fileId, type) {
     return fetch(`${this.baseUrl}/${type}/download/${fileId}`, {
       method: "GET",
-      headers:{
+      headers: {
         'Content-Type': 'application/octet-stream',
         'x-auth': localStorage.getItem('infinityToken')
       }
     });
   }
 
-  downloadStreamShare(fileId, type , shareId) {
+  downloadStreamShare(fileId, type, shareId) {
     // console.log(shareId)
     return fetch(`${this.baseUrl}/${type}/downloadShare/${fileId}/${shareId}`, {
       method: "GET",
-      headers:{
+      headers: {
         'Content-Type': 'application/octet-stream'
       }
     });
@@ -186,7 +187,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    const body = { folderName, parentFolder, path};
+    const body = { folderName, parentFolder, path };
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
   }
 
@@ -198,7 +199,7 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     };
-    const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType, userId};
+    const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType, userId };
     return this.http.post(`${this.baseUrl}/share/shareFile`, body, httpOptions);
   }
 
@@ -223,11 +224,11 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/users/sharedFiles`, httpOptions);
   }
 
-  updateAccounts(updatedAccounts){
+  updateAccounts(updatedAccounts) {
     this.accounts = updatedAccounts;
     this.emitAccounSource.next(updatedAccounts);
   }
- 
+
 }
 
 
