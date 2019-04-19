@@ -24,6 +24,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 import { ChartsModule } from 'ng2-charts';
 import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { AccountReportComponent } from './account-report/account-report.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstra
     MergedAccountComponent,
     EmailVerificationComponent,
     SharedFileComponent,
-    UserSharedFilesComponent
+    UserSharedFilesComponent,
+    AccountReportComponent
   ],
   imports: [
     BrowserModule,

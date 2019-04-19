@@ -1,0 +1,51 @@
+.bodyCard
+{
+  background: white;
+  width: 80%;
+  margin: 5%;
+  margin-left: 10%;
+  margin-right: 10%;
+  border-radius: 10px;
+}
+
+.border-fix{
+  border-bottom: none;
+}
+
+.accountModalButton{
+  text-align: center;
+}
+.name
+{
+  float: left;
+}
+
+.actions
+{
+  float: right;
+}
+.actions > span
+{
+  margin: 5px;
+  cursor: pointer;
+}
+
+.account > img{
+  width: 60px;
+  height: 60px;
+}
+
+.accounts{
+  text-align: center;
+}
+
+.account:hover{
+  cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

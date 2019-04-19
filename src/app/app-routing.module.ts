@@ -12,6 +12,7 @@ import {AuthGuardService} from './services/auth-guard.service';
 import {MergedAccountComponent} from './merged-account/merged-account.component';
 import {SharedFileComponent} from './shared-file/shared-file.component';
 import { UserSharedFilesComponent } from './user-shared-files/user-shared-files.component';
+import { AccountReportComponent } from './account-report/account-report.component';
 // routes array for components
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: 'Signup', component: SignupComponent},
   {path: 'PasswordReset', component: ForgotPasswordComponent},
   {path: 'EmailVerification/:id', component: EmailVerificationComponent},
+  {path: 'AccountReport/:id', component: AccountReportComponent},
   {path: 'Shared/:id', component: SharedFileComponent},
   {
     path: 'Dashboard', component: UserDashboardComponent, canActivate: [AuthGuardService]

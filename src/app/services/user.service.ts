@@ -30,6 +30,14 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/users/verifyEmail`, {'token': token} , httpOptions);
   }
 
+  reportAccount(token) {
+    const httpOptions = {
+      responseType: 'text' as 'text'
+    }
+    // returning server result to the component
+    return this.http.post(`${this.baseUrl}/users/reportAccount`, {'token': token} , httpOptions);
+  }
+
   getSharedFile(token){
     return this.http.get(`${this.baseUrl}/share/getsharedFile/${token}`);
   }

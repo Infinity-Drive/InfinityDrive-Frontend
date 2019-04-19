@@ -1,0 +1,10 @@
+<div class="bodyCard p-5 shadow">
+  <h1>Account Report</h1>
+
+  <app-spinner *ngIf="loading"></app-spinner>
+  <div *ngIf="!loading && verified">
+    <h3 >Account by your Email has been deleted.Thank you for the feedback</h3>
+  </div>
+  <h3 *ngIf="!loading && !verified">No Account was found to be reported</h3>
+
+</div>
