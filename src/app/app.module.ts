@@ -23,8 +23,8 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 
 import { ChartsModule } from 'ng2-charts';
-import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AccountReportComponent } from './account-report/account-report.component';
+import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -49,7 +49,8 @@ import { AccountReportComponent } from './account-report/account-report.componen
     FormsModule,
     ChartsModule,
     NgbTooltipModule,
-    NgbPaginationModule
+    NgbPaginationModule,
+    NgbCollapseModule
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

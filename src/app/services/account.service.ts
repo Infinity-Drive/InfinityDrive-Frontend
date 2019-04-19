@@ -92,7 +92,7 @@ export class AccountService {
         'Content-Type': 'application/json'
       })
     };
-    return this.http.post(`${this.baseUrl}/${type}/downloadUrlShared/${accountId}/${fileId}`, {shareId}, httpOptions);
+    return this.http.post(`${this.baseUrl}/${type}/downloadUrlShared/${accountId}/${fileId}`, { shareId }, httpOptions);
   }
 
   deleteAccount(id) {
@@ -141,7 +141,7 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
-  uploadFile(accountid, type, file, parentId, path) {
+  uploadFile(accountid, type, file, parentId = 'root', path = '/') {
     const httpOptions = {
       headers: new HttpHeaders({
         'x-filesize': file.size.toString(),
@@ -158,7 +158,7 @@ export class AccountService {
     return this.http.request(req);
   }
 
-  splitUpload(file) {
+  splitUpload(file, accounts) {
     const httpOptions = {
       headers: new HttpHeaders({
         'x-filesize': file.size.toString(),
@@ -167,6 +167,7 @@ export class AccountService {
       reportProgress: true
     };
     const formData: FormData = new FormData();
+    formData.append('accounts', JSON.stringify(accounts.map((account) => account._id)));
     formData.append('file', file, file.name);
     const req = new HttpRequest('POST', `${this.baseUrl}/merged/upload`, formData, httpOptions);
     return this.http.request(req);

@@ -35,7 +35,7 @@
               {{totalAccounts-accountsLimit}} more accounts
             </li>
 
-            <li *ngIf="totalAccounts < accountsLimit && totalAccounts > 0" class="list-group-item"
+            <li *ngIf="totalAccounts <= accountsLimit && totalAccounts > 0" class="list-group-item"
               style="border: none; font-size: 0.7em; background: #F8F9FA; color: dodgerblue" (click)="toggleSidebar()"
               routerLink="Accounts">
               All Accounts
