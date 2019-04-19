@@ -14,6 +14,8 @@ import { FilesComponent } from './files/files.component';
 import { MergedAccountComponent } from './merged-account/merged-account.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { EmailVerificationComponent } from './email-verification/email-verification.component';
+import { SharedFileComponent } from './shared-file/shared-file.component';
+import { UserSharedFilesComponent } from './user-shared-files/user-shared-files.component';
 
 import { UserService } from './services/user.service';
 import { AccountService } from './services/account.service';
@@ -22,8 +24,6 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 import { ChartsModule } from 'ng2-charts';
 import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { SharedFileComponent } from './shared-file/shared-file.component';
-import { UserSharedFilesComponent } from './user-shared-files/user-shared-files.component';
 
 @NgModule({
   declarations: [

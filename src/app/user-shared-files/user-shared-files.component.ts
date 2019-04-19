@@ -4,6 +4,9 @@ import {AccountService} from '../services/account.service';
 
 import {sortBy, mapValues} from 'lodash';
 
+import {environment} from '../../environments/environment';
+import Swal from "sweetalert2";
+
 @Component({
   selector: 'app-user-shared-files',
   templateUrl: './user-shared-files.component.html',
@@ -16,10 +19,11 @@ export class UserSharedFilesComponent implements OnInit {
   temp = []; // used for table searching
   sort = {
     fileName: undefined,
-     fileSize: undefined
+    fileSize: undefined
   };
   pageSize = 10;
   page = 1;
+  textToCopy;
 
   constructor(private account: AccountService, private http: HttpClientModule) {
   }
@@ -77,5 +81,44 @@ export class UserSharedFilesComponent implements OnInit {
       this.sort[`${key}`] = true;
       return this.files;
     }
+  }
+
+  copyMessage(val: string) {
+    document.addEventListener('copy', (e: ClipboardEvent) => {
+      e.clipboardData.setData('text/plain', (`${environment.AppEndpoint}/Shared/${val}`));
+      e.preventDefault();
+      document.removeEventListener('copy', null);
+    });
+    document.execCommand('copy');
+  }
+
+  deleteFile(id) {
+
+    Swal.fire({
+      title: `Are you sure you want to stop sharing this file?`,
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.value) {
+        this.account.deleteSharedFile(id).subscribe(() => {
+          this.files = this.files.filter((f) => f._id !== id);
+          this.temp = [...this.files];
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted from sharing.',
+            'success'
+          );
+        }, (err: HttpErrorResponse) => {
+          Swal.fire('Error', 'Unable to delete file from sharing', 'error');
+          console.log(err);
+        });
+      }
+    });
+
+
   }
 }

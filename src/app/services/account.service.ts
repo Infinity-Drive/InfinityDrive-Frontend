@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {Subject} from 'rxjs';
-import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class AccountService {
@@ -34,7 +34,7 @@ export class AccountService {
       })
     };
     // sending token code to server
-    return this.http.post(`${this.baseUrl}/${type}/saveToken`, { code }, httpOptions);
+    return this.http.post(`${this.baseUrl}/${type}/saveToken`, {code}, httpOptions);
   }
 
   // getting user accounts
@@ -61,8 +61,8 @@ export class AccountService {
       })
     };
 
-    var url = `${this.baseUrl}/${type}/listFiles/${id}`
-    folderId ? url += `/${folderId}` : url ;
+    var url = `${this.baseUrl}/${type}/listFiles/${id}`;
+    folderId ? url += `/${folderId}` : url;
     return this.http.get(url, httpOptions);
   }
 
@@ -86,7 +86,7 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/${type}/downloadUrl/${accountId}/${fileId}`, httpOptions);
   }
 
-  getDownloadUrlShared(accountId, fileId, type , shareId) {
+  getDownloadUrlShared(accountId, fileId, type, shareId) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -112,9 +112,22 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       }),
       responseType: 'text' as 'text'
-    }
-    
+    };
+
     const url = type === 'merged' ? `${this.baseUrl}/${type}/delete/${fileId}` : `${this.baseUrl}/${type}/delete/${accountId}/${fileId}`;
+    return this.http.delete(url, httpOptions);
+  }
+
+  deleteSharedFile(fileId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      }),
+      responseType: 'text' as 'text'
+    };
+
+    const url = `${this.baseUrl}/users/deleteShared/${fileId}`;
     return this.http.delete(url, httpOptions);
   }
 
@@ -124,7 +137,7 @@ export class AccountService {
         'Content-Type': 'application/json',
         'x-auth': localStorage.getItem('infinityToken')
       }),
-    }
+    };
     return this.http.get(`${this.baseUrl}/${type}/properties/${accountId}/${fileId}`, httpOptions);
   }
 
@@ -161,19 +174,19 @@ export class AccountService {
 
   downloadStream(fileId, type) {
     return fetch(`${this.baseUrl}/${type}/download/${fileId}`, {
-      method: "GET",
-      headers:{
+      method: 'GET',
+      headers: {
         'Content-Type': 'application/octet-stream',
         'x-auth': localStorage.getItem('infinityToken')
       }
     });
   }
 
-  downloadStreamShare(fileId, type , shareId) {
+  downloadStreamShare(fileId, type, shareId) {
     // console.log(shareId)
     return fetch(`${this.baseUrl}/${type}/downloadShare/${fileId}/${shareId}`, {
-      method: "GET",
-      headers:{
+      method: 'GET',
+      headers: {
         'Content-Type': 'application/octet-stream'
       }
     });
@@ -186,7 +199,7 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    const body = { folderName, parentFolder, path};
+    const body = {folderName, parentFolder, path};
     return this.http.post(`${this.baseUrl}/${type}/createFolder/${accountId}`, body, httpOptions);
   }
 
@@ -198,7 +211,7 @@ export class AccountService {
       }),
       responseType: 'text' as 'text'
     };
-    const body = { clientFileId, accountId, accountType, fileName, fileSize, fileType, userId};
+    const body = {clientFileId, accountId, accountType, fileName, fileSize, fileType, userId};
     return this.http.post(`${this.baseUrl}/share/shareFile`, body, httpOptions);
   }
 
@@ -223,11 +236,11 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/users/sharedFiles`, httpOptions);
   }
 
-  updateAccounts(updatedAccounts){
+  updateAccounts(updatedAccounts) {
     this.accounts = updatedAccounts;
     this.emitAccounSource.next(updatedAccounts);
   }
- 
+
 }
 
 
