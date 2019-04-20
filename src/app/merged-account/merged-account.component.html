@@ -33,8 +33,7 @@
     <div style="clear:both"></div>
 
     <app-spinner *ngIf="loading"></app-spinner>
-
-    <div class="form-group float-right mr-1" *ngIf="!loading && files.length != 0">
+    <div class="form-group float-right mr-1" *ngIf="!loading">
       <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
     </div>
     <span *ngIf="!loading && files.length != 0" class="counter float-right mt-2 mr-1">{{files.length}} files </span>
@@ -96,11 +95,16 @@
             </td>
             <ng-template #mergedDownload>
               <td (click)="getDownloadStream(f)" class="td-word-wrap point">
-                <i class="fas fa-file"></i>
-                {{f.name}}
+                <span *ngIf="userSettings.highlightSplitFiles">
+                  <i class="fas fa-infinity" style="color:#0052D4" 
+                  ngbTooltip="This file is split across multiple accounts"></i>
+                </span>
+                <span *ngIf="!userSettings.highlightSplitFiles">
+                  <i class="fas fa-file"></i>
+                </span>
+                {{f.name}} 
               </td>
             </ng-template>
-
           </ng-template>
 
           <!-- <td class="d-none d-lg-block" *ngIf="f.accountType !== 'merged'; else merged">
@@ -112,7 +116,7 @@
             <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
             {{f.account}}
           </a>
-        </td> -->
+        </td>
 
           <ng-template #merged>
             <td class="d-none d-lg-block">
@@ -120,7 +124,7 @@
                 <i class="fas fa-infinity"></i> Infinity Drive
               </span>
             </td>
-          </ng-template>
+          </ng-template> -->
 
           <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
