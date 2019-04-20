@@ -31,6 +31,7 @@ export class AccountsComponent implements OnInit {
         this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
           // updating account list
           // this.account.getAccounts();
+          localStorage.setItem('newAdded', 'yes');
           this.router.navigateByUrl('Dashboard/Accounts');
         }, (err: HttpErrorResponse) => {
           if (err.error === 'Account already exists') {
@@ -43,16 +44,20 @@ export class AccountsComponent implements OnInit {
         });
       } else {
         this.accounts = this.account.accounts;
-        if (this.accounts.length === 0) {
+        if (this.accounts.length === 0 || localStorage.getItem('newAdded') == 'yes') {
           this.loading = true;
+          localStorage.setItem('newAdded', 'no');
           this.account.getAccounts().subscribe((data: any) => {
             this.accounts = data;
-            this.account.updateAccounts(data)
+            this.account.updateAccounts(data);
             this.loading = false;
           }, (err: any) => {
             this.accounts = [];
             this.account.updateAccounts([]);
           });
+        }
+        else {
+          this.loading = false;
         }
         // this.router.navigateByUrl('Dashboard');
       }
@@ -62,6 +67,7 @@ export class AccountsComponent implements OnInit {
     // this.account.accountsObservable.subscribe(data => this.accounts = data);
 
   }
+
   // method for adding client drive
   addDrive(type) {
     localStorage.setItem('AddingAccountType', type);
@@ -89,7 +95,7 @@ export class AccountsComponent implements OnInit {
       if (result.value) {
 
         this.account.deleteAccount(id).subscribe((data) => {
-          this.accounts = this.accounts.filter(account =>  account['_id'] !== id);
+          this.accounts = this.accounts.filter(account => account['_id'] !== id);
           Swal.fire(
             'Removed!',
             'Storage has been removed successfully',
