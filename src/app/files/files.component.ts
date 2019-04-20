@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import {Location} from '@angular/common';
 import {sortBy, mapValues} from 'lodash';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-files',
   templateUrl: './files.component.html',
@@ -146,7 +148,7 @@ export class FilesComponent implements OnInit {
     this.loading = true;
     this.breadCrumbs = [];
     this.account.getFiles(id, this.currentAccount['accountType']).subscribe((data) => {
-      console.log(data);
+      // console.log(data);
       this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
       this.temp = [...this.files];
       this.loading = false;
@@ -387,7 +389,16 @@ export class FilesComponent implements OnInit {
 
   shareFile(clientFileId, fileName, fileSize, fileType) {
     this.account.shareFile(clientFileId, this.accountId, this.currentAccount['accountType'], fileName, fileSize, fileType, localStorage.getItem('infinityId')).subscribe((data) => {
-      Swal.fire('Share Link', `http://localhost:4200/Shared/${data}`, 'success');
+      // Swal.fire('Share Link', `${environment.AppEndpoint}/Shared/${data}`, 'success');
+
+      Swal.fire({
+        title: '<strong>Share Link</strong>',
+        type: 'success',
+        html:
+          // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
+          `<a href="${environment.AppEndpoint}/Shared/${data}">${environment.AppEndpoint}/Shared/${data}</a> `,
+      });
+
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Error sharing file';
       Swal.fire('Error', errorMessage, 'error');
@@ -395,4 +406,21 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  copyMessage(val: string) {
+    console.log(val)
+    document.addEventListener('copy', (e: ClipboardEvent) => {
+      e.clipboardData.setData('text/plain', (`${environment.AppEndpoint}/Shared/${val}`));
+      e.preventDefault();
+      document.removeEventListener('copy', null);
+    });
+    document.execCommand('copy');
+    Swal.fire({
+      position: 'top-end',
+      type: 'success',
+      title: 'Link copied to clipboard',
+      showConfirmButton: false,
+      timer: 1000
+    });
+
+  }
 }

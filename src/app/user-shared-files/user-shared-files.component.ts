@@ -23,7 +23,6 @@ export class UserSharedFilesComponent implements OnInit {
   };
   pageSize = 10;
   page = 1;
-  textToCopy;
 
   constructor(private account: AccountService, private http: HttpClientModule) {
   }
@@ -90,6 +89,13 @@ export class UserSharedFilesComponent implements OnInit {
       document.removeEventListener('copy', null);
     });
     document.execCommand('copy');
+    Swal.fire({
+      position: 'top-end',
+      type: 'success',
+      title: 'Link copied to clipboard',
+      showConfirmButton: false,
+      timer: 1000
+    });
   }
 
   deleteFile(id) {

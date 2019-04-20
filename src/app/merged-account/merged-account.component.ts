@@ -7,6 +7,8 @@ import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
 import {sortBy, mapValues, minBy} from 'lodash';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-merged-account',
   templateUrl: './merged-account.component.html',
@@ -540,7 +542,16 @@ export class MergedAccountComponent implements OnInit {
 
   shareFile(clientFileId, fileName, fileSize, fileType, accountId, accountType) {
     this.account.shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType, localStorage.getItem('infinityId')).subscribe((data) => {
-      Swal.fire('Share Link', `http://localhost:4200/Shared/${data}`, 'success');
+      // Swal.fire('Share Link', `${environment.AppEndpoint}/Shared/${data}`, 'success');
+
+      Swal.fire({
+        title: '<strong>Share Link</strong>',
+        type: 'success',
+        html:
+        // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
+          `<a href="${environment.AppEndpoint}/Shared/${data}">${environment.AppEndpoint}/Shared/${data}</a> `,
+      });
+
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Error sharing file';
       Swal.fire('Error', errorMessage, 'error');
@@ -551,4 +562,23 @@ export class MergedAccountComponent implements OnInit {
   selectAccounts(e, account) {
     e.target.checked ? this.selectedAccounts.push(account) : this.selectedAccounts.splice(this.selectedAccounts.indexOf(account), 1);
   }
+
+  copyMessage(val: string) {
+    console.log(val)
+    document.addEventListener('copy', (e: ClipboardEvent) => {
+      e.clipboardData.setData('text/plain', (`${environment.AppEndpoint}/Shared/${val}`));
+      e.preventDefault();
+      document.removeEventListener('copy', null);
+    });
+    document.execCommand('copy');
+    Swal.fire({
+      position: 'top-end',
+      type: 'success',
+      title: 'Link copied to clipboard',
+      showConfirmButton: false,
+      timer: 1000
+    });
+
+  }
+
 }
