@@ -58,6 +58,8 @@ export class MergedAccountComponent implements OnInit {
   };
 
   guageGraphData = [];
+  guageMax = 0;
+
   standarizeFileData = (items, accountType, accountId) => {
 
     var standarizedItems = [];
@@ -465,20 +467,21 @@ export class MergedAccountComponent implements OnInit {
       {data: totalDataSet, label: 'Total'}
     ];
 
+    this.guageMax = parseFloat(this.getSizeInGb(total));
     this.guageGraphData = [
-      {
-        'name': 'Total Storage',
-        'value': this.getSizeInGb(total)
-      },
+      // {
+      //   'name': 'Total Storage',
+      //   'value': this.getSizeInGb(total)
+      // },
       {
         'name': 'Free Storage',
-        'value': this.getSizeInGb(total) - this.getSizeInGb(used)
+        'value': parseFloat(this.getSizeInGb(total)) - parseFloat(this.getSizeInGb(used))
       },
       {
         'name': 'Used Storage',
-        'value': this.getSizeInGb(used)
+        'value': parseFloat(this.getSizeInGb(used))
       },
-      ];
+    ];
 
   }
 
