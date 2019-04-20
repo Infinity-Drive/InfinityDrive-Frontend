@@ -3,7 +3,7 @@
   <div class="table-responsive">
 
     <div class="actions mt-3" style="font-size:1.1em">
-      <i class="fas fa-archive mr-3 point" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
+      <i class="fas fa-archive mr-3 point blueHoverFont" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
     </div>
 
     <div style="clear:both"></div>
@@ -49,10 +49,10 @@
 
         <td scope="col" class="border-fix">{{ getSizeInMb(f.fileSize) }}</td>
         <td>
-          <i class="fas fa-link point" (click)="copyMessage(f.sharedToken)" ngbTooltip="Click to file share link"></i>
+          <i class="fas fa-link point blueHoverFont" (click)="copyMessage(f.sharedToken)" ngbTooltip="Click to file share link"></i>
         </td>
         <td>
-          <i class="fas fa-trash point" (click)="deleteFile(f._id)" ngbTooltip="Click to delete"></i>
+          <i class="fas fa-trash point redHoverFont" (click)="deleteFile(f._id)" ngbTooltip="Click to delete"></i>
         </td>
       </tr>
       </tbody>

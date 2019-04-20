@@ -117,3 +117,17 @@ body {
 .point:hover{
   cursor: pointer;
 }
+
+.blueHoverFont:hover{
+  color: dodgerblue;
+  font-size: 1.5em;
+}
+
+.blueHover:hover{
+  color: dodgerblue;
+}
+
+.redHoverFont:hover{
+  color: #fc0505;
+  font-size: 1.5em;
+}
