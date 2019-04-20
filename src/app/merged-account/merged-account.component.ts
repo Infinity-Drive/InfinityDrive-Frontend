@@ -7,7 +7,7 @@ import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
 import {sortBy, mapValues, minBy} from 'lodash';
 
-import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-merged-account',
@@ -544,11 +544,13 @@ export class MergedAccountComponent implements OnInit {
     this.account.shareFile(clientFileId, accountId, accountType, fileName, fileSize, fileType, localStorage.getItem('infinityId')).subscribe((data) => {
       // Swal.fire('Share Link', `${environment.AppEndpoint}/Shared/${data}`, 'success');
 
+      this.copyMessage(data);
       Swal.fire({
         title: '<strong>Share Link</strong>',
         type: 'success',
         html:
         // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
+          '<b>Link copied to clipboard</b>' +
           `<a href="${environment.AppEndpoint}/Shared/${data}">${environment.AppEndpoint}/Shared/${data}</a> `,
       });
 
@@ -564,21 +566,13 @@ export class MergedAccountComponent implements OnInit {
   }
 
   copyMessage(val: string) {
-    console.log(val)
+    console.log(val);
     document.addEventListener('copy', (e: ClipboardEvent) => {
       e.clipboardData.setData('text/plain', (`${environment.AppEndpoint}/Shared/${val}`));
       e.preventDefault();
       document.removeEventListener('copy', null);
     });
     document.execCommand('copy');
-    Swal.fire({
-      position: 'top-end',
-      type: 'success',
-      title: 'Link copied to clipboard',
-      showConfirmButton: false,
-      timer: 1000
-    });
-
   }
 
 }

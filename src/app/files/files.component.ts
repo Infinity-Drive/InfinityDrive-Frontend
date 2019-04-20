@@ -391,11 +391,13 @@ export class FilesComponent implements OnInit {
     this.account.shareFile(clientFileId, this.accountId, this.currentAccount['accountType'], fileName, fileSize, fileType, localStorage.getItem('infinityId')).subscribe((data) => {
       // Swal.fire('Share Link', `${environment.AppEndpoint}/Shared/${data}`, 'success');
 
+      this.copyMessage(data);
       Swal.fire({
         title: '<strong>Share Link</strong>',
         type: 'success',
         html:
-          // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
+        // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
+          '<b>Link copied to clipboard</b>' +
           `<a href="${environment.AppEndpoint}/Shared/${data}">${environment.AppEndpoint}/Shared/${data}</a> `,
       });
 
