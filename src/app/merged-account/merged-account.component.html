@@ -96,8 +96,6 @@
             </td>
             <ng-template #mergedDownload>
               <td (click)="getDownloadStream(f)" class="td-word-wrap point">
-                <i class="fas fa-file"></i>
-                {{f.name}}
                 <span *ngIf="userSettings.highlightSplitFiles">
                   <i class="fas fa-infinity" style="color:#0052D4"
                      ngbTooltip="This file is split across multiple accounts"></i>
@@ -105,6 +103,7 @@
                 <span *ngIf="!userSettings.highlightSplitFiles">
                   <i class="fas fa-file"></i>
                 </span>
+                {{f.name}}
               </td>
             </ng-template>
 
