@@ -51,7 +51,7 @@
         </div>
       </a>
       <a routerLink="SharedFiles" (click)="toggleSidebar()" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Shared Files</a>
-      <a href="#" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Settings</a>
+      <a routerLink="/Dashboard/Settings" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Settings</a>
       <a href="javascript:;" (click)="logout()"
         class="list-group-item list-group-item-action text-uppercase font-weight-bold">Sign out</a>
     </ul>
@@ -86,7 +86,7 @@
             <i class="fas fa-archive fa-sm fa-fw mr-2"></i>
             Accounts
           </a>
-          <a class="dropdown-item" href="#">
+          <a class="dropdown-item" routerLink="/Dashboard/Settings">
             <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
             Settings
           </a>

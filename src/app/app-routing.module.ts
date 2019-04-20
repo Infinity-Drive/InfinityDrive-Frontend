@@ -13,6 +13,7 @@ import {MergedAccountComponent} from './merged-account/merged-account.component'
 import {SharedFileComponent} from './shared-file/shared-file.component';
 import { UserSharedFilesComponent } from './user-shared-files/user-shared-files.component';
 import { AccountReportComponent } from './account-report/account-report.component';
+import { SettingsComponent } from './settings/settings.component';
 // routes array for components
 
 const routes: Routes = [
@@ -28,10 +29,10 @@ const routes: Routes = [
       {path: '', component: MergedAccountComponent, pathMatch: 'full'},
       {path: 'Storage/:id', component: FilesComponent},
       {path: 'Accounts', component: AccountsComponent},
-      {path: 'SharedFiles', component: UserSharedFilesComponent}
+      {path: 'SharedFiles', component: UserSharedFilesComponent},
+      {path: 'Settings', component: SettingsComponent},
     ]
-  },
-
+  }
 ];
 
 @NgModule({

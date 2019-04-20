@@ -34,14 +34,17 @@ export class FilesComponent implements OnInit {
   pageSize = 10;
   page = 1;
 
+  userSettings;
+
   @ViewChild('btnClose') btnClose: ElementRef;
   standarizeFileData = (items, accountType) => {
 
     var standarizedItems = [];
+    const showSplitFiles = this.userSettings.showSplitFiles;
 
     if (accountType === 'gdrive') {
       items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
+        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
           if (item.mimeType === 'application/vnd.google-apps.folder')
             item['mimeType'] = 'folder';
           standarizedItems.push(item);
@@ -51,7 +54,7 @@ export class FilesComponent implements OnInit {
 
     if (accountType === 'odrive') {
       items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
+        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
           // item has a file property if its a file and a folder property if its a folder
           item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
           item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
@@ -62,7 +65,7 @@ export class FilesComponent implements OnInit {
 
     if (accountType === 'dropbox') {
       items.entries.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
+        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
           if (item['.tag'] === 'folder')
             item['mimeType'] = 'folder';
           else
@@ -88,6 +91,7 @@ export class FilesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
     this.activeRoute.params.subscribe((params) => {
       this.accountId = params.id;
       // this.account.accountsObservable.subscribe(data => this.accounts = data);

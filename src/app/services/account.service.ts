@@ -237,6 +237,17 @@ export class AccountService {
     return this.http.get(`${this.baseUrl}/users/sharedFiles`, httpOptions);
   }
 
+  updateSettings(settings) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth': localStorage.getItem('infinityToken')
+      })
+    };
+    const body = { settings };
+    return this.http.patch(`${this.baseUrl}/users/settings`, body, httpOptions);
+  }
+
   updateAccounts(updatedAccounts) {
     this.accounts = updatedAccounts;
     this.emitAccounSource.next(updatedAccounts);

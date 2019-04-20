@@ -32,6 +32,7 @@ export class MergedAccountComponent implements OnInit {
 
   advancedUpload = true;
   selectedAccounts = []; // accounts where to upload file
+  userSettings;
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -58,11 +59,12 @@ export class MergedAccountComponent implements OnInit {
   standarizeFileData = (items, accountType, accountId) => {
 
     var standarizedItems = [];
+    const showSplitFiles = this.userSettings.showSplitFiles;
 
     if (accountType === 'gdrive') {
 
       items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
+        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
           if (item.mimeType === 'application/vnd.google-apps.folder')
             item['mimeType'] = 'folder';
 
@@ -79,7 +81,7 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'odrive') {
 
       items.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
+        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
           // item has a file property if its a file and a folder property if its a folder
           item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
           item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
@@ -105,7 +107,7 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'dropbox') {
 
       items.entries.forEach(item => {
-        if (!item.name.includes('.infinitydrive.part')) {
+        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
           if (item['.tag'] === 'folder')
             item['mimeType'] = 'folder';
           else
@@ -136,6 +138,7 @@ export class MergedAccountComponent implements OnInit {
 
   ngOnInit() {
 
+    this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
     this.accounts = this.account.accounts;
 
     if (this.accounts.length === 0) {
