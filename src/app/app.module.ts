@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -23,6 +24,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 
 import { ChartsModule } from 'ng2-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AccountReportComponent } from './account-report/account-report.component';
 import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from './settings/settings.component';
@@ -52,7 +54,9 @@ import { SettingsComponent } from './settings/settings.component';
     ChartsModule,
     NgbTooltipModule,
     NgbPaginationModule,
-    NgbCollapseModule
+    NgbCollapseModule,
+    NgxChartsModule,
+    BrowserAnimationsModule
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

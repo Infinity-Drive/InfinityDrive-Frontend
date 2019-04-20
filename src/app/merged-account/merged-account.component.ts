@@ -1,11 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { AccountService } from '../services/account.service';
-import { Router } from '@angular/router';
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {AccountService} from '../services/account.service';
+import {Router} from '@angular/router';
+import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
-import { sortBy, mapValues, minBy } from 'lodash';
+import {sortBy, mapValues, minBy} from 'lodash';
 
 @Component({
   selector: 'app-merged-account',
@@ -56,6 +56,8 @@ export class MergedAccountComponent implements OnInit {
     },
     maintainAspectRatio: false
   };
+
+  guageGraphData = [];
   standarizeFileData = (items, accountType, accountId) => {
 
     var standarizedItems = [];
@@ -131,6 +133,12 @@ export class MergedAccountComponent implements OnInit {
 
     }
     return standarizedItems;
+  };
+  errorHandler = (err, fallbackMessage) => {
+    const errorMessage = typeof err.error === 'string' ? err.error : fallbackMessage;
+    Swal.fire('Error', errorMessage, 'error');
+    console.log(err);
+    this.uploadProgress = 0;
   };
 
   constructor(private account: AccountService, private route: Router) {
@@ -290,7 +298,7 @@ export class MergedAccountComponent implements OnInit {
 
       const reader = res.body.getReader();
       const pump = () => reader.read()
-        .then(({ value, done }) => done
+        .then(({value, done}) => done
           // close the stream so we stop writing
           ? writer.close()
           // Write one chunk, then get the next one
@@ -341,7 +349,7 @@ export class MergedAccountComponent implements OnInit {
         this.selectedAccounts = [];
       }
 
-    }
+    };
 
     // advanced upload
     if (this.selectedAccounts.length === 1) {
@@ -448,14 +456,29 @@ export class MergedAccountComponent implements OnInit {
       used += parseInt(value.storage.used);
     });
 
-    this.barChartLabels.push('Infinity Drive');
-    usedDataSet.push(this.getSizeInGb(used));
-    totalDataSet.push(this.getSizeInGb(total));
+    // this.barChartLabels.push('Infinity Drive');
+    // usedDataSet.push(this.getSizeInGb(used));
+    // totalDataSet.push(this.getSizeInGb(total));
 
     this.barChartData = [
-      { data: usedDataSet, label: 'Used' },
-      { data: totalDataSet, label: 'Total' }
+      {data: usedDataSet, label: 'Used'},
+      {data: totalDataSet, label: 'Total'}
     ];
+
+    this.guageGraphData = [
+      {
+        'name': 'Total Storage',
+        'value': this.getSizeInGb(total)
+      },
+      {
+        'name': 'Free Storage',
+        'value': this.getSizeInGb(total) - this.getSizeInGb(used)
+      },
+      {
+        'name': 'Used Storage',
+        'value': this.getSizeInGb(used)
+      },
+      ];
 
   }
 
@@ -524,12 +547,5 @@ export class MergedAccountComponent implements OnInit {
 
   selectAccounts(e, account) {
     e.target.checked ? this.selectedAccounts.push(account) : this.selectedAccounts.splice(this.selectedAccounts.indexOf(account), 1);
-  }
-
-  errorHandler = (err, fallbackMessage) => {
-    const errorMessage = typeof err.error === 'string' ? err.error : fallbackMessage;
-    Swal.fire('Error', errorMessage, 'error');
-    console.log(err);
-    this.uploadProgress = 0;
   }
 }
