@@ -59,12 +59,12 @@ export class MergedAccountComponent implements OnInit {
   standarizeFileData = (items, accountType, accountId) => {
 
     var standarizedItems = [];
-    const showSplitFiles = this.userSettings.showSplitFiles;
+    const showSplitParts = this.userSettings.showSplitParts;
 
     if (accountType === 'gdrive') {
 
       items.forEach(item => {
-        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
+        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
           if (item.mimeType === 'application/vnd.google-apps.folder')
             item['mimeType'] = 'folder';
 
@@ -81,7 +81,7 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'odrive') {
 
       items.forEach(item => {
-        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
+        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
           // item has a file property if its a file and a folder property if its a folder
           item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
           item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
@@ -107,7 +107,7 @@ export class MergedAccountComponent implements OnInit {
     if (accountType === 'dropbox') {
 
       items.entries.forEach(item => {
-        if ((!showSplitFiles && !item.name.includes('.infinitydrive.part')) || showSplitFiles) {
+        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
           if (item['.tag'] === 'folder')
             item['mimeType'] = 'folder';
           else
