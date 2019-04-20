@@ -397,7 +397,7 @@ export class FilesComponent implements OnInit {
         type: 'success',
         html:
         // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
-          '<b>Link copied to clipboard</b>' +
+          '<b>Link copied to clipboard</b><br>' +
           `<a href="${environment.AppEndpoint}/Shared/${data}">${environment.AppEndpoint}/Shared/${data}</a> `,
       });
 
