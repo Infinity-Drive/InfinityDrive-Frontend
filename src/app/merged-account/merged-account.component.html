@@ -2,12 +2,12 @@
 
   <div *ngIf="accounts.length!==0" class="d-none d-sm-block">
     <div>
-      <div style="height: 330px ; width: 60%; display: inline-block">
+      <div style="height: 330px ; width: 55%; display: inline-block">
         <canvas width="100%" baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
           [chartType]="barChartType">
         </canvas>
       </div>
-      <div style="height: 330px ; width: 40%; display: inline-block">
+      <div style="height: 330px ; width: 45%; display: inline-block">
         <ngx-charts-gauge [units]="'GB'" [max]="guageMax"  [results]="guageGraphData"></ngx-charts-gauge >
       </div>
 
