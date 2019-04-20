@@ -12,9 +12,15 @@
 
     <ul class="list-unstyled components">
       <a (click)="toggleSidebar()" routerLink="/Dashboard"
-        class="list-group-item list-group-item-action text-uppercase font-weight-bold">Dashboard</a>
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">
+        <i class="fas fa-home"></i>
+        Dashboard
+      </a>
+
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#test" aria-expanded="true">
-        <span class="text-uppercase font-weight-bold">Accounts</span>
+        <span class="text-uppercase font-weight-bold">
+          <i class="fas fa-archive"></i>
+          Accounts</span>
 
         <div id="test" class="panel-collapse collapse show">
 
@@ -50,10 +56,21 @@
           </ul>
         </div>
       </a>
-      <a routerLink="SharedFiles" (click)="toggleSidebar()" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Shared Files</a>
-      <a routerLink="/Dashboard/Settings" class="list-group-item list-group-item-action text-uppercase font-weight-bold">Settings</a>
+      <a routerLink="SharedFiles" (click)="toggleSidebar()"
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">
+        <i class="fas fa-share-alt"></i>
+        Shared Files
+      </a>
+      <a routerLink="/Dashboard/Settings"
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">
+        <i class="fas fa-cogs"></i>
+        Settings
+      </a>
       <a href="javascript:;" (click)="logout()"
-        class="list-group-item list-group-item-action text-uppercase font-weight-bold">Sign out</a>
+        class="list-group-item list-group-item-action text-uppercase font-weight-bold">
+        <i class="fas fa-sign-out-alt"></i>
+        Sign out
+      </a>
     </ul>
   </nav>
 
