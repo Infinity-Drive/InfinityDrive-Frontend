@@ -26,12 +26,11 @@
     display:none;
 }
 .switch {
-    display:inline-block;
+    /* display:inline-block; */
     width:40px;
     height:20px;
-    margin:0 8px 0 8px;
     transform:translateY(50%);
-    position:relative;
+    /* position:relative; */
 }
 
 .slider {
@@ -60,16 +59,12 @@
 
 input:checked + .slider:before {
     transform:translateX(20px);
-    background:limeGreen;
+    background:dodgerblue;
 }
 input:checked + .slider {
-    box-shadow:0 0 0 2px limeGreen,0 0 2px limeGreen;
+    box-shadow:0 0 0 2px dodgerblue,0 0 2px dodgerblue;
 }
 
-td {
-  white-space: normal !important; 
-  word-wrap: break-word;  
-}
-table {
-  table-layout: fixed;
+.setting-row:hover{
+  background-color: #ECECEC;
 }
