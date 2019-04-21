@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router} from '@angular/router';
-import { UserService } from '../services/user.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from '../services/user.service';
 import {HttpErrorResponse} from '@angular/common/http';
 
 import Swal from 'sweetalert2';
-
 
 
 @Component({
@@ -17,12 +16,14 @@ export class LoginComponent implements OnInit {
   // variable for TwoWayBinding for form
   uemail = '';
   upass = '';
+  loading = false;
 
   // injecting router and UserService
-  constructor(private router: Router, private user: UserService) { }
+  constructor(private router: Router, private user: UserService) {
+  }
 
   ngOnInit() {
-    if (localStorage.getItem('infinityGuard') === 'yes'){
+    if (localStorage.getItem('infinityGuard') === 'yes') {
       this.router.navigateByUrl('Dashboard');
     }
   }
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
   login(event, email, pass) {
     // to prevent page refresh on login button
     event.preventDefault();
+    this.loading = true;
     // calling authenticate method in userService to authenticate user
     this.user.authenticateUser(email, pass).subscribe((data) => {
       // if header is returned then the user exsist
@@ -49,13 +51,10 @@ export class LoginComponent implements OnInit {
         // localStorage.setItem('infinityUsername', data.body['name']);
         // navgating user to dashboard after successful login
         this.router.navigateByUrl('Dashboard');
-      } else {
-        // displaying error after wrong credentials
-        alert('Wrong Credentials');
       }
-
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
+        this.loading = false;
         Swal.fire('User does not exist!', 'Invalid email or password', 'error');
       } else {
         console.log(err);

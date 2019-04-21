@@ -16,6 +16,7 @@ export class SignupComponent implements OnInit {
   upass = '';
   uemail = '';
   ucpass = '';
+  loading = false;
 
 
   constructor(private user: UserService, private  route: Router) { }
@@ -30,6 +31,7 @@ export class SignupComponent implements OnInit {
   signUp = function(event, name, email, pass) {
     // overriding html form behaviour
     event.preventDefault();
+    this.loading = true;
     // calling add method in  user service
        this.user.registerUser(email, pass, name).subscribe((data) => {
          // saving user data to local storage for later usage
@@ -39,10 +41,12 @@ export class SignupComponent implements OnInit {
          // localStorage.setItem('infinityId', data.body['_id']);
          // localStorage.setItem('infinityName', data.body['name']);
 
+         this.loading = false;
          Swal.fire('Account created successfully', 'Verify email to login', 'success');
          this.route.navigateByUrl('');
 
     }, (err: HttpErrorResponse) => {
+         this.loading = false;
          if (err.status === 400) {
            Swal.fire('Shame on us', 'Account creation failed', 'error');
          } else {

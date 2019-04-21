@@ -3,6 +3,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../services/user.service';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -10,9 +12,10 @@ import {UserService} from '../services/user.service';
 })
 export class ResetPasswordComponent implements OnInit {
 
-  upass;
-  ucpass;
+  upass = '';
+  ucpass = '';
   token;
+  loading = false;
 
   constructor(private activatedRoute: ActivatedRoute, private user: UserService) { }
 
@@ -24,11 +27,13 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   resetPassword(){
-    console.log('asdasdas')
+    this.loading = true;
     this.user.ResetPassword(this.token, this.upass).subscribe(() => {
-      alert('password changed');
+      this.loading = false;
+      Swal.fire('Success', 'Password updated!', 'success');
     }, (err: HttpErrorResponse) => {
-      console.log(err.error);
+      this.loading = false
+      Swal.fire('Error', 'Unable to chnage password', 'error');
     });
   }
 

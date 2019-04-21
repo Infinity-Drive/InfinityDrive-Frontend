@@ -12,7 +12,7 @@
             </div>
 
             <div class="form-label-group">
-              <input type="text" id="inputEmail" [(ngModel)]="uemail" name="email" #email="ngModel" class="form-control" placeholder="Email address" required autofocus>
+              <input type="text" id="inputEmail" [(ngModel)]="uemail" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" name="email" #email="ngModel" class="form-control" placeholder="Email address" required autofocus>
               <label for="inputEmail">Email address</label>
             </div>
 
@@ -26,7 +26,7 @@
               <label for="confirmInputPassword">Confirm Password</label>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block text-uppercase" [disabled]="!registerForm.form.valid"  type="submit">Sign up</button>
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" [disabled]="((!registerForm.form.valid)||(upass != ucpass) || (pass.length < 7) || (upass.length < 7)||(loading))"  type="submit">Sign up</button>
             <a routerLink="">Sign In</a>
           </form>
         </div>

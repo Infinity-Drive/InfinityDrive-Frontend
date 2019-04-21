@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 export class ForgotPasswordComponent implements OnInit {
 
   uemail;
+  loading = false;
 
   constructor(private user: UserService) {
   }
@@ -19,9 +20,12 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   requestResetPassword() {
+    this.loading = true;
     this.user.requestResetPassword(this.uemail).subscribe((data) => {
-      Swal.fire('Sucessful', 'Reset Password link has been sent to you email', 'success');
+      this.loading = false;
+      Swal.fire('Successful', 'Reset Password link has been sent to you email', 'success');
     }, (err) => {
+      this.loading = false;
       console.log(err);
       Swal.fire('Error', 'Cannot find this email', 'error');
     });
