@@ -56,7 +56,7 @@ export class UserDashboardComponent implements OnInit {
           localStorage.removeItem('infinityId');
           localStorage.removeItem('infinityName');
           this.account.accounts = [];
-          this.route.navigate(['']);
+          this.route.navigate(['/Login']);
           // this.account.getAccounts();
         }, (err: any) => {
           Swal.fire('Error', 'Unable to logout', 'error');

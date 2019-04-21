@@ -15,11 +15,13 @@ import { UserSharedFilesComponent } from './user-shared-files/user-shared-files.
 import { AccountReportComponent } from './account-report/account-report.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { LandinPageComponent } from './landin-page/landin-page.component';
 
 // routes array for components
 
 const routes: Routes = [
-  {path: '', component: LoginComponent, pathMatch: 'full'},
+  {path: '', component: LandinPageComponent, pathMatch: 'full'},
+  {path: 'Login', component: LoginComponent},
   {path: 'Signup', component: SignupComponent},
   {path: 'ForgotPassword', component: ForgotPasswordComponent},
   {path: 'ResetPassword/:id', component: ResetPasswordComponent},

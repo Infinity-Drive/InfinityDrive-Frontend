@@ -29,6 +29,7 @@ import { AccountReportComponent } from './account-report/account-report.componen
 import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from './settings/settings.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { LandinPageComponent } from './landin-page/landin-page.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     UserSharedFilesComponent,
     AccountReportComponent,
     SettingsComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    LandinPageComponent
   ],
   imports: [
     BrowserModule,
