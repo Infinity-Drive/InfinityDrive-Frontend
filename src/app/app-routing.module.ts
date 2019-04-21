@@ -19,7 +19,7 @@ import { SettingsComponent } from './settings/settings.component';
 const routes: Routes = [
   {path: '', component: LoginComponent, pathMatch: 'full'},
   {path: 'Signup', component: SignupComponent},
-  {path: 'PasswordReset', component: ForgotPasswordComponent},
+  {path: 'ForgotPassword', component: ForgotPasswordComponent},
   {path: 'EmailVerification/:id', component: EmailVerificationComponent},
   {path: 'AccountReport/:id', component: AccountReportComponent},
   {path: 'Shared/:id', component: SharedFileComponent},

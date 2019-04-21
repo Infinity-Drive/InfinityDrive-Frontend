@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {UserService} from '../services/user.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-forgot-password',
@@ -7,9 +10,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ForgotPasswordComponent implements OnInit {
 
-  constructor() { }
+  uemail;
+
+  constructor(private user: UserService) {
+  }
 
   ngOnInit() {
+  }
+
+  requestResetPassword() {
+    this.user.requestResetPassword(this.uemail).subscribe((data) => {
+      Swal.fire('Sucessful', 'Reset Password link has been sent to you email', 'success');
+    }, (err) => {
+      console.log(err);
+      Swal.fire('Error', 'Cannot find this email', 'error');
+    });
   }
 
 }
