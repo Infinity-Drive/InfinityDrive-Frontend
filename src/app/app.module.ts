@@ -28,6 +28,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AccountReportComponent } from './account-report/account-report.component';
 import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from './settings/settings.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { SettingsComponent } from './settings/settings.component';
     SharedFileComponent,
     UserSharedFilesComponent,
     AccountReportComponent,
-    SettingsComponent
+    SettingsComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

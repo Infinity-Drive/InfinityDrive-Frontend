@@ -47,7 +47,14 @@ export class UserService {
     const httpOptions = {
       responseType: 'text' as 'text'
     };
-    return this.http.post(`${this.baseUrl}/users/requestPasswordReset`, {email},httpOptions);
+    return this.http.post(`${this.baseUrl}/users/requestPasswordReset`, {email}, httpOptions);
+  }
+
+  ResetPassword(token, password) {
+    const httpOptions = {
+      responseType: 'text' as 'text'
+    };
+    return this.http.post(`${this.baseUrl}/users/passwordReset`, {token, password}, httpOptions);
   }
 
 }
