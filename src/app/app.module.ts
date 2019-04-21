@@ -31,6 +31,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,8 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
     NgbPaginationModule,
     NgbCollapseModule,
     NgxChartsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]
