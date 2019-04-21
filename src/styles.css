@@ -51,6 +51,7 @@ body {
 }
 
 .form-label-group input {
+  height: auto;
   border-radius: 2rem;
 }
 

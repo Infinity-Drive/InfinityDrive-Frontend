@@ -1,13 +1,13 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {AccountService} from '../services/account.service';
-import {Router} from '@angular/router';
-import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
-import {sortBy, mapValues, minBy} from 'lodash';
+import { sortBy, mapValues, minBy } from 'lodash';
 
-import {environment} from '../../environments/environment';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-merged-account',
@@ -35,6 +35,8 @@ export class MergedAccountComponent implements OnInit {
   advancedUpload = true;
   selectedAccounts = []; // accounts where to upload file
   userSettings;
+
+  fileSizeError = false;
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -302,7 +304,7 @@ export class MergedAccountComponent implements OnInit {
 
       const reader = res.body.getReader();
       const pump = () => reader.read()
-        .then(({value, done}) => done
+        .then(({ value, done }) => done
           // close the stream so we stop writing
           ? writer.close()
           // Write one chunk, then get the next one
@@ -357,6 +359,11 @@ export class MergedAccountComponent implements OnInit {
 
     // advanced upload
     if (this.selectedAccounts.length === 1) {
+
+      if (this.selectedAccounts[0].storage.available < this.fileToUpload.size) {
+        return this.fileSizeError = true;
+      }
+
       this.account.uploadFile(this.selectedAccounts[0]._id, this.selectedAccounts[0].accountType, this.fileToUpload)
         .subscribe(
           (event: any) => uploadHandler(event),
@@ -365,6 +372,12 @@ export class MergedAccountComponent implements OnInit {
     }
 
     else if (this.selectedAccounts.length >= 1) {
+      const storageRequiredPerAccount = Math.ceil(this.fileToUpload.size / this.selectedAccounts.length);
+      const failingAccounts = this.selectedAccounts.filter((account) => account.storage.available < storageRequiredPerAccount);
+
+      if (failingAccounts.length)
+        return this.fileSizeError = true;
+
       this.account.splitUpload(this.fileToUpload, this.selectedAccounts).subscribe(
         (event: any) => uploadHandler(event),
         (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
@@ -389,6 +402,13 @@ export class MergedAccountComponent implements OnInit {
 
       //split upload
       else {
+
+        const storageRequiredPerAccount = Math.ceil(this.fileToUpload.size / this.accounts.length);
+        const failingAccounts = this.accounts.filter((account) => account.storage.available < storageRequiredPerAccount);
+
+        if (failingAccounts.length)
+          return this.fileSizeError = true;
+
         this.account.splitUpload(this.fileToUpload, this.accounts).subscribe(
           (event: any) => uploadHandler(event),
           (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
@@ -400,11 +420,7 @@ export class MergedAccountComponent implements OnInit {
 
   getFilteredAccounts() {
     if (this.accounts.length && this.fileToUpload) {
-      return this.accounts.filter((account) => {
-        if (account.storage.available > this.fileToUpload.size) {
-          return account;
-        }
-      });
+      return this.accounts;
     }
   }
 
@@ -465,8 +481,8 @@ export class MergedAccountComponent implements OnInit {
     // totalDataSet.push(this.getSizeInGb(total));
 
     this.barChartData = [
-      {data: usedDataSet, label: 'Used'},
-      {data: totalDataSet, label: 'Total'}
+      { data: usedDataSet, label: 'Used' },
+      { data: totalDataSet, label: 'Total' }
     ];
 
     this.guageMax = parseFloat(this.getSizeInGb(total));
@@ -549,7 +565,7 @@ export class MergedAccountComponent implements OnInit {
         title: '<strong>Share Link</strong>',
         type: 'success',
         html:
-        // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
+          // `<i class="fas fa-link point" (click)="copyMessage(${data})" ngbTooltip="Click to file share link"></i>` +
           '<b>Link copied to clipboard</b><br>' +
           `<a href="${environment.AppEndpoint}/Shared/${data}">${environment.AppEndpoint}/Shared/${data}</a> `,
       });
@@ -562,6 +578,7 @@ export class MergedAccountComponent implements OnInit {
   }
 
   selectAccounts(e, account) {
+    this.fileSizeError = false;
     e.target.checked ? this.selectedAccounts.push(account) : this.selectedAccounts.splice(this.selectedAccounts.indexOf(account), 1);
   }
 
