@@ -30,6 +30,7 @@ import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bo
 import { SettingsComponent } from './settings/settings.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { LandinPageComponent } from './landin-page/landin-page.component';
     AccountReportComponent,
     SettingsComponent,
     ResetPasswordComponent,
-    LandinPageComponent
+    LandinPageComponent,
+    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule,

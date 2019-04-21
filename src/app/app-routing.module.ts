@@ -16,6 +16,7 @@ import { AccountReportComponent } from './account-report/account-report.componen
 import { SettingsComponent } from './settings/settings.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
+import {PrivacyPolicyComponent} from './privacy-policy/privacy-policy.component';
 
 // routes array for components
 
@@ -28,6 +29,7 @@ const routes: Routes = [
   {path: 'EmailVerification/:id', component: EmailVerificationComponent},
   {path: 'AccountReport/:id', component: AccountReportComponent},
   {path: 'Shared/:id', component: SharedFileComponent},
+  {path: 'Privacy-Policy', component: PrivacyPolicyComponent},
   {
     path: 'Dashboard', component: UserDashboardComponent, canActivate: [AuthGuardService]
     , children: [
