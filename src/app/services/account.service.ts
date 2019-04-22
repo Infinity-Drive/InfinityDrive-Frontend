@@ -167,7 +167,7 @@ export class AccountService {
       reportProgress: true
     };
     const formData: FormData = new FormData();
-    formData.append('accounts', JSON.stringify(accounts.map((account) => account._id)));
+    formData.append('accounts', JSON.stringify(accounts));
     formData.append('file', file, file.name);
     const req = new HttpRequest('POST', `${this.baseUrl}/merged/upload`, formData, httpOptions);
     return this.http.request(req);

@@ -334,6 +334,33 @@ export class MergedAccountComponent implements OnInit {
     this.fileToUpload = files.item(0);
   }
 
+  calculateChunksForSplitUpload(accounts) {
+    const accumulatedStorage =
+      accounts
+        .filter((account) => account.storage.available > 100000000)
+        .map((account) => account.storage.available)
+        .reduce(function (a, b) { return a + b; }, 0);
+
+    if (accumulatedStorage < this.fileToUpload.size)
+      return this.fileSizeError = true;
+
+    let remainingFileSize = this.fileToUpload.size;
+    accounts.forEach((account) => {
+      if (remainingFileSize != 0) {
+        let uploadSize;
+        if (remainingFileSize > account.storage.available)
+          uploadSize = account.storage.available - 100000000;
+        else
+          uploadSize = remainingFileSize
+        remainingFileSize -= uploadSize;
+
+        account['chunksToUpload'] = Math.ceil((uploadSize / 16000));
+      }
+    });
+
+    return accounts;
+  }
+
   uploadFile() {
 
     const uploadHandler = (event) => {
@@ -357,7 +384,9 @@ export class MergedAccountComponent implements OnInit {
 
     };
 
-    // advanced upload
+    // ===== advanced upload =====
+
+    // single account upload
     if (this.selectedAccounts.length === 1) {
 
       if (this.selectedAccounts[0].storage.available < this.fileToUpload.size) {
@@ -370,46 +399,36 @@ export class MergedAccountComponent implements OnInit {
           (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
         );
     }
-
+    // manual split upload
     else if (this.selectedAccounts.length >= 1) {
-      const storageRequiredPerAccount = Math.ceil(this.fileToUpload.size / this.selectedAccounts.length);
-      const failingAccounts = this.selectedAccounts.filter((account) => account.storage.available < storageRequiredPerAccount);
-
-      if (failingAccounts.length)
-        return this.fileSizeError = true;
-
-      this.account.splitUpload(this.fileToUpload, this.selectedAccounts).subscribe(
+      const accounts = this.calculateChunksForSplitUpload(this.selectedAccounts);
+      this.account.splitUpload(this.fileToUpload, accounts).subscribe(
         (event: any) => uploadHandler(event),
         (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
       );
     }
 
+    // ==============================
+
     // auto upload (user didn't opt to choose advanced options)
     else {
-
-      var lowestStorageAccount = minBy(this.accounts, function (account) {
+      var lowestStorageAccount = sortBy(this.accounts, function (account) {
         return (account.storage.available);
-      });
+      }).filter((account) => account.storage.available > this.fileToUpload.size);
 
       // upload to the account that has the least storage and can fit the file
-      if (lowestStorageAccount.storage.used >= this.fileToUpload.size) {
-        this.account.uploadFile(lowestStorageAccount._id, lowestStorageAccount.accountType, this.fileToUpload)
+      if (lowestStorageAccount.length) {
+        this.account.uploadFile(lowestStorageAccount[0]._id, lowestStorageAccount[0].accountType, this.fileToUpload)
           .subscribe(
             (event: any) => uploadHandler(event),
             (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
           );
       }
 
-      //split upload
+      // auto split upload
       else {
-
-        const storageRequiredPerAccount = Math.ceil(this.fileToUpload.size / this.accounts.length);
-        const failingAccounts = this.accounts.filter((account) => account.storage.available < storageRequiredPerAccount);
-
-        if (failingAccounts.length)
-          return this.fileSizeError = true;
-
-        this.account.splitUpload(this.fileToUpload, this.accounts).subscribe(
+        const accounts = this.calculateChunksForSplitUpload(this.accounts);
+        this.account.splitUpload(this.fileToUpload, accounts).subscribe(
           (event: any) => uploadHandler(event),
           (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
         );
