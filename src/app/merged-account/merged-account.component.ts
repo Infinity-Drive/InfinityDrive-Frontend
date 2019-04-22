@@ -401,11 +401,28 @@ export class MergedAccountComponent implements OnInit {
     }
     // manual split upload
     else if (this.selectedAccounts.length >= 1) {
-      const accounts = this.calculateChunksForSplitUpload(this.selectedAccounts);
-      this.account.splitUpload(this.fileToUpload, accounts).subscribe(
-        (event: any) => uploadHandler(event),
-        (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
-      );
+      // if more than one accounts selected but the file can fit in a single account, then don't
+      // split upload
+      var lowestStorageAccount = sortBy(this.selectedAccounts, function (account) {
+        return (account.storage.available);
+      }).filter((account) => account.storage.available > this.fileToUpload.size);
+
+      if (lowestStorageAccount.length) {
+        this.account.uploadFile(lowestStorageAccount[0]._id, lowestStorageAccount[0].accountType, this.fileToUpload)
+          .subscribe(
+            (event: any) => uploadHandler(event),
+            (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+          );
+      }
+
+      // file can't fit in any of individual selected account, we now split upload
+      else {
+        const accounts = this.calculateChunksForSplitUpload(this.selectedAccounts);
+        this.account.splitUpload(this.fileToUpload, accounts).subscribe(
+          (event: any) => uploadHandler(event),
+          (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+        );
+      }
     }
 
     // ==============================
