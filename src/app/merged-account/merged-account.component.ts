@@ -357,8 +357,9 @@ export class MergedAccountComponent implements OnInit {
         account['chunksToUpload'] = Math.ceil((uploadSize / 16000));
       }
     });
-
-    return accounts;
+    // we remove the accounts that don't won't be used to split upload,
+    // i.e. chunksToUpload not set
+    return accounts.filter((a) => a.chunksToUpload); 
   }
 
   uploadFile() {
@@ -380,6 +381,7 @@ export class MergedAccountComponent implements OnInit {
         this.uploadProgress = 0;
         this.advancedUpload = false;
         this.selectedAccounts = [];
+        this.refresh();
       }
 
     };
