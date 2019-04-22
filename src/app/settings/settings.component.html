@@ -8,8 +8,17 @@
     <hr>
 
     <div class="row align-items-center no-gutters setting-row" *ngFor="let item of settings | keyvalue">
-      <div class="col-12 col-sm-11">
-        {{item.key}}
+      <div class="col-12 col-sm-11" *ngIf="item.key == 'forceEqualSplit'">
+        Force Splitting into equal parts for each account
+      </div>
+      <div class="col-12 col-sm-11" *ngIf="item.key == 'highlightSplitFiles'">
+        Highlight split files
+      </div>
+      <div class="col-12 col-sm-11" *ngIf="item.key == 'showAccountsInDashboard'">
+        Show accounts in dashboard
+      </div>
+      <div class="col-12 col-sm-11" *ngIf="item.key == 'showSplitParts'">
+        Show split parts
       </div>
 
       <div class="col-12 col-sm-1">
