@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from '../services/user.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import Swal from 'sweetalert2';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,10 +14,13 @@ export class ForgotPasswordComponent implements OnInit {
   uemail;
   loading = false;
 
-  constructor(private user: UserService) {
+  constructor(private user: UserService, private router: Router) {
   }
 
   ngOnInit() {
+    if (localStorage.getItem('infinityGuard') === 'yes') {
+      this.router.navigateByUrl('Dashboard');
+    }
   }
 
   requestResetPassword() {
