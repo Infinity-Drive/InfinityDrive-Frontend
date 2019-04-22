@@ -9,22 +9,26 @@
 
             <div class="form-label-group">
               <input type="email" id="name" [(ngModel)]="uname" #name="ngModel" name="name" class="form-control" placeholder="Full Name" required autofocus>
-              <label for="name">Full Name</label>
+              <label for="name" *ngIf="!(name.invalid && (name.dirty || name.touched))">Full Name</label>
+              <label for="name" *ngIf="(name.invalid && (name.dirty || name.touched))" style="color: red">Enter a valid name</label>
             </div>
 
             <div class="form-label-group">
               <input type="text" id="inputEmail" [(ngModel)]="uemail" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" name="email" #email="ngModel" class="form-control" placeholder="Email address" required autofocus>
-              <label for="inputEmail">Email address</label>
+              <label for="inputEmail" *ngIf="!(email.invalid && (email.dirty || email.touched))">Email address</label>
+              <label for="inputEmail" *ngIf="(email.invalid && (email.dirty || email.touched))" style="color: red">Enter a valid Email address</label>
             </div>
 
             <div class="form-label-group">
               <input type="password" id="inputPassword" [(ngModel)]="upass" name="pass" #pass="ngModel" class="form-control" placeholder="Password" required>
-              <label for="inputPassword">Password</label>
+              <label for="inputPassword" *ngIf="!(upass.length < 7  && (pass.dirty || pass.touched))">Password</label>
+              <label for="inputPassword" *ngIf="(upass.length < 7  && (pass.dirty || pass.touched))" style="color: red">Password min length is 7</label>
             </div>
 
             <div class="form-label-group">
-              <input type="password" id="confirmInputPassword" [(ngModel)]="ucpass" name="cpass" #cpass class="form-control" placeholder="Confirn Password" required>
-              <label for="confirmInputPassword">Confirm Password</label>
+              <input type="password" id="confirmInputPassword" [(ngModel)]="ucpass" name="cpass" #cpass="ngModel" class="form-control" placeholder="Confirm Password" required>
+              <label for="confirmInputPassword" *ngIf="!(upass != ucpass  && (cpass.dirty || cpass.touched))">Confirm Password</label>
+              <label for="confirmInputPassword" *ngIf="(upass != ucpass  && (cpass.dirty || cpass.touched))" style="color: red">Password does not match</label>
             </div>
 
             <button class="btn btn-lg btn-primary btn-block text-uppercase" [disabled]="((!registerForm.form.valid)||(upass != ucpass) || (pass.length < 7) || (upass.length < 7)||(loading))"  type="submit">Sign up</button>

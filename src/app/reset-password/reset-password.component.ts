@@ -33,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
       Swal.fire('Success', 'Password updated!', 'success');
     }, (err: HttpErrorResponse) => {
       this.loading = false
-      Swal.fire('Error', 'Unable to chnage password', 'error');
+      Swal.fire('Error', 'Unable to change password', 'error');
     });
   }
 
