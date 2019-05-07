@@ -359,7 +359,7 @@ export class MergedAccountComponent implements OnInit {
     });
     // we remove the accounts that don't won't be used to split upload,
     // i.e. chunksToUpload not set
-    return accounts.filter((a) => a.chunksToUpload); 
+    return accounts;
   }
 
   uploadFile() {
@@ -405,16 +405,28 @@ export class MergedAccountComponent implements OnInit {
     else if (this.selectedAccounts.length >= 1) {
       // if more than one accounts selected but the file can fit in a single account, then don't
       // split upload
-      var lowestStorageAccount = sortBy(this.selectedAccounts, function (account) {
-        return (account.storage.available);
-      }).filter((account) => account.storage.available > this.fileToUpload.size);
+      if (!this.userSettings.forceEqualSplit) {
+        console.log('asudh')
+        var lowestStorageAccount = sortBy(this.selectedAccounts, function (account) {
+          return (account.storage.available);
+        }).filter((account) => account.storage.available > this.fileToUpload.size);
 
-      if (lowestStorageAccount.length) {
-        this.account.uploadFile(lowestStorageAccount[0]._id, lowestStorageAccount[0].accountType, this.fileToUpload)
-          .subscribe(
+        if (lowestStorageAccount.length) {
+          this.account.uploadFile(lowestStorageAccount[0]._id, lowestStorageAccount[0].accountType, this.fileToUpload)
+            .subscribe(
+              (event: any) => uploadHandler(event),
+              (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+            );
+        }
+
+        else {
+          const accounts = this.calculateChunksForSplitUpload(this.selectedAccounts);
+          this.account.splitUpload(this.fileToUpload, accounts).subscribe(
             (event: any) => uploadHandler(event),
             (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
           );
+        }
+
       }
 
       // file can't fit in any of individual selected account, we now split upload
@@ -431,17 +443,28 @@ export class MergedAccountComponent implements OnInit {
 
     // auto upload (user didn't opt to choose advanced options)
     else {
-      var lowestStorageAccount = sortBy(this.accounts, function (account) {
-        return (account.storage.available);
-      }).filter((account) => account.storage.available > this.fileToUpload.size);
 
-      // upload to the account that has the least storage and can fit the file
-      if (lowestStorageAccount.length) {
-        this.account.uploadFile(lowestStorageAccount[0]._id, lowestStorageAccount[0].accountType, this.fileToUpload)
-          .subscribe(
+      if (!this.userSettings.forceEqualSplit) {
+        var lowestStorageAccount = sortBy(this.accounts, function (account) {
+          return (account.storage.available);
+        }).filter((account) => account.storage.available > this.fileToUpload.size);
+
+        // upload to the account that has the least storage and can fit the file
+        if (lowestStorageAccount.length) {
+          this.account.uploadFile(lowestStorageAccount[0]._id, lowestStorageAccount[0].accountType, this.fileToUpload)
+            .subscribe(
+              (event: any) => uploadHandler(event),
+              (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
+            );
+        }
+
+        else {
+          const accounts = this.calculateChunksForSplitUpload(this.selectedAccounts);
+          this.account.splitUpload(this.fileToUpload, accounts).subscribe(
             (event: any) => uploadHandler(event),
             (err: HttpErrorResponse) => this.errorHandler(err, 'Error uploading file')
           );
+        }
       }
 
       // auto split upload
