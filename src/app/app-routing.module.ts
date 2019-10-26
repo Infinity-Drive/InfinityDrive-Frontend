@@ -1,27 +1,27 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 
-import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
-import {LoginComponent} from './login/login.component';
-import {UserDashboardComponent} from './user-dashboard/user-dashboard.component';
-import {SignupComponent} from './signup/signup.component';
-import {AccountsComponent} from './accounts/accounts.component';
-import {FilesComponent} from './files/files.component';
-import {EmailVerificationComponent} from './email-verification/email-verification.component';
+import {ForgotPasswordComponent} from './public/forgot-password/forgot-password.component';
+import {LoginComponent} from './public/login/login.component';
+import {UserDashboardComponent} from './secure/dashboard/dashboard.component';
+import {SignupComponent} from './public/signup/signup.component';
+import {AccountsComponent} from './secure/accounts/accounts.component';
+import {FilesComponent} from './secure/files/files.component';
+import {EmailVerificationComponent} from './public/email-verification/email-verification.component';
 import {AuthGuardService} from './services/auth-guard.service';
-import {MergedAccountComponent} from './merged-account/merged-account.component';
-import {SharedFileComponent} from './shared-file/shared-file.component';
-import { UserSharedFilesComponent } from './user-shared-files/user-shared-files.component';
-import { AccountReportComponent } from './account-report/account-report.component';
-import { SettingsComponent } from './settings/settings.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { LandinPageComponent } from './landin-page/landin-page.component';
-import {PrivacyPolicyComponent} from './privacy-policy/privacy-policy.component';
+import {MergedAccountComponent} from './secure/merged-account/merged-account.component';
+import {SharedFileComponent} from './public/shared-file/shared-file.component';
+import { SharedFilesComponent } from './secure/shared-files/shared-files.component';
+import { AccountReportComponent } from './public/account-report/account-report.component';
+import { SettingsComponent } from './secure/settings/settings.component';
+import { ResetPasswordComponent } from './public/reset-password/reset-password.component';
+import { LandingComponent } from './public/landing-page/landing.component';
+import {PrivacyPolicyComponent} from './public/privacy-policy/privacy-policy.component';
 
 // routes array for components
 
 const routes: Routes = [
-  {path: '', component: LandinPageComponent, pathMatch: 'full'},
+  {path: '', component: LandingComponent, pathMatch: 'full'},
   {path: 'Login', component: LoginComponent},
   {path: 'Signup', component: SignupComponent},
   {path: 'ForgotPassword', component: ForgotPasswordComponent},
@@ -36,7 +36,7 @@ const routes: Routes = [
       {path: '', component: MergedAccountComponent, pathMatch: 'full'},
       {path: 'Storage/:id', component: FilesComponent},
       {path: 'Accounts', component: AccountsComponent},
-      {path: 'SharedFiles', component: UserSharedFilesComponent},
+      {path: 'SharedFiles', component: SharedFilesComponent},
       {path: 'Settings', component: SettingsComponent},
     ]
   }
