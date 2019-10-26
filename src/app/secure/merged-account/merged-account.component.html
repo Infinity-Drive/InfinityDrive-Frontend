@@ -1,9 +1,9 @@
 <div class="bodyCard p-5 shadow">
 
-  <div *ngIf="accounts.length!==0" class="d-none d-sm-block">
+  <div *ngIf="accounts?.length !== 0" class="d-none d-sm-block">
     <div>
       <div style="height: 330px ; width: 55%; display: inline-block">
-        <canvas width="100%" baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+        <canvas  width="100%" baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
           [chartType]="barChartType">
         </canvas>
       </div>
@@ -31,7 +31,6 @@
       <i class="fas fa-plus mr-3 point blueHoverFont" data-toggle="modal" data-target="#accountsModal" ngbTooltip="Link Account"></i>
       <i class="fas fa-file-upload mr-3 point blueHoverFont" data-toggle="modal" data-target="#uploadmodal" ngbTooltip="Upload"></i>
       <i class="fas fa-archive mr-3 point blueHoverFont" routerLink="/Dashboard/Accounts" ngbTooltip="Accounts"></i>
-      <i class="fas fa-sync-alt point blueHoverFont" (click)="refresh()" ngbTooltip="Refresh"></i>
     </div>
 
     <div style="clear:both"></div>

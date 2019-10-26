@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
+import {Location} from '@angular/common';
 
 import {AccountService} from '../../services/account.service';
 
@@ -9,53 +10,60 @@ import { Store } from '@ngrx/store';
 import * as AccountActions from '../../actions/account.actions';
 import { AppState } from '../../app.state';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class UserDashboardComponent implements OnInit {
+export class UserDashboardComponent implements OnInit,OnDestroy {
   userName: string;
   isOpened = false;
   accounts = [];
   totalAccounts;
   accountsLimit = 5;
+  intialized = false;
+  public ngDestroy$ = new Subject();
 
   constructor(private router: Router,
               private account: AccountService,
               private activateRoute: ActivatedRoute,
+              private location: Location,
               private store: Store<AppState>) {
-    this.store.select('account').subscribe((accounts) => this.updateAccounts(accounts));
   }
 
   ngOnInit() {
+    this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
     this.userName = localStorage.getItem('infinityName');
-    AccountService.isFetchingAccounts = true;
 
     this.activateRoute.queryParams.subscribe(params => {
-      if (params['code']) {
-        this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
-          this.account.getAccounts().subscribe((accounts: any)=> {
+      if (!this.intialized) {
+        this.intialized = true; // only run subscription call once
+        if (params['code']) {
+          AccountService.isFetchingAccounts = true;
+          this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
+            this.account.getAccounts().subscribe((accounts: any)=> {
+              this.store.dispatch(new AccountActions.SetAccounts(accounts));
+              AccountService.isFetchingAccounts = false;
+              this.location.replaceState(`Dashboard/Accounts`);
+            });
+          }, (err: HttpErrorResponse) => {
             AccountService.isFetchingAccounts = false;
-            accounts.forEach(account => this.store.dispatch(new AccountActions.AddAccount(account)));
-            this.router.navigateByUrl('Dashboard/Accounts');
+            if (err.error === 'Account already exists') {
+              Swal.fire('Account already exists', 'add a different account', 'error');
+            } else {
+              Swal.fire('Shame on us', 'Unable to add account', 'error');
+            }
+            console.log(err);
+            this.location.replaceState(`Dashboard/Accounts`);
           });
-        }, (err: HttpErrorResponse) => {
-          AccountService.isFetchingAccounts = false;
-          if (err.error === 'Account already exists') {
-            Swal.fire('Account already exists', 'add a different account', 'error');
-          } else {
-            Swal.fire('Shame on us', 'Unable to add account', 'error');
-          }
-          console.log(err);
-          this.router.navigateByUrl('Dashboard/Accounts');
-        });
-      } else {
-        if (!this.totalAccounts) {
+        } else {
+          AccountService.isFetchingAccounts = true;
           this.account.getAccounts().subscribe((accounts: any)=> {
             AccountService.isFetchingAccounts = false;
-            accounts.forEach(account => this.store.dispatch(new AccountActions.AddAccount(account)));
+            this.store.dispatch(new AccountActions.SetAccounts(accounts));
           });
         }
       }
@@ -87,6 +95,10 @@ export class UserDashboardComponent implements OnInit {
 
   updateAccounts(accounts) {
     this.accounts = accounts;
+  }
+
+  public ngOnDestroy() {
+    this.ngDestroy$.next();
   }
 
 }

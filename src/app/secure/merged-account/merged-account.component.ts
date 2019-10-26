@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
@@ -7,17 +7,22 @@ import * as streamSaver from 'streamsaver';
 import Swal from 'sweetalert2';
 import { sortBy, mapValues, minBy } from 'lodash';
 
+import { Store } from '@ngrx/store';
+import * as AccountActions from '../../actions/account.actions';
+import { AppState } from '../../app.state';
+
 import { environment } from '../../../environments/environment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-merged-account',
   templateUrl: './merged-account.component.html',
   styleUrls: ['./merged-account.component.css']
 })
-export class MergedAccountComponent implements OnInit {
+export class MergedAccountComponent implements OnInit,OnDestroy {
 
   files: any = [];
-  loading = false;
   fileToUpload: File = null;
   uploadProgress = 0;
   accounts = [];
@@ -37,6 +42,7 @@ export class MergedAccountComponent implements OnInit {
   userSettings;
 
   fileSizeError = false;
+  public ngDestroy$ = new Subject();
 
   @ViewChild('btnClose') btnClose: ElementRef;
 
@@ -64,172 +70,29 @@ export class MergedAccountComponent implements OnInit {
   guageGraphData = [];
   guageMax = 0;
 
-  standarizeFileData = (items, accountType, accountId) => {
-
-    var standarizedItems = [];
-    const showSplitParts = this.userSettings.showSplitParts;
-
-    if (accountType === 'gdrive') {
-
-      items.forEach(item => {
-        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
-          if (item.mimeType === 'application/vnd.google-apps.folder')
-            item['mimeType'] = 'folder';
-
-          item['accountType'] = 'gdrive';
-          item['account'] = 'Google Drive';
-          item['accountId'] = accountId;
-          item['size'] = parseInt(item.size);
-          standarizedItems.push(item);
-        }
-      });
-
-    }
-
-    if (accountType === 'odrive') {
-
-      items.forEach(item => {
-        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
-          // item has a file property if its a file and a folder property if its a folder
-          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-          item['accountType'] = 'odrive';
-          item['account'] = 'OneDrive';
-          item['accountId'] = accountId;
-          standarizedItems.push(item);
-        }
-
-      });
-
-    }
-
-    if (accountType === 'merged') {
-      items.forEach(item => {
-        item['id'] = item._id;
-        item['accountType'] = 'merged';
-        item['account'] = 'Merged';
-        standarizedItems.push(item);
-      });
-    }
-
-    if (accountType === 'dropbox') {
-
-      items.entries.forEach(item => {
-        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
-          if (item['.tag'] === 'folder')
-            item['mimeType'] = 'folder';
-          else
-            item['mimeType'] = item.name.split('.')[1];
-
-          if (!item['client_modified'])
-            item['client_modified'] = '-';
-
-          standarizedItems.push({
-            id: item.id,
-            name: item.name,
-            mimeType: item['mimeType'],
-            size: item.size,
-            modifiedTime: item['client_modified'],
-            accountType: 'dropbox',
-            account: 'Dropbox',
-            accountId: accountId
-          });
-        }
-      });
-
-    }
-    return standarizedItems;
-  };
-  errorHandler = (err, fallbackMessage) => {
-    const errorMessage = typeof err.error === 'string' ? err.error : fallbackMessage;
-    Swal.fire('Error', errorMessage, 'error');
-    console.log(err);
-    this.uploadProgress = 0;
-  };
-
-  constructor(private account: AccountService, private route: Router) {
+  constructor(private account: AccountService, private route: Router, private store: Store<AppState>) {
   }
 
   ngOnInit() {
-
     this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
-    this.accounts = this.account.accounts;
-
-    if (this.accounts.length === 0) {
-      this.loading = true;
-      this.account.getAccounts().subscribe((data: any) => {
-        this.accounts = data;
-        this.account.updateAccounts(data);
-        if (this.accounts.length === 0) {
-          this.route.navigateByUrl('Dashboard/Accounts');
-        }
-        this.loading = false;
-        this.getFiles();
-        this.plotGraph();
-
-      }, (err: any) => {
-        this.loading = false;
-        Swal.fire({
-          type: 'error',
-          title: 'Error',
-          text: 'Can\'t connect to server! Check your internet connection.',
-          confirmButtonText: 'Retry'
-        }).then((result) => {
-          if (result.value) {
-            this.ngOnInit();
-          }
-        });
-      });
-    } else {
-      this.getFiles();
-      this.plotGraph();
-    }
-  }
-
-  refresh() {
-    this.accounts = this.account.accounts = [];
-    this.barChartLabels = this.barChartData = [];
-    this.loading = true;
-    this.account.getAccounts().subscribe((data: any) => {
-      this.accounts = data;
-      this.account.updateAccounts(data);
-      if (this.accounts.length === 0) {
-        this.route.navigateByUrl('Dashboard/Accounts');
-      }
-      this.loading = false;
-      this.getFiles();
-      this.plotGraph();
-    }, (err: any) => {
-      this.loading = false;
-      Swal.fire({
-        type: 'error',
-        title: 'Error',
-        text: 'Can\'t connect to server! Check your internet connection.',
-        confirmButtonText: 'Retry'
-      }).then((result) => {
-        if (result.value) {
-          this.refresh();
-        }
-      });
-    });
+    this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
   }
 
   getFiles() {
     this.files = [];
-    this.loading = true;
+    AccountService.isFetchingFiles = true;
     this.breadCrumbs = [];
-    this.account.getMergedAccountFiles().subscribe((mergedAccountFiles: any) => {
-      mergedAccountFiles.forEach(mergedAccount => {
-        this.files.push(...this.standarizeFileData(mergedAccount.files, mergedAccount.accountType, mergedAccount['_id']));
-        this.temp = [...this.files];
-      });
-      this.loading = false;
+    this.account.getMergedAccountFiles().subscribe((files: any) => {
+      this.files = files;
+      this.temp = [...this.files];
+      AccountService.isFetchingFiles = false;
+      // this.plotGraph()
     }, (err: HttpErrorResponse) => {
       if (err.error === 'No account found!') {
         this.route.navigateByUrl('Dashboard/Accounts');
       } else {
         const errorMessage = err.error ? err.error : 'Error getting files';
-        this.loading = false;
+        AccountService.isFetchingFiles = false;
         Swal.fire({
           type: 'error',
           title: 'Error',
@@ -269,17 +132,17 @@ export class MergedAccountComponent implements OnInit {
   }
 
   getFolderItems(folder) {
-    this.loading = true;
+    AccountService.isFetchingFiles = true;
 
     // for maintaining breadCrumbs
     const currentFolder = this.files.filter(f => f.id === folder.id);
 
-    this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((data) => {
-      this.files = this.standarizeFileData(data, folder.accountType, folder.accountId);
+    this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((files) => {
+      this.files = files;
       this.temp = [...this.files];
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
-      this.loading = false;
+        AccountService.isFetchingFiles = false;
     }, (err: HttpErrorResponse) => this.errorHandler(err, 'Error getting folder items'));
   }
 
@@ -381,7 +244,6 @@ export class MergedAccountComponent implements OnInit {
         this.uploadProgress = 0;
         this.advancedUpload = false;
         this.selectedAccounts = [];
-        this.refresh();
       }
 
     };
@@ -499,13 +361,6 @@ export class MergedAccountComponent implements OnInit {
     });
   }
 
-  getSizeInMb(size) {
-    if (isNaN(size))
-      return '-';
-
-    return (Number(size) / Math.pow(1024, 2)).toFixed(2) + ' MB';
-  }
-
   getModifiedTime(isoTime) {
     if (isoTime != '-')
       return new Date(isoTime).toLocaleString();
@@ -537,10 +392,6 @@ export class MergedAccountComponent implements OnInit {
       used += parseInt(value.storage.used);
     });
 
-    // this.barChartLabels.push('Infinity Drive');
-    // usedDataSet.push(this.getSizeInGb(used));
-    // totalDataSet.push(this.getSizeInGb(total));
-
     this.barChartData = [
       { data: usedDataSet, label: 'Used' },
       { data: totalDataSet, label: 'Total' }
@@ -548,10 +399,6 @@ export class MergedAccountComponent implements OnInit {
 
     this.guageMax = parseFloat(this.getSizeInGb(total));
     this.guageGraphData = [
-      // {
-      //   'name': 'Total Storage',
-      //   'value': this.getSizeInGb(total)
-      // },
       {
         'name': 'Free Storage',
         'value': parseFloat(this.getSizeInGb(total)) - parseFloat(this.getSizeInGb(used))
@@ -653,4 +500,26 @@ export class MergedAccountComponent implements OnInit {
     document.execCommand('copy');
   }
 
+  errorHandler = (err, fallbackMessage) => {
+    const errorMessage = typeof err.error === 'string' ? err.error : fallbackMessage;
+    Swal.fire('Error', errorMessage, 'error');
+    console.log(err);
+    this.uploadProgress = 0;
+  }
+
+  updateAccounts(accounts) {
+    this.accounts = accounts;
+    if (accounts.length) {
+      this.getFiles();
+      this.plotGraph();
+    }
+  }
+
+  get loading () {
+    return AccountService.isFetchingAccounts || AccountService.isFetchingFiles;
+  }
+
+  public ngOnDestroy() {
+    this.ngDestroy$.next();
+  }
 }

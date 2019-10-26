@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {Subject} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
+import { standarizeFiles } from '../shared/utils/standarize-files';
 
 
 @Injectable()
 export class AccountService {
 
   public static isFetchingAccounts = true;
-  accounts = [];
+  public static isFetchingFiles = true;
   baseUrl = environment.APIEndpoint;
 
   private emitAccounSource = new Subject<any[]>();
@@ -62,7 +64,7 @@ export class AccountService {
 
     var url = `${this.baseUrl}/${type}/listFiles/${id}`;
     folderId ? url += `/${folderId}` : url;
-    return this.http.get(url, httpOptions);
+    return this.http.get(url, httpOptions).pipe(map((files) => standarizeFiles(files, type, id)));
   }
 
   getMergedAccountFiles() {
@@ -72,7 +74,9 @@ export class AccountService {
         'x-auth': localStorage.getItem('infinityToken')
       })
     };
-    return this.http.get(`${this.baseUrl}/merged/listFiles/`, httpOptions);
+    return this.http.get(`${this.baseUrl}/merged/listFiles/`, httpOptions).pipe(map((mergedAccounts: any) => {
+      return mergedAccounts.map(account => standarizeFiles(account['files'], account['accountType'], account['_id'])).flat();
+    }));
   }
 
   getDownloadUrl(accountId, fileId, type) {
@@ -245,11 +249,6 @@ export class AccountService {
     };
     const body = { settings };
     return this.http.patch(`${this.baseUrl}/users/settings`, body, httpOptions);
-  }
-
-  updateAccounts(updatedAccounts) {
-    this.accounts = updatedAccounts;
-    this.emitAccounSource.next(updatedAccounts);
   }
 
 }

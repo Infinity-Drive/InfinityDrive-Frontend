@@ -13,7 +13,7 @@
           </li>
         </ng-template>
         <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getFiles(accountId)">
-          {{currentAccount.account}} - {{currentAccount.email}}
+          {{currentAccount?.account}} - {{currentAccount?.email}}
         </li>
         <li *ngFor="let crum of breadCrumbs;let i = index" style="color: dodgerblue"
           (click)="breadCrumbNavigation(crum.id,i)" class="breadcrumb-item point">{{crum.name}}
@@ -30,14 +30,14 @@
 
     <div style="clear:both"></div>
 
-    <div class="form-group float-right mr-1" *ngIf="!loading && temp.length != 0">
+    <div class="form-group float-right mr-1" *ngIf="!loading && temp?.length != 0">
       <input type="text" class="search form-control" placeholder="Search" (keyup)='updateFilter($event)'>
     </div>
-    <span *ngIf="!loading " class="counter float-right mt-2 mr-1">{{files.length}} files </span>
+    <span *ngIf="!loading " class="counter float-right mt-2 mr-1">{{files?.length}} files </span>
 
     <app-spinner *ngIf="loading"></app-spinner>
 
-    <table class="table table-hover" *ngIf="!loading && files.length != 0">
+    <table class="table table-hover" *ngIf="!loading && files?.length != 0">
       <thead>
         <tr>
 
@@ -110,11 +110,11 @@
     </table>
 
     <ngb-pagination class="d-flex justify-content-center"
-      *ngIf="!loading && files.length > 0 && pageSize < files.length" [collectionSize]="files.length" [(page)]="page"
+      *ngIf="!loading && files?.length > 0 && pageSize < files.length" [collectionSize]="files?.length" [(page)]="page"
       [boundaryLinks]="true" [maxSize]="10" [rotate]="true" [pageSize]="pageSize" [boundaryLinks]="true">
     </ngb-pagination>
 
-    <h5 style="text-align:center" class="text-muted m-5" *ngIf="!loading && files.length == 0">
+    <h5 style="text-align:center" class="text-muted m-5" *ngIf="!loading && files?.length == 0">
       No files here
     </h5>
   </div>

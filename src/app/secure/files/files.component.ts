@@ -9,6 +9,9 @@ import {sortBy, mapValues} from 'lodash';
 
 import { fireErrorDialog, fireSuccessToast, fireConfirmationDialog, fireSuccessDialog } from '../../shared/utils/alerts';
 
+import { Store } from '@ngrx/store';
+import { AppState } from '../../app.state';
+
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -25,7 +28,6 @@ export class FilesComponent implements OnInit {
   accounts = [];
   fileToUpload: File = null;
   uploadProgress = 0;
-  loading = false;
   breadCrumbs = [];
   from = false;
   temp = []; // used for table searching
@@ -41,118 +43,28 @@ export class FilesComponent implements OnInit {
   userSettings;
 
   @ViewChild('btnClose') btnClose: ElementRef;
-  standarizeFileData = (items, accountType) => {
 
-    var standarizedItems = [];
-    const showSplitParts = this.userSettings.showSplitParts;
-
-    if (accountType === 'gdrive') {
-      items.forEach(item => {
-        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
-          if (item.mimeType === 'application/vnd.google-apps.folder')
-            item['mimeType'] = 'folder';
-          standarizedItems.push(item);
-        }
-      });
-    }
-
-    if (accountType === 'odrive') {
-      items.forEach(item => {
-        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
-          // item has a file property if its a file and a folder property if its a folder
-          item.file ? item['mimeType'] = item.file.mimeType : item['mimeType'] = 'folder';
-          item.lastModifiedDateTime ? item['modifiedTime'] = item.lastModifiedDateTime : item['modifiedTime'] = '-';
-          standarizedItems.push(item);
-        }
-      });
-    }
-
-    if (accountType === 'dropbox') {
-      items.entries.forEach(item => {
-        if ((!showSplitParts && !item.name.includes('.infinitydrive.part')) || showSplitParts) {
-          if (item['.tag'] === 'folder')
-            item['mimeType'] = 'folder';
-          else
-            item['mimeType'] = item.name.split('.')[1];
-
-          if (!item['client_modified'])
-            item['client_modified'] = '-';
-
-          standarizedItems.push({
-            id: item.id,
-            name: item.name,
-            mimeType: item['mimeType'],
-            size: item.size,
-            modifiedTime: item['client_modified']
-          });
-        }
-      });
-    }
-    return standarizedItems;
-  };
-
-  constructor(private account: AccountService, private activeRoute: ActivatedRoute, private location: Location) {
+  constructor(private account: AccountService,
+              private activeRoute: ActivatedRoute,
+              private location: Location,
+              private store: Store<AppState>) {
+    this.store.select('account').subscribe(accounts => this.updateAccounts(accounts));
   }
 
   ngOnInit() {
     this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
-    this.activeRoute.params.subscribe((params) => {
-      this.accountId = params.id;
-      // this.account.accountsObservable.subscribe(data => this.accounts = data);
-
-      if (params['from']) {
-        this.from = true;
-        console.log(params['folderName']);
-        this.location.replaceState(`Dashboard/Storage/${params['id']}`);
-      }
-      this.accounts = this.account.accounts;
-
-      if (this.accounts.length === 0) {
-        this.loading = true;
-        this.account.getAccounts().subscribe((data: any) => {
-          this.accounts = data;
-          this.account.updateAccounts(data);
-          this.loading = false;
-          this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-
-          if (this.from && params['from'] != 'root') {
-            this.getFolderItems(params['from'], params['folderName']);
-          } else {
-            this.getFiles(this.accountId);
-          }
-
-        }, (err: any) => {
-          this.loading = false;
-          fireErrorDialog('Can\'t connect to server! Check your internet connection.', 'Retry').then((result) => {
-            if (result.value) {
-              this.ngOnInit();
-            }
-          });
-        });
-      } else {
-        this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
-        if (this.from && params['from'] != 'root') {
-          this.getFolderItems(params['from'], params['folderName']);
-        } else {
-          this.getFiles(this.accountId);
-        }
-      }
-
-    });
   }
 
   getFiles(id) {
-    this.loading = true;
+    AccountService.isFetchingFiles = true;
     this.breadCrumbs = [];
     this.account.getFiles(id, this.currentAccount['accountType']).subscribe((data) => {
-      // console.log(data);
-      this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      this.files = data;
       this.temp = [...this.files];
-      this.loading = false;
-      // console.log(this.files);
+      AccountService.isFetchingFiles = false;
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Unable to get files';
-      this.loading = false;
+      AccountService.isFetchingFiles = false;
       fireErrorDialog(`${errorMessage}! Check your internet connection.`, 'Retry').then((result) => {
         if (result.value) {
           this.getFiles(this.accountId);
@@ -172,7 +84,7 @@ export class FilesComponent implements OnInit {
   }
 
   getFolderItems(folderId, folderName = undefined) {
-    this.loading = true;
+    AccountService.isFetchingFiles = true;
 
     // for maintaining breadCrumbs
     let currentFolder;
@@ -183,17 +95,15 @@ export class FilesComponent implements OnInit {
     }
 
     this.account.getFiles(this.accountId, this.currentAccount['accountType'], folderId).subscribe((data) => {
-      console.log(data);
-      this.files = this.standarizeFileData(data, this.currentAccount['accountType']);
+      this.files = data;
       this.temp = [...this.files];
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
-      this.loading = false;
-      // console.log(this.files);
+      AccountService.isFetchingFiles = false;
     }, (err: HttpErrorResponse) => {
       const errorMessage = err.error ? err.error : 'Unable to get files';
       fireErrorDialog(errorMessage);
-      this.loading = false;
+      AccountService.isFetchingFiles = false;
       console.log(err);
     });
   }
@@ -375,5 +285,27 @@ export class FilesComponent implements OnInit {
       document.removeEventListener('copy', null);
     });
     document.execCommand('copy');
+  }
+
+  updateAccounts(accounts) {
+    this.accounts = accounts;
+    if (accounts.length) {
+      const params = this.activeRoute.snapshot.params;
+      this.accountId = params.id;
+      if (params['from']) {
+        this.from = true;
+        this.location.replaceState(`Dashboard/Storage/${params['id']}`);
+      }
+      this.currentAccount = this.accounts.find(account => account['_id'] === this.accountId);
+      if (this.from && params['from'] != 'root') {
+        this.getFolderItems(params['from'], params['folderName']);
+      } else {
+        this.getFiles(this.accountId);
+      }
+    }
+  }
+
+  get loading() {
+    return AccountService.isFetchingAccounts || AccountService.isFetchingFiles;
   }
 }

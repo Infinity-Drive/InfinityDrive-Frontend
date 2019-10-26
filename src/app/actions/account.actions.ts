@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-export const ADD_ACCOUNT       = '[ACCOUNT] Add';
-export const REMOVE_ACCOUNT    = '[ACCOUNT] Remove';
+export const SET_ACCOUNTS       = '[ACCOUNTS] Set';
+export const REMOVE_ACCOUNT     = '[ACCOUNT] Remove';
 
-export class AddAccount implements Action {
-    readonly type = ADD_ACCOUNT;
+export class SetAccounts implements Action {
+    readonly type = SET_ACCOUNTS;
 
     constructor(public payload) {}
 }
@@ -16,4 +16,4 @@ export class RemoveAccount implements Action {
     constructor(public payload) {}
 }
 
-export type Actions = AddAccount | RemoveAccount;
+export type Actions = SetAccounts | RemoveAccount;

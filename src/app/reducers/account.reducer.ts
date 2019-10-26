@@ -6,9 +6,8 @@ const initialState = [];
 export function accountReducer(state = initialState, action: AccountActions.Actions) {
 
     switch (action.type) {
-        case AccountActions.ADD_ACCOUNT:
-            if (!state.find(account => account['_id'] === action.payload._id))
-                return [...state, action.payload];
+        case AccountActions.SET_ACCOUNTS:
+            return [... state, ... action.payload];
 
         case AccountActions.REMOVE_ACCOUNT:
             return state.filter((account => account['_id'] !== action.payload));

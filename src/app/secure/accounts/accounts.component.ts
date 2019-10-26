@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, OnDestroy} from '@angular/core';
 import {AccountService} from '../../services/account.service';
 import {Router, ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import * as AccountActions from '../../actions/account.actions';
 import { AppState } from '../../app.state';
 import { fireErrorDialog, fireSuccessToast, fireConfirmationDialog } from '../../shared/utils/alerts';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-accounts',
@@ -13,22 +15,25 @@ import { fireErrorDialog, fireSuccessToast, fireConfirmationDialog } from '../..
   styleUrls: ['./accounts.component.css']
 })
 
-export class AccountsComponent implements OnInit {
+export class AccountsComponent implements OnInit, OnDestroy {
   // user accounts array
   accounts = [];
   name = '';
   pageSize = 10;
   page = 1;
+  public ngDestroy$ = new Subject();
+
 
   constructor(private router: Router,
               private account: AccountService,
               private activateRoute: ActivatedRoute,
               private store: Store<AppState>) {
-    this.store.select('account').subscribe(accounts => this.updateAccounts(accounts));
   }
 
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
+  }
 
   // method for adding client drive
   addDrive(type) {
@@ -77,5 +82,10 @@ export class AccountsComponent implements OnInit {
   get loading() {
     return AccountService.isFetchingAccounts;
   }
+
+  public ngOnDestroy() {
+    this.ngDestroy$.next();
+  }
+
 }
 
