@@ -24,6 +24,7 @@
     "@angular/router": "^7.2.5",
     "@angular/service-worker": "^7.2.5",
     "@ng-bootstrap/ng-bootstrap": "^4.1.1",
+    "@ngrx/store": "^8.4.0",
     "@swimlane/ngx-charts": "^10.1.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.7.3",

@@ -3,6 +3,9 @@ import {AccountService} from '../services/account.service';
 import {Router, ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { Store } from '@ngrx/store';
+import * as AccountActions from './../actions/account.actions';
+import { AppState } from '../app.state';
 
 @Component({
   selector: 'app-accounts',
@@ -14,66 +17,24 @@ export class AccountsComponent implements OnInit {
   // user accounts array
   accounts = [];
   name = '';
-  loading = false;
   pageSize = 10;
   page = 1;
 
-  constructor(private router: Router, private account: AccountService, private activateRoute: ActivatedRoute) {
+  constructor(private router: Router,
+              private account: AccountService,
+              private activateRoute: ActivatedRoute,
+              private store: Store<AppState>) {
+    this.store.select('account').subscribe(accounts => this.updateAccounts(accounts));
   }
 
-  ngOnInit() {
-    // when this page is redirected from google authentication page fetching token code
-    this.activateRoute.queryParams.subscribe(params => {
-      if (params['code']) {
-        // console.log(params['code'])
-        // calling account service method to send this code to server
-        this.loading = true;
-        this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
-          // updating account list
-          // this.account.getAccounts();
-          localStorage.setItem('newAdded', 'yes');
-          this.router.navigateByUrl('Dashboard/Accounts');
-        }, (err: HttpErrorResponse) => {
-          if (err.error === 'Account already exists') {
-            Swal.fire('Account already exists', 'add a different account', 'error');
-          } else {
-            Swal.fire('Shame on us', 'Unable to add account', 'error');
-          }
-          this.router.navigateByUrl('Dashboard/Accounts');
-          console.log(err);
-        });
-      } else {
-        this.accounts = this.account.accounts;
-        if (this.accounts.length === 0 || localStorage.getItem('newAdded') == 'yes') {
-          this.loading = true;
-          localStorage.setItem('newAdded', 'no');
-          this.account.getAccounts().subscribe((data: any) => {
-            this.accounts = data;
-            this.account.updateAccounts(data);
-            this.loading = false;
-          }, (err: any) => {
-            this.accounts = [];
-            this.account.updateAccounts([]);
-          });
-        }
-        else {
-          this.loading = false;
-        }
-        // this.router.navigateByUrl('Dashboard');
-      }
-    });
 
-    // setting user account array
-    // this.account.accountsObservable.subscribe(data => this.accounts = data);
-
-  }
+  ngOnInit() {}
 
   // method for adding client drive
   addDrive(type) {
     localStorage.setItem('AddingAccountType', type);
     // calling accounts service method for adding a google drive account
     this.account.getAuthLink(type).subscribe((data) => {
-      // opening a window for drive link for authentication
       window.open(data['url'], '_self');
     }, (err: HttpErrorResponse) => {
       Swal.fire('Shame on us', 'Server Not responding', 'error');
@@ -93,23 +54,23 @@ export class AccountsComponent implements OnInit {
       confirmButtonText: 'Yes, remove it!'
     }).then((result) => {
       if (result.value) {
-
         this.account.deleteAccount(id).subscribe((data) => {
-          this.accounts = this.accounts.filter(account => account['_id'] !== id);
+          this.store.dispatch(new AccountActions.RemoveAccount(id));
           Swal.fire(
             'Removed!',
             'Storage has been removed successfully',
             'success'
           );
-          this.account.updateAccounts(this.accounts);
-          // this.account.getAccounts();
         }, (err: HttpErrorResponse) => {
           Swal.fire('Shame on us', 'Unable to unlink account', 'error');
           console.log(err);
         });
       }
     });
+  }
 
+  updateAccounts(accounts) {
+    this.accounts = accounts;
   }
 
   getSizeInGb(size) {
@@ -124,6 +85,10 @@ export class AccountsComponent implements OnInit {
   // navigating to merged route
   navigateToMerged() {
     this.router.navigateByUrl(`Dashboard/Merged`);
+  }
+
+  get loading() {
+    return AccountService.isFetchingAccounts;
   }
 }
 

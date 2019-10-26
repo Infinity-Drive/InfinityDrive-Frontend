@@ -32,7 +32,11 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { LandinPageComponent } from './landin-page/landin-page.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { StoreModule } from '@ngrx/store';
+
 import { environment } from '../environments/environment';
+
+import { accountReducer } from './reducers/account.reducer';
 
 @NgModule({
   declarations: [
@@ -65,7 +69,10 @@ import { environment } from '../environments/environment';
     NgbCollapseModule,
     NgxChartsModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    StoreModule.forRoot({
+      account: accountReducer
+    })
   ],
   providers: [UserService, AccountService, AuthGuardService],
   bootstrap: [AppComponent]

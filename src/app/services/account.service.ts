@@ -3,12 +3,11 @@ import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {Subject} from 'rxjs';
 import {environment} from '../../environments/environment';
 
+
 @Injectable()
 export class AccountService {
 
-  // private accounts = new BehaviorSubject<any>([]);
-  // accountsObservable = this.accounts.asObservable();
-
+  public static isFetchingAccounts = true;
   accounts = [];
   baseUrl = environment.APIEndpoint;
 

@@ -1,9 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 
 import {AccountService} from '../services/account.service';
 
 import Swal from 'sweetalert2';
+
+import { Store } from '@ngrx/store';
+import * as AccountActions from './../actions/account.actions';
+import { AppState } from '../app.state';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -17,31 +22,47 @@ export class UserDashboardComponent implements OnInit {
   totalAccounts;
   accountsLimit = 5;
 
-  constructor(private route: Router, private account: AccountService) {
+  constructor(private router: Router,
+              private account: AccountService,
+              private activateRoute: ActivatedRoute,
+              private store: Store<AppState>) {
+    this.store.select('account').subscribe((accounts) => this.updateAccounts(accounts));
   }
 
   ngOnInit() {
     this.userName = localStorage.getItem('infinityName');
-    if (!this.totalAccounts) {
-      this.account.getAccounts().subscribe((data) => {
-        this.account.updateAccounts(data);
-      });
-    }
-    this.account.accountsToBeEmited.subscribe((value: any[]) => {
-      let count = 0;
-      this.totalAccounts = value.length;
-      this.accounts = value.filter((value1) => {
-        count++;
-        //  accounts to be displayed
-        if (count <= this.accountsLimit) {
-          return value1;
+    AccountService.isFetchingAccounts = true;
+
+    this.activateRoute.queryParams.subscribe(params => {
+      if (params['code']) {
+        this.account.saveToken(params['code'], localStorage.getItem('AddingAccountType')).subscribe((data) => {
+          this.account.getAccounts().subscribe((accounts: any)=> {
+            AccountService.isFetchingAccounts = false;
+            accounts.forEach(account => this.store.dispatch(new AccountActions.AddAccount(account)));
+            this.router.navigateByUrl('Dashboard/Accounts');
+          });
+        }, (err: HttpErrorResponse) => {
+          AccountService.isFetchingAccounts = false;
+          if (err.error === 'Account already exists') {
+            Swal.fire('Account already exists', 'add a different account', 'error');
+          } else {
+            Swal.fire('Shame on us', 'Unable to add account', 'error');
+          }
+          console.log(err);
+          this.router.navigateByUrl('Dashboard/Accounts');
+        });
+      } else {
+        if (!this.totalAccounts) {
+          this.account.getAccounts().subscribe((accounts: any)=> {
+            AccountService.isFetchingAccounts = false;
+            accounts.forEach(account => this.store.dispatch(new AccountActions.AddAccount(account)));
+          });
         }
-      });
+      }
     });
   }
 
   logout() {
-
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will logged out of Infinity Drive.',
@@ -50,25 +71,22 @@ export class UserDashboardComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.account.logout().subscribe((data) => {
-          localStorage.removeItem('infinityGuard');
-          localStorage.removeItem('infinityToken');
-          localStorage.removeItem('infinityEmail');
-          localStorage.removeItem('infinityId');
-          localStorage.removeItem('infinityName');
-          this.account.accounts = [];
-          this.route.navigate(['/Login']);
-          // this.account.getAccounts();
+          localStorage.clear();
+          this.router.navigate(['/Login']);
         }, (err: any) => {
-          Swal.fire('Error', 'Unable to logout', 'error');
-          console.log(err);
+          localStorage.clear();
+          this.router.navigate(['/Login']);
         });
       }
     });
-
   }
 
   toggleSidebar() {
     this.isOpened = !this.isOpened;
+  }
+
+  updateAccounts(accounts) {
+    this.accounts = accounts;
   }
 
 }
