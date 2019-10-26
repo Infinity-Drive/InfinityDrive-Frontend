@@ -86,7 +86,7 @@
             </td>
           </ng-template>
 
-          <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
+          <td scope="col" class="border-fix">{{ f.size | fileSize }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
           <td>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"

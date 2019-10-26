@@ -133,7 +133,7 @@
           </td>
           <!-- Optional accounts column end -->
 
-          <td scope="col" class="border-fix">{{ getSizeInMb(f.size) }}</td>
+          <td scope="col" class="border-fix">{{ f.size | fileSize }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
           <td>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -203,7 +203,7 @@
                   Upload to:
                   <p *ngFor="let account of getFilteredAccounts()">
                     <label><input (change)="selectAccounts($event, account)" type="checkbox"> {{account.account}}
-                      ({{account.email}})[{{getSizeInGb(account.storage.available)}} GB available]</label>
+                      ({{account.email}})[{{ account.storage.available | fileSize }} available]</label>
                   </p>
                 </div>
               </div>
