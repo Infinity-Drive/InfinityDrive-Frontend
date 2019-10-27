@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {AccountService} from '../../services/account.service';
 import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse, HttpEventType, HttpResponse} from '@angular/common/http';
@@ -11,15 +11,19 @@ import { fireErrorDialog, fireSuccessToast, fireConfirmationDialog, fireSuccessD
 
 import { Store } from '@ngrx/store';
 import { AppState } from '../../app.state';
+import * as FileActions from '../../actions/file.actions';
+
 
 import { environment } from '../../../environments/environment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-files',
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.css']
 })
-export class FilesComponent implements OnInit {
+export class FilesComponent implements OnInit, OnDestroy {
 
   files;
   accountId;
@@ -42,17 +46,21 @@ export class FilesComponent implements OnInit {
 
   userSettings;
 
+  ngDestroy$ = new Subject();
+
+
   @ViewChild('btnClose') btnClose: ElementRef;
 
   constructor(private account: AccountService,
               private activeRoute: ActivatedRoute,
               private location: Location,
               private store: Store<AppState>) {
-    this.store.select('account').subscribe(accounts => this.updateAccounts(accounts));
   }
 
   ngOnInit() {
     this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
+    this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
+    this.store.select('file').pipe(takeUntil(this.ngDestroy$)).subscribe(files => this.updateFiles(files));
   }
 
   getFiles(id) {
@@ -300,12 +308,27 @@ export class FilesComponent implements OnInit {
       if (this.from && params['from'] != 'root') {
         this.getFolderItems(params['from'], params['folderName']);
       } else {
-        this.getFiles(this.accountId);
+        if (!AccountService.hasFetchedAllFiles) {
+          this.getFiles(this.accountId);
+        }
       }
+    }
+  }
+
+  updateFiles(files) {
+    this.files = files.filter((file) => file.accountId === this.accountId);
+    this.temp = [...this.files];
+    if (!files.length && this.currentAccount) {
+      this.getFiles(this.accountId);
     }
   }
 
   get loading() {
     return AccountService.isFetchingAccounts || AccountService.isFetchingFiles;
   }
+
+  ngOnDestroy() {
+    this.ngDestroy$.next();
+  }
+
 }

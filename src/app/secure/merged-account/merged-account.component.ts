@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { sortBy, mapValues, minBy } from 'lodash';
 
 import { Store } from '@ngrx/store';
-import * as AccountActions from '../../actions/account.actions';
+import * as FileActions from '../../actions/file.actions';
 import { AppState } from '../../app.state';
 
 import { environment } from '../../../environments/environment';
@@ -76,6 +76,7 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
   ngOnInit() {
     this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
     this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
+    this.store.select('file').pipe(takeUntil(this.ngDestroy$)).subscribe(files => this.updateFiles(files));
   }
 
   getFiles() {
@@ -83,10 +84,9 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
     AccountService.isFetchingFiles = true;
     this.breadCrumbs = [];
     this.account.getMergedAccountFiles().subscribe((files: any) => {
-      this.files = files;
-      this.temp = [...this.files];
+      this.store.dispatch(new FileActions.SetMergedFiles(files));
       AccountService.isFetchingFiles = false;
-      // this.plotGraph()
+      AccountService.hasFetchedAllFiles = true;
     }, (err: HttpErrorResponse) => {
       if (err.error === 'No account found!') {
         this.route.navigateByUrl('Dashboard/Accounts');
@@ -119,8 +119,7 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
     }).then((result) => {
       if (result.value) {
         this.account.deleteFile(file.accountId, file.id, file.accountType).subscribe((data) => {
-          this.files = this.files.filter((f) => f.id !== file.id);
-          this.temp = [...this.files];
+          this.store.dispatch(new FileActions.RemoveFile(file.id));
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
@@ -510,8 +509,15 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
   updateAccounts(accounts) {
     this.accounts = accounts;
     if (accounts.length) {
-      this.getFiles();
       this.plotGraph();
+    }
+  }
+
+  updateFiles(files) {
+    this.files = files;
+    this.temp = [...this.files];
+    if (!files.length) {
+      this.getFiles();
     }
   }
 

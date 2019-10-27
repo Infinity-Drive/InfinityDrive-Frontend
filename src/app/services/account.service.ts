@@ -11,6 +11,7 @@ export class AccountService {
 
   public static isFetchingAccounts = true;
   public static isFetchingFiles = true;
+  public static hasFetchedAllFiles = false;
   baseUrl = environment.APIEndpoint;
 
   private emitAccounSource = new Subject<any[]>();

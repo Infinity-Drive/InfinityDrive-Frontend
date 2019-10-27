@@ -37,6 +37,7 @@ import { StoreModule } from '@ngrx/store';
 import { environment } from '../environments/environment';
 
 import { accountReducer } from './reducers/account.reducer';
+import { fileReducer } from './reducers/file.reducer';
 import { FileSizePipe } from './shared/pipes/file-size.pipe';
 
 @NgModule({
@@ -73,7 +74,8 @@ import { FileSizePipe } from './shared/pipes/file-size.pipe';
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     StoreModule.forRoot({
-      account: accountReducer
+      account: accountReducer,
+      file: fileReducer
     })
   ],
   providers: [UserService, AccountService, AuthGuardService],
