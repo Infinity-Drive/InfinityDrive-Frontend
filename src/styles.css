@@ -1,16 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
-:root {
-  --input-padding-x: 1.5rem;
-  --input-padding-y: .75rem;
+
+html{
+  height: 100%;
 }
 
-body {
-  overflow-x: hidden;
-  background: #ececf0;
-  /*background: #E9EBEE;*/
-  /* background: #9CECFB;
-  background: -webkit-linear-gradient(to right, #0052D4, #65C7F7, #9CECFB);
-  background: linear-gradient(to right, #0052D4, #65C7F7, #9CECFB); */
+body{
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  height:100%;
+  font-family: 'Questrial', sans-serif;
+}
+
+.text-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .card-auth{
@@ -132,4 +137,8 @@ body {
 .redHoverFont:hover{
   color: #fc0505;
   font-size: 1.2em;
+}
+
+.mat-drawer-container {
+  background-color: white;
 }

@@ -12,6 +12,7 @@ import { AppState } from '../../app.state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EmitterService } from '../../services/emitter.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -27,12 +28,14 @@ export class UserDashboardComponent implements OnInit,OnDestroy {
   intialized = false;
   public ngDestroy$ = new Subject();
 
-  constructor(private router: Router,
-              private account: AccountService,
-              private activateRoute: ActivatedRoute,
-              private location: Location,
-              private store: Store<AppState>) {
-  }
+  constructor(
+    private router: Router,
+    private account: AccountService,
+    private activateRoute: ActivatedRoute,
+    private location: Location,
+    private store: Store<AppState>,
+    private emitterService: EmitterService
+  ) {}
 
   ngOnInit() {
     this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
@@ -90,7 +93,11 @@ export class UserDashboardComponent implements OnInit,OnDestroy {
   }
 
   toggleSidebar() {
-    this.isOpened = !this.isOpened;
+    this.emitterService.emit('toggleSidebar');
+  }
+
+  applyFilter(event) {
+    this.emitterService.emit('applyFilter', event);
   }
 
   updateAccounts(accounts) {

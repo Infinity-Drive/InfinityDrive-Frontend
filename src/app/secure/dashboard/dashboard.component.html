@@ -1,5 +1,4 @@
-<div class="wrapper">
-  <!-- Sidebar -->
+<!-- <div class="wrapper">
   <nav id="sidebar" [ngClass]="{'active': isOpened}">
 
     <div id="dismiss" (click)="toggleSidebar()">
@@ -118,6 +117,56 @@
     </nav>
 
     <router-outlet></router-outlet>
+  </div>
+
+</div> -->
+
+
+<div class="d-flex flex-row h-100">
+
+  <div class="d-none d-md-block">
+      <app-sidebar></app-sidebar>
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 pl-md-5 pt-md-5 pr-md-5" id="mainContent">
+
+    <div class="mb-5 p-1">
+        <div class="d-flex d-md-none flex-row justify-content-between align-items-center mb-2">
+            <mat-icon (click)="toggleSidebar()">menu</mat-icon>
+
+            <div class="d-flex flex-row justify-content-center align-items-center text-white font-weight-bold" style="width:35px; height:35px; background:#3291B8">
+                <div class="">MA</div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row align-items-center">
+            <div class="mr-auto d-none d-md-block font-weight-bold text-uppercase">
+              <h5>Infinity Drive</h5>
+            </div>
+
+            <input type="search" placeholder="Search" aria-label="Search" class="form-control rounded-0 flex-grow-1 flex-md-grow-0" style="width: unset !important;" (keyup)="applyFilter($event)">
+            <div class="m-2 d-none d-md-flex flex-row justify-content-center align-items-center text-white font-weight-bold " style="width:35px; height:35px; background:#3291B8">
+                <div class="">MA</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-row overflow-auto">
+        <div class="order-2 d-none d-lg-block ml-4 overflow-auto" id="" style="width: 190px;">
+            <div class="no-preview-actions">
+                <div>Upload files</div>
+                <div>Upload folder</div>
+                <div>New folder</div>
+                <div>New shared folder</div>
+                <div>Request</div>
+                <div>Show deleted files</div>
+            </div>
+        </div>
+        <div class="flex-grow-1 overflow-auto">
+          <router-outlet></router-outlet>
+        </div>
+    </div>
+
   </div>
 
 </div>

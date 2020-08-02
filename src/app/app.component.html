@@ -1,2 +1,9 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<router-outlet></router-outlet>
+<mat-sidenav-container class="h-100" autosize>
+    <mat-sidenav #snav fixedInViewport="true">
+      <app-sidebar></app-sidebar>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="overflow-hidden">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -14,6 +14,9 @@ import { AppState } from '../../app.state';
 import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { EmitterService } from '../../services/emitter.service';
 
 @Component({
   selector: 'app-merged-account',
@@ -22,18 +25,16 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class MergedAccountComponent implements OnInit,OnDestroy {
 
+  displayedColumns: string[] = ['name', 'modifiedTime', 'size', 'action'];
+  dataSource;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+
   files: any = [];
   fileToUpload: File = null;
   uploadProgress = 0;
   accounts = [];
   breadCrumbs = [];
   temp = []; // used for table searching
-  sort = {
-    name: undefined,
-    email: undefined,
-    size: undefined,
-    modifiedTime: undefined
-  };
   pageSize = 10;
   page = 1;
 
@@ -47,13 +48,33 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
   @ViewChild('btnClose', { static: true }) btnClose: ElementRef;
 
 
-  constructor(private account: AccountService, private route: Router, private store: Store<AppState>) {
+  constructor(
+    private account: AccountService,
+    private route: Router,
+    private store: Store<AppState>,
+    private emitterService: EmitterService) {
   }
 
   ngOnInit() {
     this.userSettings = JSON.parse(localStorage.getItem('infinitySettings'));
     this.store.select('account').pipe(takeUntil(this.ngDestroy$)).subscribe(accounts => this.updateAccounts(accounts));
-    this.store.select('file').pipe(takeUntil(this.ngDestroy$)).subscribe(files => this.updateFiles(files));
+    this.store.select('file').pipe(takeUntil(this.ngDestroy$)).subscribe(files => {
+      this.updateFiles(files)
+      this.dataSource = new MatTableDataSource(files);
+      this.dataSource.sort = this.sort;
+    });
+
+    this.emitterService.emitter.pipe(takeUntil(this.ngDestroy$)).subscribe((emitted) => {
+      switch(emitted.event) {
+        case 'applyFilter':
+          return this.applyFilter(emitted.data);
+      }
+    });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   getFiles() {
@@ -368,43 +389,6 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
   // method for an account folder navigation
   navigateToAccountFolder(accountId, folderId, foldername) {
     this.route.navigateByUrl(`Dashboard/Storage/${accountId};from=${folderId};folderName=${foldername}`);
-  }
-
-  updateFilter(event) {
-    const val = event.target.value.toLowerCase();
-
-    // filter our data
-    const temp = this.temp.filter(function (d) {
-      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
-    });
-
-    // update the rows
-    this.files = temp;
-  }
-
-  sortByKey(key) {
-    this.files = sortBy(this.files, [function (file) {
-      // check if key value isn't undefined in file and if it's value
-      // is a string then return lower case value to provide accurate sort
-      if (file[`${key}`] && isNaN(file[`${key}`])) {
-        return file[`${key}`].toLowerCase();
-      }
-      else {
-        return file[`${key}`];
-      }
-    }]);
-    ;
-
-    if (this.sort[`${key}`]) {
-      this.sort[`${key}`] = false;
-      return this.files.reverse();
-    }
-    else {
-      // set the rest of sort variables to undefined, so that their arrows aren't showed
-      this.sort = mapValues(this.sort, () => undefined);
-      this.sort[`${key}`] = true;
-      return this.files;
-    }
   }
 
   shareFile(clientFileId, fileName, fileSize, fileType, accountId, accountType) {

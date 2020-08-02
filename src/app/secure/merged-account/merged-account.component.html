@@ -1,9 +1,8 @@
-<div class="bodyCard p-5 shadow">
+<!-- <div class="bodyCard p-5 shadow">
 
   <div class="table-responsive">
 
     <div class="name">
-      <!--<h3 class="point" style="color:dodgerblue"><a (click)="getFiles()">Files</a></h3>-->
 
       <ol class="breadcrumb">
         <li class="breadcrumb-item point" style="color: dodgerblue" (click)="getFiles()">Infinity Drive</li>
@@ -99,12 +98,11 @@
 
           </ng-template>
 
-          <!-- Optional accounts column (set with settings) -->
           <td class="d-none d-lg-block" *ngIf="userSettings.showAccountsInDashboard">
             <ng-template #tipContent>{{getAccountEmail(f.accountId)}}</ng-template>
 
             <a *ngIf="f.accountType !== 'merged'; else merged" style="color: dodgerblue"
-              (click)="navigateToAccount(f.accountId)" class="point" [ngbTooltip]="tipContent">
+              (click)="navigateToAccount(f.accountId)" class="point">
               <i class="fab fa-dropbox" *ngIf="f.accountType == 'dropbox'"></i>
               <i class="fab fa-google-drive" *ngIf="f.accountType == 'gdrive'"></i>
               <i class="fas fa-cloud" *ngIf="f.accountType == 'odrive'"></i>
@@ -116,7 +114,6 @@
               </span>
             </ng-template>
           </td>
-          <!-- Optional accounts column end -->
 
           <td scope="col" class="border-fix">{{ f.size | fileSize }}</td>
           <td scope="col" class="border-fix d-none d-md-block">{{ getModifiedTime(f.modifiedTime) }}</td>
@@ -134,18 +131,11 @@
                 (click)="shareFile(f.id, f.name, f.size, f.mimeType, f.accountId, f.accountType)">
                 <i class="fas fa-share-alt"></i> Share File
               </a>
-              <!-- <a class="dropdown-item">Share</a> -->
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-
-    <ngb-pagination class="d-flex justify-content-center"
-      *ngIf="!loading && files.length > 0 && pageSize < files.length" [collectionSize]="files.length" [(page)]="page"
-      [boundaryLinks]="true" [maxSize]="10" [rotate]="true" [pageSize]="pageSize" [boundaryLinks]="true">
-    </ngb-pagination>
-
 
     <h5 style="text-align:center" class="text-muted m-5" *ngIf="!loading && files.length == 0">
       No files here
@@ -182,7 +172,7 @@
               Advanced options
             </label>
 
-            <div [ngbCollapse]="advancedUpload">
+            <div>
               <div class="card">
                 <div class="card-body">
                   Upload to:
@@ -234,4 +224,38 @@
       </div>
     </div>
   </div>
+</div> -->
+
+
+<div class="desktop-table w-100">
+  <mat-table #table [dataSource]="dataSource" matSort class="w-100">
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="modifiedTime">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Modified Time </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ getModifiedTime(element.modifiedTime) }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="size">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="d-none d-lg-flex"> Size </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="d-none d-lg-flex">
+        {{ element.size | fileSize }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-icon>more_horiz</mat-icon>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
 </div>

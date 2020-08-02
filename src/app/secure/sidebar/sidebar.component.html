@@ -1,0 +1,39 @@
+<div class="d-flex flex-column pl-5 pt-5 h-100" id="sidebar" style="width: 240px; background-color:#F2F2F2">
+
+    <mat-icon class="mt-3">all_inclusive
+    </mat-icon>
+
+    <div id="sidebarList" class="overflow-auto">
+
+        <div class="my-4">
+            <h6>Home</h6>
+        </div>
+
+        <div class="my-4">
+            <small>Files</small>
+
+            <h6>All files</h6>
+            <h6>Photos</h6>
+            <h6>Shared</h6>
+            <h6>Deleted files</h6>
+        </div>
+
+        <div class="my-4 accounts">
+            <small>Accounts</small>
+            <div
+                class="text-overflow d-flex align-items-center"
+                style="max-width: 150px;"
+                *ngFor="let account of accounts">
+                <i
+                    [ngClass]="{
+                        'fab fa-dropbox': account.accountType === 'dropbox',
+                        'fas fa-cloud': account.accountType === 'odrive',
+                        'fab fa-google': account.accountType === 'gdrive'
+                    }"
+                    class="fab fa-dropbox mr-1"
+                    style="width: 20px"></i>
+                <span class="text-overflow">{{ getParsedEmail(account.email) }}</span>
+            </div>
+        </div>
+    </div>
+</div>
