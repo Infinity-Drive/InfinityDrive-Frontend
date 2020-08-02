@@ -24,7 +24,6 @@ import { AuthGuardService } from './services/auth-guard.service';
 
 
 import { AccountReportComponent } from './public/account-report/account-report.component';
-import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from './secure/settings/settings.component';
 import { ResetPasswordComponent } from './public/reset-password/reset-password.component';
 import { LandingComponent } from './public/landing-page/landing.component';
@@ -64,9 +63,6 @@ import { FileSizePipe } from './shared/pipes/file-size.pipe';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgbTooltipModule,
-    NgbPaginationModule,
-    NgbCollapseModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     StoreModule.forRoot({
