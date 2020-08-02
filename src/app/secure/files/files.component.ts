@@ -49,7 +49,7 @@ export class FilesComponent implements OnInit, OnDestroy {
   ngDestroy$ = new Subject();
 
 
-  @ViewChild('btnClose') btnClose: ElementRef;
+  @ViewChild('btnClose', { static: true }) btnClose: ElementRef;
 
   constructor(private account: AccountService,
               private activeRoute: ActivatedRoute,

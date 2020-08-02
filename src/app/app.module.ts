@@ -23,8 +23,6 @@ import { AccountService } from './services/account.service';
 import { AuthGuardService } from './services/auth-guard.service';
 
 
-import { ChartsModule } from 'ng2-charts';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AccountReportComponent } from './public/account-report/account-report.component';
 import { NgbPaginationModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from './secure/settings/settings.component';
@@ -66,11 +64,9 @@ import { FileSizePipe } from './shared/pipes/file-size.pipe';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ChartsModule,
     NgbTooltipModule,
     NgbPaginationModule,
     NgbCollapseModule,
-    NgxChartsModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     StoreModule.forRoot({

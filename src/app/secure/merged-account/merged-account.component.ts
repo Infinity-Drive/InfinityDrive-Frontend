@@ -44,31 +44,8 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
   fileSizeError = false;
   public ngDestroy$ = new Subject();
 
-  @ViewChild('btnClose') btnClose: ElementRef;
+  @ViewChild('btnClose', { static: true }) btnClose: ElementRef;
 
-  public barChartLabels = [];
-  public barChartData = [];
-  public barChartType = 'horizontalBar';
-  public barChartOptions = {
-    title: {
-      text: 'Storage Usage (GB)',
-      display: true
-    },
-    scales: {
-      xAxes: [{
-        ticks: {
-          // Include a dollar sign in the ticks
-          callback: function (value, index, values) {
-            return value + ' GB';
-          }
-        }
-      }]
-    },
-    maintainAspectRatio: false
-  };
-
-  guageGraphData = [];
-  guageMax = 0;
 
   constructor(private account: AccountService, private route: Router, private store: Store<AppState>) {
   }
@@ -138,7 +115,6 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
 
     this.account.getFiles(folder.accountId, folder.accountType, folder.id).subscribe((files) => {
       this.files = files;
-      this.temp = [...this.files];
       if (currentFolder.length !== 0)
         this.breadCrumbs.push(currentFolder[0]);
         AccountService.isFetchingFiles = false;
@@ -378,38 +354,6 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
     return '-';
   }
 
-  plotGraph() {
-    let usedDataSet = [];
-    let totalDataSet = [];
-    let total = 0;
-    let used = 0;
-    this.accounts.forEach((value) => {
-      this.barChartLabels.push(`${value.account}(${value.email.split('@')[0]})`);
-      usedDataSet.push(this.getSizeInGb(value.storage.used));
-      totalDataSet.push(this.getSizeInGb(value.storage.total));
-      total += parseInt(value.storage.total);
-      used += parseInt(value.storage.used);
-    });
-
-    this.barChartData = [
-      { data: usedDataSet, label: 'Used' },
-      { data: totalDataSet, label: 'Total' }
-    ];
-
-    this.guageMax = parseFloat(this.getSizeInGb(total));
-    this.guageGraphData = [
-      {
-        'name': 'Free Storage',
-        'value': parseFloat(this.getSizeInGb(total)) - parseFloat(this.getSizeInGb(used))
-      },
-      {
-        'name': 'Used Storage',
-        'value': parseFloat(this.getSizeInGb(used))
-      },
-    ];
-
-  }
-
   // handling breadcrumb navigation
   breadCrumbNavigation(folder, index) {
     this.getFolderItems(folder);
@@ -508,14 +452,10 @@ export class MergedAccountComponent implements OnInit,OnDestroy {
 
   updateAccounts(accounts) {
     this.accounts = accounts;
-    if (accounts.length) {
-      this.plotGraph();
-    }
   }
 
   updateFiles(files) {
     this.files = files;
-    this.temp = [...this.files];
     if (!files.length) {
       this.getFiles();
     }
